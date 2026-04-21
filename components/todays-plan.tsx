@@ -6,6 +6,7 @@ interface TodaysPlanProps {
   scansToday: number
   maxScans?: number
   hasCompletedWorkout?: boolean
+  workoutsCompleted?: number
   isPremium?: boolean
   streak?: number
   mealTotals?: { calories: number; protein: number; carbs: number; fat: number }
