@@ -1,7 +1,6 @@
 import { Camera, Crown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { getLocalDateString } from '@/lib/timezone-utils'
 import RecentMeals from './recent-meals'
 import DynamicInsight from './dynamic-insight'
@@ -29,7 +28,8 @@ interface ScoreData {
   workoutsCompleted: number
 }
 
-export default function HomeScreen(props: HomeScreenProps) {
+export default function HomeScreen(props:
+HomeScreenProps) {
   const {
     scansToday,
     maxScans,
