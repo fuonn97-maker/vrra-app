@@ -75,8 +75,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const successUrl = ${appUrl}/dashboard/success?session_id={CHECKOUT_SESSION_ID}
-    const cancelUrl = ${appUrl}/upgrade
+    const successUrl = `${appUrl}/dashboard/success?session_id={CHECKOUT_SESSION_ID}`
+    const cancelUrl = `${appUrl}/upgrade`
 
     console.log('[v0] Success URL:', successUrl)
     console.log('[v0] Cancel URL:', cancelUrl)
