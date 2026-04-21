@@ -288,19 +288,12 @@ const getRetentionMessage = (scansToday: number, maxScans: number, streak: numbe
         )}
 
         {/* Gamification Stats */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {/* Streak */}
           <div className="bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 rounded-2xl p-3 text-center space-y-1 animate-fadeIn">
             <p className="text-xs text-foreground/60">Streak</p>
             <p className="text-2xl font-black text-primary">{streak}</p>
             <p className="text-xs text-foreground/60">days</p>
-          </div>
-
-          {/* Workouts Completed */}
-          <div className="bg-gradient-to-br from-secondary/20 to-secondary/5 border border-secondary/30 rounded-2xl p-3 text-center space-y-1 animate-fadeIn">
-            <p className="text-xs text-foreground/60">Workouts</p>
-            <p className="text-2xl font-black text-secondary">{workoutsCompleted}</p>
-            <p className="text-xs text-foreground/60">done</p>
           </div>
         </div>
 
