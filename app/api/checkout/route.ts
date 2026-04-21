@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User ID required' }, { status: 400 })
     }
 
-    const selectedPriceId = priceId || 'price_1TNaKDAykD9zzIWZnzJf6Q3w'
+    const selectedPriceId = priceId || 'price_1TOYSuFBDuwVWXr2G09dTmtC'
     const planName = getPlanNameFromPriceId(selectedPriceId) || 'monthly'
 
     console.log('[v0] Selected price ID:', selectedPriceId)
