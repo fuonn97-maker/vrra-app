@@ -39,6 +39,22 @@ export default function HomeScreen(props: HomeScreenProps) {
     onWorkoutClick,
   } = props
   const router = useRouter()
+  const handleWorkoutClick = async () => {
+  try {
+    const res = await fetch('/api/workout', {
+      method: 'POST',
+    })
+
+    const data = await res.json()
+
+    console.log('Workout updated:', data)
+
+    setRefreshKey(prev => prev + 1)
+
+  } catch (err) {
+    console.error('Workout error:', err)
+  }
+}
   const [scoreData, setScoreData] = useState<ScoreData | null>(null)
 const [isLoading, setIsLoading] = useState(true)
 const [refreshKey, setRefreshKey] = useState(0)
@@ -357,7 +373,7 @@ const [refreshKey, setRefreshKey] = useState(0)
   streak={scoreData?.streak || 0}
   mealTotals={mealTotals}
   onScanClick={handleScanMeal}
-  onWorkoutClick={onWorkoutClick}
+  onWorkoutClick={handleWorkoutClick}
   hasCompletedWorkout={false}
             
   workoutsCompleted={scoreData?.workoutsCompleted || 0}          
