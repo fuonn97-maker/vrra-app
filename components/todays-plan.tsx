@@ -189,11 +189,11 @@ const getRetentionMessage = (scansToday: number, maxScans: number, streak: numbe
     onScanClick,
     onWorkoutClick,
     hasCompletedWorkout,
+    workoutsCompleted = 0,
   } = props
   const [currentQuote, setCurrentQuote] = useState('')
   const [dailyMessage, setDailyMessage] = useState('')
-  const [workoutsCompleted, setWorkoutsCompleted] = useState(5)
-
+  
   useEffect(() => {
     const randomQuote = MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)]
     setCurrentQuote(randomQuote)
