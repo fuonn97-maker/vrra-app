@@ -89,7 +89,8 @@ const [refreshKey, setRefreshKey] = useState(0)
         },
       })
       const data = await response.json()
-
+      
+      console.log("FULL DATA:",data)
       console.log("DASHBOARD API DATA:", data)
       console.log('[v0] Response status:', response.status)
       console.log('[v0] Data bodyScore:', data.bodyScore, 'Type:', typeof data.bodyScore)
