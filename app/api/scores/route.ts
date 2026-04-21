@@ -355,7 +355,6 @@ export async function POST(req: NextRequest) {
 
 // GET endpoint to fetch user's scores
 export async function GET(req: NextRequest) {
-  throw new Error('🔥🔥🔥 THIS FILE IS RUNNING 🔥🔥🔥')
   try {
     const { searchParams } = new URL(req.url)
     const days = searchParams.get('days') || '7' // Default to last 7 days
