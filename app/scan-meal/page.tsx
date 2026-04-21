@@ -330,10 +330,10 @@ export default function ScanMealPage() {
               console.error('Failed to update free scan count:', updateError)
             }
           }
+          router.push('/')
         }
       }
 
-      setTimeout(() => setStep('result'), 1200)
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error occurred'
       console.error('Analyze image error:', error)
