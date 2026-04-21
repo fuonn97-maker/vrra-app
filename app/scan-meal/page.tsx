@@ -278,6 +278,7 @@ export default function ScanMealPage() {
         insight: data.insight,
         mealScore: data.mealScore,
       })
+      setStep('result')
 
       if (data.mealScore !== undefined) {
         const {
