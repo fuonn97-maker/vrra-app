@@ -211,11 +211,13 @@ const [refreshKey, setRefreshKey] = useState(0)
     setRefreshKey(prev => prev + 1)
   }
 
-  const handleMealAdded = () => {
+  const handleMealAdded = async () => {
     // Show dopamine feedback when a meal is logged
     setShowMealToast(true)
     // Refresh to show updated counts and streaks
     setRefreshKey(prev => prev + 1)
+    // Force reload latest scores immediately
+    await fetchScores()
   }
   return (
     <div className="w-full max-w-md mx-auto px-6 py-8 space-y-12">
