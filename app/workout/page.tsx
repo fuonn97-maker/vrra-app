@@ -50,7 +50,8 @@ export default function WorkoutPage() {
       }
 
       console.log('Workout completed successfully')
-      router.replace('/dashboard')
+
+      router.push('/dashboard')
       router.refresh()
     } catch (err) {
       console.error('Workout error:', err)
