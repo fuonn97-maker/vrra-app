@@ -330,7 +330,7 @@ export default function ScanMealPage() {
               console.error('Failed to update free scan count:', updateError)
             }
           }
-          router.push('/')
+          router.push('/dashboard')
         }
       }
 
