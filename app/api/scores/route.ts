@@ -407,7 +407,7 @@ export async function GET(req: NextRequest) {
 
     const { data: profileData } = await authenticatedSupabase
       .from('profiles')
-      .select('timezone')
+      .select('timezone,streak,workouts_cmpleted')
       .eq('id', userId)
       .single()
 
@@ -508,6 +508,8 @@ export async function GET(req: NextRequest) {
       dailyScore,
       streak,
       hasTodayScans,
+      workoutsCompleted:
+    profileData?.workouts_completed || 0,
     })
   } catch (error) {
     console.error('[v0] GET /api/scores error:', error)
