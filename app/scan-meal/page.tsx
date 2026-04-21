@@ -317,6 +317,7 @@ export default function ScanMealPage() {
 
         if (!scoreResponse.ok) {
           toast.error(`Failed to save: ${scoreResult.error}`)
+          setStep('options')
         } else {
           toast.success('Meal added successfully')
 
@@ -330,6 +331,7 @@ export default function ScanMealPage() {
               console.error('Failed to update free scan count:', updateError)
             }
           }
+          setStep('result')
         }
       }
 
