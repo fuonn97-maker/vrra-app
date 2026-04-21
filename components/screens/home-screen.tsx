@@ -356,9 +356,9 @@ const [refreshKey, setRefreshKey] = useState(0)
   mealTotals={mealTotals}
   onScanClick={handleScanMeal}
   onWorkoutClick={onWorkoutClick}
-  hasCompletedWorkout={workoutsCompleted >
-  0}
-  workoutsCompleted={workoutsCompleted}          
+  hasCompletedWorkout={false}
+            
+  workoutsCompleted={scoreData?.workoutsCompleted || 0}          
 />
         </div>
       </div>
