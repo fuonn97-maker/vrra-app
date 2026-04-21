@@ -461,12 +461,13 @@ export async function GET(req: NextRequest) {
     const uniqueScanDates = new Set<string>()
     
     if (allScans) {
-      for (const scan of allScans) {
-        // Use getLocalDateString to convert UTC to user's local date
-        const localDateStr = getLocalDateString(scan.created_at, userTimezone)
-        uniqueScanDates.add(localDateStr)
-      }
-    }
+  for (const scan of allScans) {
+    const localDateStr = getLocalDateString(scan.created_at, userTimezone)
+    console.log('[v0] scan created_at raw:', scan.created_at)
+    console.log('[v0] scan localDateStr:', localDateStr)
+    uniqueScanDates.add(localDateStr)
+  }
+}
 
     // Sort dates in descending order for easier processing
     const sortedDates = Array.from(uniqueScanDates).sort().reverse()
@@ -476,6 +477,7 @@ export async function GET(req: NextRequest) {
     // Start from today's local date and count backwards
     let streak = 0
     const todayLocalDate = getLocalDateString(new Date().toISOString(), userTimezone)
+    console.log('[v0] todayLocalDate:', todayLocalDate)
     
     // Build date strings for each day counting backwards
     let currentCheckDate = new Date()
