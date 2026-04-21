@@ -15,6 +15,7 @@ interface HomeScreenProps {
   scansToday: number
   maxScans: number
   isPremium: boolean
+  workoutsCompleted: number
   onRefresh?: () => void
   onWorkoutClick?: () => void
 }
@@ -32,6 +33,7 @@ export default function HomeScreen(props: HomeScreenProps) {
     scansToday,
     maxScans,
     isPremium,
+    workoutsCompleted
     onRefresh,
     onWorkoutClick,
   } = props
@@ -354,7 +356,9 @@ const [refreshKey, setRefreshKey] = useState(0)
   mealTotals={mealTotals}
   onScanClick={handleScanMeal}
   onWorkoutClick={onWorkoutClick}
-  hasCompletedWorkout={false}
+  hasCompletedWorkout={workoutsCompleted >
+  0}
+  workoutsCompleted={workoutsCompleted}          
 />
         </div>
       </div>
