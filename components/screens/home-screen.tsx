@@ -34,7 +34,7 @@ export default function HomeScreen(props: HomeScreenProps) {
     scansToday,
     maxScans,
     isPremium,
-    workoutsCompleted
+    workoutsCompleted,
     onRefresh,
     onWorkoutClick,
   } = props
