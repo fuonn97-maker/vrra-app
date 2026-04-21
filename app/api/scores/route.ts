@@ -440,6 +440,8 @@ export async function GET(req: NextRequest) {
     const bodyScore = todayScore?.body_score ?? 0
     const dailyScore = todayScore?.daily_score ?? 0
 
+    console.log('[v0] Today local date:', today)
+    console.log('[v0] Matched todayScore:', todayScore)
     console.log('[v0] Returning bodyScore:', bodyScore, 'dailyScore:', dailyScore)
 
     // Calculate streak based on scans table
