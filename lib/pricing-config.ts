@@ -19,14 +19,14 @@ export interface PricingPlan {
 export const PRICING_PLANS: Record<BillingPeriod, PricingPlan> = {
   monthly: {
     period: 'monthly',
-    priceId: process.env.STRIPE_MONTHLY_PRICE_ID
+    priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
     displayPrice: '$4.99',
     displayPeriod: '/month',
     label: 'Monthly',
   },
   yearly: {
     period: 'yearly',
-    priceId: process.env.STRIPE_YEARLY_PRICE_ID
+    priceId: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID,
     displayPrice: '$19.99',
     displayPeriod: '/year',
     label: 'Yearly',
