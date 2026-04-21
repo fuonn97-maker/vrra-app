@@ -25,26 +25,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Not logged in' }, { status: 401 })
     }
 
-    // 👉 更新 workouts_completed +1
-    const { data, error } = await supabase
-      .from('profiles')
-      .update({
-        workouts_completed: supabase.rpc ? undefined : undefined
-      })
-      .eq('id', user.id)
+    // ✅ 这里才是重点
+    const { error } = await supabase.rpc('increment_workouts', {
+      user_id_input: user.id,
+    })
 
     if (error) {
       console.error(error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // ⚠️ 正确写法（增加1）
-    await supabase.rpc('increment_workouts', {
-      user_id_input: user.id,
-    })
-
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error(err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
+}
