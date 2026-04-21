@@ -52,7 +52,7 @@ const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
     fetchScores()
-  }, [])
+  }, [refreshKey])
 
   const fetchScores = async () => {
     try {
