@@ -232,7 +232,7 @@ export default function UpgradePage() {
             {/* CTA Button */}
             <button
               onClick={handleCheckout}
-              disabled={isLoading || !stripeLoaded}
+              disabled={isLoading}
               className="w-full bg-gradient-to-r from-primary via-primary to-secondary text-primary-foreground font-bold py-4 px-6 rounded-2xl hover:shadow-[0_0_40px_rgba(156,204,102,0.5)] active:scale-95 transform transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-lg uppercase tracking-wider"
             >
               {isLoading ? 'Redirecting to Payment...' : selectedPlan === 'monthly' ? 'Start Monthly Plan' : '🔥 Get Best Value (Save 66%)'}
