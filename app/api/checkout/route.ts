@@ -11,15 +11,30 @@ export async function POST(req: NextRequest) {
   try {
     console.log('[v0] === CHECKOUT REQUEST START ===')
 
-    const { userId, priceId } = await req.json()
+    const {
+      userId,
+      priceId,
+      userEmail: requestUserEmail,
+    } = await req.json()
 
-    console.log('[v0] Request body - userId:', userId, 'priceId:', priceId)
+    console.log(
+      '[v0] Request body - userId:',
+      userId,
+      'priceId:',
+      priceId,
+      'userEmail:',
+      requestUserEmail
+    )
 
     if (!userId) {
       return NextResponse.json({ error: 'User ID required' }, { status: 400 })
     }
 
-    const selectedPriceId = priceId || 'price_1TOYSuFBDuwVWXr2G09dTmtC'
+    if (!priceId) {
+      return NextResponse.json({ error: 'Price ID required' }, { status: 400 })
+    }
+
+    const selectedPriceId = priceId
     const planName = getPlanNameFromPriceId(selectedPriceId) || 'monthly'
 
     console.log('[v0] Selected price ID:', selectedPriceId)
@@ -27,9 +42,9 @@ export async function POST(req: NextRequest) {
 
     const stripe = getStripe()
 
-    let userEmail: string | undefined
+    let finalUserEmail: string | undefined = requestUserEmail || undefined
 
-    if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    if (!finalUserEmail && SUPABASE_URL && SUPABASE_ANON_KEY) {
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
       const { data: profile, error: profileError } = await supabase
@@ -39,15 +54,18 @@ export async function POST(req: NextRequest) {
         .maybeSingle()
 
       if (profileError) {
-        console.error('[v0] Failed to load user email from profiles:', profileError.message)
+        console.error(
+          '[v0] Failed to load user email from profiles:',
+          profileError.message
+        )
       } else {
-        userEmail = profile?.email || undefined
+        finalUserEmail = profile?.email || undefined
       }
-    } else {
+    } else if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
       console.log('[v0] Supabase public env missing, skipping email lookup')
     }
 
-    console.log('[v0] customer_email:', userEmail || 'not found')
+    console.log('[v0] customer_email:', finalUserEmail || 'not found')
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL
     if (!appUrl) {
@@ -57,8 +75,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const successUrl = `${appUrl}/dashboard/success?session_id={CHECKOUT_SESSION_ID}`
-    const cancelUrl = `${appUrl}/upgrade`
+    const successUrl = ${appUrl}/dashboard/success?session_id={CHECKOUT_SESSION_ID}
+    const cancelUrl = ${appUrl}/upgrade
 
     console.log('[v0] Success URL:', successUrl)
     console.log('[v0] Cancel URL:', cancelUrl)
@@ -75,7 +93,7 @@ export async function POST(req: NextRequest) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
-      customer_email: userEmail,
+      customer_email: finalUserEmail,
       metadata: {
         userId,
         plan: planName,
