@@ -40,48 +40,8 @@ export default function HomeScreen(props: HomeScreenProps) {
   } = props
   const router = useRouter()
   const handleWorkoutClick = async () => {
-  try {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser()
-
-    if (userError || !user) {
-      console.error('No user found:', userError)
-      return
-    }
-
-    const { data: profile, error: fetchError } = await supabase
-      .from('profiles')
-      .select('workouts_completed')
-      .eq('id', user.id)
-      .single()
-
-    if (fetchError) {
-      console.error('Fetch profile error:', fetchError)
-      return
-    }
-
-    const nextCount = (profile?.workouts_completed || 0) + 1
-
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ workouts_completed: nextCount })
-      .eq('id', user.id)
-
-    if (updateError) {
-      console.error('Workout update error:', updateError)
-      return
-    }
-
-    console.log('Workout updated successfully')
-
-    setRefreshKey((prev) => prev + 1)
     router.push('/workout')
-  } catch (err) {
-    console.error('Workout error:', err)
   }
-}
   const [scoreData, setScoreData] = useState<ScoreData | null>(null)
 const [isLoading, setIsLoading] = useState(true)
 const [refreshKey, setRefreshKey] = useState(0)
