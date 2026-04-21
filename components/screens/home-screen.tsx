@@ -26,6 +26,7 @@ interface ScoreData {
   dailyScore: number
   streak: number
   hasTodayScans: boolean
+  workoutsCompleted: number
 }
 
 export default function HomeScreen(props: HomeScreenProps) {
