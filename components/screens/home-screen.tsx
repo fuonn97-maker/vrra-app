@@ -62,13 +62,11 @@ export default function HomeScreen(props: HomeScreenProps) {
       return
     }
 
-    const currentWorkouts = profile?.workouts_completed || 0
+    const nextCount = (profile?.workouts_completed || 0) + 1
 
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({
-        workouts_completed: currentWorkouts + 1,
-      })
+      .update({ workouts_completed: nextCount })
       .eq('id', user.id)
 
     if (updateError) {
@@ -77,9 +75,11 @@ export default function HomeScreen(props: HomeScreenProps) {
     }
 
     console.log('Workout updated successfully')
+
     setRefreshKey((prev) => prev + 1)
+    router.push('/workout')
   } catch (err) {
-    console.error('Workout click error:', err)
+    console.error('Workout error:', err)
   }
 }
   const [scoreData, setScoreData] = useState<ScoreData | null>(null)
