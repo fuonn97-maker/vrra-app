@@ -434,8 +434,8 @@ export async function GET(req: NextRequest) {
 
     console.log('[v0] Fetched', scores.length, 'score records')
 
-    // Get TODAY'S body score (not average)
-    const today = new Date().toISOString().split('T')[0]
+    // Get TODAY'S body score using user's local timezone
+    const today = getLocalDateString(new Date().toISOString(),userTimezone)
     const todayScore = scores.find((s) => s.date === today)
     const bodyScore = todayScore?.body_score ?? 0
     const dailyScore = todayScore?.daily_score ?? 0
