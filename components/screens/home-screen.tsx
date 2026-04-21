@@ -41,18 +41,45 @@ export default function HomeScreen(props: HomeScreenProps) {
   const router = useRouter()
   const handleWorkoutClick = async () => {
   try {
-    const res = await fetch('/api/workout', {
-      method: 'POST',
-    })
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser()
 
-    const data = await res.json()
+    if (userError || !user) {
+      console.error('No user found:', userError)
+      return
+    }
 
-    console.log('Workout updated:', data)
+    const { data: profile, error: fetchError } = await supabase
+      .from('profiles')
+      .select('workouts_completed')
+      .eq('id', user.id)
+      .single()
 
-    setRefreshKey(prev => prev + 1)
+    if (fetchError) {
+      console.error('Fetch profile error:', fetchError)
+      return
+    }
 
+    const currentWorkouts = profile?.workouts_completed || 0
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({
+        workouts_completed: currentWorkouts + 1,
+      })
+      .eq('id', user.id)
+
+    if (updateError) {
+      console.error('Workout update error:', updateError)
+      return
+    }
+
+    console.log('Workout updated successfully')
+    setRefreshKey((prev) => prev + 1)
   } catch (err) {
-    console.error('Workout error:', err)
+    console.error('Workout click error:', err)
   }
 }
   const [scoreData, setScoreData] = useState<ScoreData | null>(null)
