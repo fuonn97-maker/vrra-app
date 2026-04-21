@@ -332,7 +332,6 @@ export default function ScanMealPage() {
               console.error('Failed to update free scan count:', updateError)
             }
           }
-          setStep('result')
         }
       }
 
