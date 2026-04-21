@@ -87,7 +87,7 @@ export default function DashboardPage() {
     try {
       const { data: profileData, error } = await supabase
         .from('profiles')
-        .select('is_premium, scans_used') // ✅ 统一这里
+        .select('is_premium, free_scans_used') // ✅ 统一这里
         .eq('id', userId)
         .single()
 
@@ -97,7 +97,7 @@ export default function DashboardPage() {
         return
       }
 
-      const scansUsed = profileData?.scans_used || 0 // ✅ 统一这里
+      const scansUsed = profileData?.free_scans_used || 0 // ✅ 统一这里
       setScansToday(scansUsed)
     } catch (error) {
       console.error('[v0] Error in calculateTodayScans:', error)
