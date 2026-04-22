@@ -26,17 +26,28 @@
     console.log('[v0] Calculated streak:', streak)
     console.log('[v0] Has today scans:', hasTodayScans)
 
+    import { NextResponse } from 'next/server'
+
+export async function GET() {
+  try {
+
+    const scores = []
+    const bodyScore = 0
+    const dailyScore = 0
+    const streak = 0
+    const hasTodayScans = false
+    const profileData = null
+
     return NextResponse.json({
       scores,
       bodyScore,
       dailyScore,
       streak,
       hasTodayScans,
-      workoutsCompleted:
-    profileData?.workouts_completed || 0,
+      workoutsCompleted: profileData?.workouts_completed || 0,
     })
+
   } catch (error) {
-    console.error('[v0] GET /api/scores error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
