@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Camera, Upload, Check } from 'lucide-react'
+import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera'
 import { useRef, useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
@@ -124,34 +125,67 @@ export default function ScanMealPage() {
     })
   }
 
-  const handleOpenCamera = async () => {
-    const canProceed = await checkLimit()
-    if (!canProceed) return
+const processImageFile = (file: File) => {
+  if (!file.type.startsWith('image/')) {
+    toast.error('Please choose an image file')
+    setStep('options')
+    return
+  }
 
+  const reader = new FileReader()
+
+  reader.onload = (e) => {
+    const imageData = e.target?.result as string
+    setCapturedImage(imageData)
+    setStep('loading')
+    analyzeImage(imageData)
+  }
+
+  reader.onerror = () => {
+    toast.error('Failed to read image')
+    setStep('options')
+  }
+
+  reader.readAsDataURL(file)
+}
+
+const handleOpenCamera = async () => {
+  const canProceed = await checkLimit()
+  if (!canProceed) return
+
+  const isNativeApp =
+    typeof window !== 'undefined' && (window as any).Capacitor
+
+  if (isNativeApp) {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: 'environment' },
-        },
-        audio: false,
+      const image = await CapacitorCamera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera,
       })
 
-      setStep('camera')
+      if (image.webPath) {
+  const response = await fetch(image.webPath)
+  const blob = await response.blob()
 
-      setTimeout(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream
-          videoRef.current.play().catch((err) => {
-            console.error('Video play error:', err)
-            toast.error('Camera preview failed')
-          })
-        }
-      }, 200)
-    } catch (error) {
-      console.error('Camera error:', error)
-      toast.error('Camera access is unavailable. Please upload an image instead.')
+  const file = new File(
+    [blob],
+    camera-${Date.now()}.jpg,
+    {
+      type: blob.type || 'image/jpeg',
     }
+  )
+
+  processImageFile(file)
+}
+
+  } catch (error) {
+    console.error('Camera error:', error)
+    toast.error('Camera access is unavailable. Please upload an image instead.')
   }
+  return
+}
 
   const handleCapturePhoto = () => {
     if (!canvasRef.current || !videoRef.current) return
@@ -382,19 +416,22 @@ export default function ScanMealPage() {
 
               <div className="space-y-4">
                 <button
-                  onClick={handleOpenCamera}
-                  className="w-full bg-gradient-to-br from-primary/15 to-secondary/15 border border-primary/40 rounded-2xl p-6 hover:border-primary/60 hover:bg-gradient-to-br hover:from-primary/25 hover:to-secondary/25 transition-all text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                      <Camera size={24} className="text-primary-foreground" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-foreground">Open Camera</h3>
-                      <p className="text-sm text-muted-foreground">Take a live photo of your meal</p>
-                    </div>
-                  </div>
-                </button>
+  onClick={() => {
+    alert('button clicked')
+    handleOpenCamera()
+  }}
+  className="w-full bg-gradient-to-br from-primary/15 to-secondary/15 border border-primary/40 rounded-2xl p-6 hover:border-primary/60 hover:bg-gradient-to-br hover:from-primary/25 hover:to-secondary/25 transition-all text-left"
+>
+  <div className="flex items-center gap-3">
+    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+      <Camera size={24} className="text-primary-foreground" />
+    </div>
+    <div>
+      <h3 className="text-lg font-bold text-foreground">Open Camera</h3>
+      <p className="text-sm text-muted-foreground">Take a live photo of your meal</p>
+    </div>
+  </div>
+</button>
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
