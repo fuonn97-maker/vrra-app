@@ -178,15 +178,15 @@ const handleOpenCamera = async () => {
   )
 
   processImageFile(file)
-}
-
-  } catch (error) {
+  }
+} catch (error) {
     console.error('Camera error:', error)
     toast.error('Camera access is unavailable. Please upload an image instead.')
   }
   return
 }
-
+fileInputRef.current?.click()
+}
   const handleCapturePhoto = () => {
     if (!canvasRef.current || !videoRef.current) return
 
@@ -623,7 +623,10 @@ const handleOpenCamera = async () => {
         </div>
       </div>
 
-      <LimitReachedModal open={showLimitModal} onOpenChange={setShowLimitModal} />
+      <LimitReachedModal
+        open={showLimitModal}
+        onOpenChange={setShowLimitModal}
+      />
     </div>
   )
 }
