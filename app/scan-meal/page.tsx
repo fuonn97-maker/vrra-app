@@ -41,6 +41,7 @@ export default function ScanMealPage() {
 
     if (photo.dataUrl) {
       setCapturedImage(photo.dataUrl)
+      setStep('loading')
       await analyzeImage(photo.dataUrl)
     }
   } catch (err) {
