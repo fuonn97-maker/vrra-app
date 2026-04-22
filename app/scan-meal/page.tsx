@@ -41,7 +41,7 @@ export default function ScanMealPage() {
 
     if (photo.dataUrl) {
       setCapturedImage(photo.dataUrl)
-      setStep('result')
+      setStep('loading')
     }
   } catch (err) {
     console.error(err)
