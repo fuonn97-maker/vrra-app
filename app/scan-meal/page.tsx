@@ -33,8 +33,8 @@ export default function ScanMealPage() {
   const openNativeCamera = async () => {
     console.log('native camera clicked')
     alert('native camera clicked')
-    return
-  }
+    return //
+  try{
     const photo = await CapacitorCamera.getPhoto({
       quality: 90,
       allowEditing: false,
