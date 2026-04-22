@@ -158,7 +158,9 @@ const handleOpenCamera = async () => {
 
   if (isNativeApp) {
     try {
-      const image = await CapacitorCamera.getPhoto({
+      const { Camera, CameraResultType, CameraSource } = await import('@capacitor/camera')
+
+      const image = await Camera.getPhoto({
         quality: 90,
         allowEditing: false,
         resultType: CameraResultType.Uri,
@@ -166,26 +168,28 @@ const handleOpenCamera = async () => {
       })
 
       if (image.webPath) {
-  const response = await fetch(image.webPath)
-  const blob = await response.blob()
+        const response = await fetch(image.webPath)
+        const blob = await response.blob()
 
-  const file = new File(
-    [blob],
-    `camera-${Date.now()}.jpg`,
-    {
-      type: blob.type || 'image/jpeg',
+        const file = new File(
+          [blob],
+          `camera-${Date.now()}.jpg`,
+          {
+            type: blob.type || 'image/jpeg',
+          }
+        )
+
+        processImageFile(file)
+      }
+    } catch (error) {
+      console.error('Camera error:', error)
+      toast.error('Camera access is unavailable. Please upload an image instead.')
     }
-  )
 
-  processImageFile(file)
+    return
   }
-} catch (error) {
-    console.error('Camera error:', error)
-    toast.error('Camera access is unavailable. Please upload an image instead.')
-  }
-  return
-}
-fileInputRef.current?.click()
+
+  fileInputRef.current?.click()
 }
   const handleCapturePhoto = () => {
     if (!canvasRef.current || !videoRef.current) return
