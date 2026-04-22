@@ -31,11 +31,8 @@ export default function ScanMealPage() {
   const [nutritionData, setNutritionData] = useState<NutritionData | null>(null)
   const [showLimitModal, setShowLimitModal] = useState(false)
   const openNativeCamera = async () => {
-    console.log('native camera clicked')
-    alert('native camera clicked')
-    return //
-  try{
-    const photo = await CapacitorCamera.getPhoto({
+    try{
+     const photo = await CapacitorCamera.getPhoto({
       quality: 90,
       allowEditing: false,
       resultType: CameraResultType.DataUrl,
