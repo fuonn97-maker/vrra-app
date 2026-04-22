@@ -171,7 +171,7 @@ const handleOpenCamera = async () => {
 
   const file = new File(
     [blob],
-    camera-${Date.now()}.jpg,
+    `camera-${Date.now()}.jpg`,
     {
       type: blob.type || 'image/jpeg',
     }
