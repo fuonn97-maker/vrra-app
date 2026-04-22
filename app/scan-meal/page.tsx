@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Camera, Upload, Check } from 'lucide-react'
+import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera'
 import { useRef, useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
@@ -29,6 +30,26 @@ export default function ScanMealPage() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [nutritionData, setNutritionData] = useState<NutritionData | null>(null)
   const [showLimitModal, setShowLimitModal] = useState(false)
+  const openNativeCamera = async () => {
+    console.log('native camera clicked')
+    alert('native camera clicked')
+    return
+  }
+    const photo = await CapacitorCamera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Camera,
+    })
+
+    if (photo.dataUrl) {
+      setCapturedImage(photo.dataUrl)
+      setStep('result')
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
 
   useEffect(() => {
     ensureProfileExists()
@@ -381,7 +402,7 @@ export default function ScanMealPage() {
 
               <div className="space-y-4">
                 <button
-                  onClick={handleOpenCamera}
+                  onClick={openNativeCamera}
                   className="w-full bg-gradient-to-br from-primary/15 to-secondary/15 border border-primary/40 rounded-2xl p-6 hover:border-primary/60 hover:bg-gradient-to-br hover:from-primary/25 hover:to-secondary/25 transition-all text-left"
                 >
                   <div className="flex items-center gap-3">
