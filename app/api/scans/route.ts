@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
         protein,
         carbs,
         fat,
+        health_score: 0,
       })
       .select()
 

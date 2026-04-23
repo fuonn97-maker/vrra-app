@@ -156,22 +156,76 @@ export default function RecentMeals({ refreshKey = 0, onTotalsUpdate, onMealDele
   }
 
   const handleDelete = async (mealId: string) => {
-    setDeleting(mealId)
-    try {
-      const { error } = await supabase.from('scans').update({ is_deleted: true }).eq('id', mealId)
+  console.log('RECENT DELETE CLICKED', mealId)
 
-      if (error) throw error
+  setDeleting(mealId)
 
-      toast.success('Meal removed')
-      await fetchRecentMeals()
-      onMealDeleted?.()
-    } catch (error) {
-      toast.error('Failed to remove meal')
-      console.error('[v0] Error deleting meal:', error)
-    } finally {
-      setDeleting(null)
+  try {
+    const { error } = await supabase
+      .from('scans')
+      .update({ is_deleted: true })
+      .eq('id', mealId)
+
+    if (error) throw error
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user) {
+      const today = new Date().toLocaleDateString('en-CA')
+
+      const { data: scans } = await supabase
+        .from('scans')
+        .select('calories, protein, created_at')
+        .eq('user_id', user.id)
+        .eq('is_deleted', false)
+
+      const todayScans = (scans || []).filter((scan) => {
+        const scanDate = new Date(scan.created_at).toLocaleDateString('en-CA')
+        return scanDate === today
+      })
+
+      let totalScore = 0
+
+      todayScans.forEach((scan) => {
+        totalScore += Math.max(
+          0,
+          100 - scan.calories / 10 + scan.protein * 2
+        )
+      })
+
+      const avg =
+        todayScans.length > 0
+          ? Math.round(totalScore / todayScans.length)
+          : 0
+
+      const { data: updatedScores, error: updateScoreError } = await supabase
+        .from('user_scores')
+        .update({
+          meal_score: avg,
+          daily_score: avg,
+          body_score: avg,
+        })
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .select()
+
+      console.log('DELETE TODAY avg =', avg)
+      console.log('DELETE TODAY updatedScores =', updatedScores)
+      console.log('DELETE TODAY updateScoreError =', updateScoreError)
     }
+
+    toast.success('Meal removed')
+    await fetchRecentMeals()
+    onMealDeleted?.()
+  } catch (error) {
+    toast.error('Failed to remove meal')
+    console.error('[v0] Error deleting meal:', error)
+  } finally {
+    setDeleting(null)
   }
+}
 
   // Empty state
   if (!isLoading && mealGroups.length === 0) {
