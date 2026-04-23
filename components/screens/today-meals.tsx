@@ -26,6 +26,8 @@ export default function TodayMeals({ refreshKey = 0, onTotalsUpdate, onMealDelet
   const [meals, setMeals] = useState<Meal[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [scoreDiffByMeal, setScoreDiffByMeal] = useState<Record<string, number>>({})
+  const [removingMealId, setRemovingMealId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchTodayMeals()
@@ -100,50 +102,109 @@ export default function TodayMeals({ refreshKey = 0, onTotalsUpdate, onMealDelet
     }
   }
 
-  const handleDeleteMeal = async (mealId: string) => {
-    setDeleting(mealId)
-    
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+  const handleDelete = async (mealId: string) => {
+  setDeleting(mealId)
 
-      if (!user) {
-        setDeleting(null)
-        toast.error('Delete failed')
-        return
-      }
+  try {
+    const { error } = await supabase
+      .from('scans')
+      .update({ is_deleted: true })
+      .eq('id', mealId)
 
-      // Soft delete: set is_deleted = true instead of permanent deletion
-      const { error: deleteError } = await supabase
+    if (error) throw error
+
+    let scoreDiff = 0
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user) {
+      const today = new Date().toISOString().split('T')[0]
+
+      const { data: scans } = await supabase
         .from('scans')
-        .update({ is_deleted: true })
-        .eq('id', mealId)
+        .select('calories, protein, created_at')
         .eq('user_id', user.id)
+        .eq('is_deleted', false)
 
-      if (deleteError) {
-        setDeleting(null)
-        toast.error('Delete failed')
-        return
+      const todayScans = (scans || []).filter((scan) => {
+        const scanDate = new Date(scan.created_at).toISOString().split('T')[0]
+        return scanDate === today
+      })
+
+      let totalScore = 0
+
+      todayScans.forEach((scan) => {
+        totalScore += Math.max(
+          0,
+          100 - scan.calories / 10 + scan.protein * 2
+        )
+      })
+
+      const avg =
+        todayScans.length > 0
+          ? Math.round(totalScore / todayScans.length)
+          : 0
+
+      const { data: existingScore } = await supabase
+        .from('user_scores')
+        .select('body_score')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .maybeSingle()
+
+      const oldScore = existingScore?.body_score ?? 0
+      scoreDiff = avg - oldScore
+
+      const { error: updateScoreError } = await supabase
+        .from('user_scores')
+        .update({
+          meal_score: avg,
+          daily_score: avg,
+          body_score: avg,
+        })
+        .eq('user_id', user.id)
+        .eq('date', today)
+
+      if (updateScoreError) {
+        console.error('DELETE TODAY updateScoreError =', updateScoreError)
       }
-
-      // Remove from local state immediately
-      setMeals(meals.filter(m => m.id !== mealId))
-
-      // Re-fetch to confirm deletion
-      await fetchTodayMeals()
-
-      // Trigger score refresh via callback
-      onMealDeleted?.()
-
-      // Show success toast
-      toast.success('Meal deleted')
-    } catch (error) {
-      toast.error('Delete failed')
-    } finally {
-      setDeleting(null)
     }
+
+    if (scoreDiff !== 0) {
+      setRemovingMealId(mealId)
+      setScoreDiffByMeal((prev) => ({ ...prev, [mealId]: scoreDiff }))
+
+      toast.success(
+        scoreDiff > 0
+          ? `Meal improved (+${scoreDiff} score)`
+          : `Meal removed (${scoreDiff} score)`
+      )
+
+      setTimeout(async () => {
+        setScoreDiffByMeal((prev) => {
+          const next = { ...prev }
+          delete next[mealId]
+          return next
+        })
+
+        setRemovingMealId(null)
+        await fetchTodayMeals()
+        onMealDeleted?.()
+      }, 2500)
+    } else {
+      toast.success('Meal removed')
+      await fetchTodayMeals()
+      onMealDeleted?.()
+    }
+  } catch (error) {
+    toast.error('Failed to remove meal')
+    console.error('Error deleting meal:', error)
+  } finally {
+    setDeleting(null)
   }
+}
 
   const calculateTotals = () => {
     return meals.reduce(
@@ -159,100 +220,141 @@ export default function TodayMeals({ refreshKey = 0, onTotalsUpdate, onMealDelet
 
   const totals = calculateTotals()
 
-  if (isLoading) {
-    return (
-      <div className="w-full max-w-md mx-auto px-6 py-8">
-        <div className="h-20 bg-card/20 rounded-lg animate-pulse" />
-      </div>
-    )
-  }
-
+if (isLoading) {
   return (
-    <div className="w-full max-w-md mx-auto px-6 py-8 space-y-6">
-      {/* Today Meals Section */}
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-xl font-black text-foreground">Today's Meals</h2>
-          <p className="text-sm text-muted-foreground">
-            {meals.length === 0 ? 'No meals added today yet' : `${meals.length} meal${meals.length !== 1 ? 's' : ''} logged`}
+    <div className="w-full max-w-md mx-auto px-6 py-8">
+      <div className="h-20 bg-card/20 rounded-lg animate-pulse" />
+    </div>
+  )
+}
+
+return (
+  <div className="w-full max-w-md mx-auto px-6 py-8 space-y-6">
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-xl font-black text-foreground">Today's Meals</h2>
+        <p className="text-sm text-muted-foreground">
+          {meals.length === 0
+            ? 'No meals added today yet'
+            : `${meals.length} meals logged today`}
+        </p>
+      </div>
+
+      {meals.length === 0 ? (
+        <div className="bg-card/20 border border-border/20 rounded-xl p-8 text-center space-y-3">
+          <p className="text-muted-foreground">No meals added today yet</p>
+          <p className="text-xs text-muted-foreground/70">
+            Scan your first meal to get started
           </p>
         </div>
+      ) : (
+        <div className="space-y-2">
+          {meals.map((meal) => (
+            <div
+              key={meal.id}
+              className={`relative bg-card/40 border border-border/20 rounded-lg p-4 flex items-start justify-between gap-3 transition-all duration-500 ${
+                removingMealId === meal.id ? 'opacity-60 scale-[0.98]' : ''
+              }`}
+            >
+              {scoreDiffByMeal[meal.id] !== undefined && (
+                <div
+                  className={`absolute right-3 top-2 z-20 pointer-events-none rounded-full px-3 py-1 text-xs font-bold backdrop-blur-sm animate-pulse ${
+                    scoreDiffByMeal[meal.id] > 0
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'bg-red-500/20 text-red-400'
+                  }`}
+                >
+                  {scoreDiffByMeal[meal.id] > 0 ? '+' : ''}
+                  {scoreDiffByMeal[meal.id]} score
+                </div>
+              )}
 
-        {/* Meals List */}
-        {meals.length === 0 ? (
-          <div className="bg-card/20 border border-border/20 rounded-xl p-8 text-center space-y-3">
-            <p className="text-muted-foreground">No meals added today yet</p>
-            <p className="text-xs text-muted-foreground/70">Scan your first meal to get started</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {meals.map((meal) => (
-              <div
-                key={meal.id}
-                className="bg-card/40 border border-border/20 rounded-lg p-4 flex items-start justify-between gap-3 hover:bg-card/60 transition-colors"
-              >
-                <div className="flex-1 space-y-2">
-                  <h3 className="font-semibold text-foreground text-sm truncate">{meal.meal_name}</h3>
-                  <div className="grid grid-cols-4 gap-2 text-xs">
-                    <div>
-                      <p className="text-muted-foreground/70">Cal</p>
-                      <p className="font-semibold text-foreground">{meal.calories}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground/70">P</p>
-                      <p className="font-semibold text-primary">{meal.protein}g</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground/70">C</p>
-                      <p className="font-semibold text-secondary">{meal.carbs}g</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground/70">F</p>
-                      <p className="font-semibold text-accent">{meal.fat}g</p>
-                    </div>
+              <div className="flex-1 space-y-2">
+                <h3 className="font-semibold text-foreground text-sm truncate">
+                  {meal.meal_name}
+                </h3>
+
+                <div className="grid grid-cols-4 gap-2 text-xs">
+                  <div>
+                    <p className="text-muted-foreground/70">Cal</p>
+                    <p className="font-semibold text-foreground">{meal.calories}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-muted-foreground/70">P</p>
+                    <p className="font-semibold text-primary">{meal.protein}g</p>
+                  </div>
+
+                  <div>
+                    <p className="text-muted-foreground/70">C</p>
+                    <p className="font-semibold text-secondary">{meal.carbs}g</p>
+                  </div>
+
+                  <div>
+                    <p className="text-muted-foreground/70">F</p>
+                    <p className="font-semibold text-accent">{meal.fat}g</p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteMeal(meal.id)}
-                  disabled={deleting === meal.id}
-                  className="mt-1 p-2 rounded-lg text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors disabled:opacity-50"
-                  aria-label="Delete meal"
-                >
-                  <Trash2 size={16} />
-                </button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {/* Today Total Card */}
+              <button
+                type="button"
+                onClick={() => handleDelete(meal.id)}
+                disabled={deleting === meal.id}
+                className="shrink-0 rounded-lg p-2 text-muted-foreground transition hover:bg-red-500/10 hover:text-red-500"
+                aria-label="Delete meal"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       {meals.length > 0 && (
-        <div className="bg-gradient-to-br from-primary/15 to-secondary/10 border border-primary/30 rounded-xl p-6 space-y-4">
+        <div className="bg-gradient-to-br from-primary/15 to-secondary/10 border border-border/20 rounded-xl p-4">
           <h3 className="font-semibold text-foreground">Today's Total</h3>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 gap-4 mt-4">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground/70 uppercase tracking-wider">Calories</p>
-              <p className="text-3xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <p className="text-xs text-muted-foreground/70 uppercase tracking-wider">
+                Calories
+              </p>
+              <p className="text-3xl font-black text-foreground">
                 {Math.round(totals.calories)}
               </p>
             </div>
+
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground/70 uppercase tracking-wider">Macros</p>
-              <div className="flex gap-2 text-sm font-semibold">
-                <span className="text-primary">{Math.round(totals.protein)}P</span>
-                <span className="text-secondary">{Math.round(totals.carbs)}C</span>
-                <span className="text-accent">{Math.round(totals.fat)}F</span>
-              </div>
+              <p className="text-xs text-muted-foreground/70 uppercase tracking-wider">
+                Protein
+              </p>
+              <p className="text-3xl font-black text-primary">
+                {Math.round(totals.protein)}g
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground/70 uppercase tracking-wider">
+                Carbs
+              </p>
+              <p className="text-2xl font-bold text-secondary">
+                {Math.round(totals.carbs)}g
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground/70 uppercase tracking-wider">
+                Fat
+              </p>
+              <p className="text-2xl font-bold text-accent">
+                {Math.round(totals.fat)}g
+              </p>
             </div>
           </div>
-          <div className="h-px bg-gradient-to-r from-primary/20 via-secondary/20 to-transparent" />
-          <p className="text-xs text-muted-foreground/80">
-            {meals.length} meal{meals.length !== 1 ? 's' : ''} logged today
-          </p>
         </div>
       )}
     </div>
-  )
+  </div>
+)
 }
