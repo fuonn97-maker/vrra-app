@@ -45,6 +45,33 @@ const checkAuth = async () => {
   }
 }
 
+const handleManageBilling = async () => {
+  try {
+    if (!user?.id) return
+
+    const res = await fetch('/api/billing-portal', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: user.id,
+      }),
+    })
+
+    const data = await res.json()
+
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      alert(data.error || 'Unable to open billing portal')
+    }
+  } catch (error) {
+    console.error('Manage billing error:', error)
+    alert('Unable to open billing portal')
+  }
+}
+
 const handleCheckout = async (plan: 'monthly' | 'yearly') => {
   try {
     const {
@@ -231,9 +258,12 @@ if (loading) {
               <p className="text-sm text-muted-foreground mb-4">
                 Update your billing details, change your plan, or view billing history.
               </p>
-              <button className="w-full px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 rounded-lg text-sm font-semibold text-primary transition-all">
-                Manage Billing
-              </button>
+              <button
+  onClick={handleManageBilling}
+  className="w-full px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 rounded-lg text-sm font-semibold text-primary transition-all"
+>
+  Manage Billing
+</button>
             </div>
 
             {/* Restore Purchase */}
