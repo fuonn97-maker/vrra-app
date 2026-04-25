@@ -51,6 +51,23 @@ export default function DashboardPage() {
       .eq('id', session.user.id)
       .single()
 
+const now = new Date()
+
+      if (
+  profileData?.is_premium &&
+  profileData?.premium_ends_at &&
+  new Date(profileData.premium_ends_at) < now
+) {
+  await supabase
+    .from('profiles')
+    .update({
+      is_premium: false,
+    })
+    .eq('id', session.user.id)
+
+  profileData.is_premium = false
+}
+
     if (error && error.code === 'PGRST116') {
       try {
         const { data: newProfile, error: createError } = await supabase
