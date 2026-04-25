@@ -85,6 +85,16 @@ export async function POST(req: NextRequest) {
   typeof session.customer === 'string' ? session.customer : session.customer?.id
 
 const planName = session.metadata?.plan || 'monthly'
+let premiumEndsAt: string | null = null
+
+if (subscriptionId) {
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+  const periodEnd = subscription.items.data[0]?.current_period_end
+
+  if (periodEnd) {
+    premiumEndsAt = new Date(periodEnd * 1000).toISOString()
+  }
+}
 
 const updatePayload: any = {
   is_premium: true,
@@ -92,6 +102,7 @@ const updatePayload: any = {
   stripe_customer_id: customerId || null,
   stripe_subscription_id: subscriptionId || null,
   premium_started_at: new Date().toISOString(),
+  premium_ends_at: premiumEndsAt,
   updated_at: new Date().toISOString(),
 }
 
@@ -102,7 +113,7 @@ const updatePayload: any = {
         .update(updatePayload)
         .eq('id', userId)
         .select()
-        
+
       await supabase.from('subscriptions').upsert(
   {
     user_id: userId,
