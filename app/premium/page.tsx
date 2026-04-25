@@ -49,16 +49,7 @@ const handleManageBilling = async () => {
   try {
     if (!user?.id) return
 
-    const res = await fetch('/api/billing-portal', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: user.id,
-      }),
-    })
-
+    const res = await fetch(`/api/billing-portal?userId=${user.id}`)
     const data = await res.json()
 
     if (data.url) {
