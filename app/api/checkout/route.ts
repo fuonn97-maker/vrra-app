@@ -35,7 +35,11 @@ export async function POST(req: NextRequest) {
     }
 
     const selectedPriceId = priceId
-    const planName = getPlanNameFromPriceId(selectedPriceId) || 'monthly'
+
+console.log('PRICE ID:', selectedPriceId)
+console.log('SECRET KEY START:', process.env.STRIPE_SECRET_KEY?.slice(0, 25))
+
+const planName = getPlanNameFromPriceId(selectedPriceId) || 'monthly'
 
     console.log('[v0] Selected price ID:', selectedPriceId)
     console.log('[v0] Plan name:', planName)

@@ -37,8 +37,8 @@ export default function HomeScreen(props: HomeScreenProps) {
   } = props
   const router = useRouter()
   const [scoreData, setScoreData] = useState<ScoreData | null>(null)
-const [isLoading, setIsLoading] = useState(true)
-const [refreshKey, setRefreshKey] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
   const [yesterday7DaysScores, setYesterday7DaysScores] = useState<number[]>([])
   const [todayMealsKey, setTodayMealsKey] = useState(0)
   const [mealTotals, setMealTotals] = useState({ calories: 0, protein: 0, carbs: 0, fat: 0 })
@@ -49,6 +49,8 @@ const [refreshKey, setRefreshKey] = useState(0)
   const reminderState = useReminderState(scoreData?.hasTodayScans ?? false)
   const scansRemaining = Math.max(0, maxScans - scansToday)
   const isLimitReached = !isPremium && scansRemaining <= 0
+  const [workoutsCompleted, setWorkoutsCompleted] = useState(0)
+
 
   useEffect(() => {
     fetchScores()
@@ -99,11 +101,12 @@ const [refreshKey, setRefreshKey] = useState(0)
         // Fetch user profile to get timezone for date calculations
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('timezone')
+          .select('timezone,workouts_completed')
           .eq('id', user.id)
           .single()
 
         const userTimezone = profileData?.timezone || 'UTC'
+        setWorkoutsCompleted(profileData?.workouts_completed || 0)
         console.log('[v0] User timezone from profile:', userTimezone)
 
         // Get today's date using getLocalDateString
@@ -224,7 +227,7 @@ const [refreshKey, setRefreshKey] = useState(0)
       {/* Main Daily Score - Centered Hero Focal Point */}
       <div className="flex flex-col items-center justify-center py-12 space-y-8">
         <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Your Body Score</p>
-        <div className="relative w-48 h-48">
+        <div className="relative w-75 h-75">
           {/* Outer glow effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full blur-3xl" />
           
@@ -257,12 +260,21 @@ const [refreshKey, setRefreshKey] = useState(0)
               {scoreData?.bodyScore ?? 0}
             </div>
             <div className="text-xs text-primary font-semibold mt-2">of 100</div>
-            <div className="text-sm text-accent font-bold mt-3 flex items-center gap-1">
+            <div className="mt-4 flex flex-col items-center">
+  <p className="text-[10px] tracking-[0.2em] uppercase text-white/60">
+    Workouts
+  </p>
+  <p className="text-3xl font-bold text-primary">
+    {workoutsCompleted}
+  </p>
+</div>
+            
+            <div className="text-sm text-accent font-bold mt-5 flex items-center gap-1">
               {scoreData && yesterday7DaysScores.length > 0 
                 ? `+${Math.round(scoreData.bodyScore - (yesterday7DaysScores[yesterday7DaysScores.length - 1] || 0))}`
                 : '+5'} <span className="text-accent">↑</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">from yesterday</p>
+            <p className="text-xs text-muted-foreground mt-2">from yesterday</p>
           </div>
         </div>
 
@@ -522,11 +534,10 @@ const [refreshKey, setRefreshKey] = useState(0)
       </button>
 
       {/* Limit Reached Modal */}
-      <LimitReachedModal 
-        isOpen={showLimitModal} 
-        onClose={() => setShowLimitModal(false)} 
-        onUpgrade={handleUpgradeClick}
-      />
+      <LimitReachedModal
+  open={showLimitModal}
+  onOpenChange={setShowLimitModal}
+/>
 
       {/* Meal Logged Toast */}
       <MealToast 

@@ -12,47 +12,91 @@ export default function PremiumPage() {
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    checkAuth()
-  }, [])
+  checkAuth()
+}, [])
 
-  const checkAuth = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        router.push('/auth/login')
-        return
-      }
+const checkAuth = async () => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
 
-      setUser(session.user)
-
-      // Fetch user profile to check premium status
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single()
-
-      if (profileData?.is_premium) {
-        setIsPremium(true)
-        setLoading(false)
-      } else {
-        // Redirect non-premium users to upgrade page
-        router.push('/upgrade')
-      }
-    } catch (error) {
-      console.error('[v0] Error checking auth:', error)
+    if (!session) {
       router.push('/auth/login')
+      return
     }
-  }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-[#0a0f1a] to-background flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full border-2 border-transparent border-t-primary border-r-primary animate-spin" />
-      </div>
-    )
+    setUser(session.user)
+
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single()
+
+    if (profileData?.is_premium) {
+      setIsPremium(true)
+    } else {
+      setIsPremium(false)
+    }
+
+    setLoading(false)
+  } catch (error) {
+    console.error('Error checking auth:', error)
+    router.push('/auth/login')
   }
+}
+
+const handleCheckout = async (plan: 'monthly' | 'yearly') => {
+  try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    if (!session?.user) {
+      router.push('/auth/login')
+      return
+    }
+
+    const priceId =
+  plan === 'yearly'
+    ? 'price_1TOYSuFBDuwVWXr2tbmEL2nU'
+    : 'price_1TOYSuFBDuwVWXr2G09dTmtC'
+
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: session.user.id,
+        userEmail: session.user.email,
+        priceId,
+      }),
+    })
+
+    const text = await res.text()
+    console.log('Checkout status:', res.status)
+    console.log('Checkout raw response:', text)
+
+    const data = text ? JSON.parse(text) : {}
+
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      alert(data.error || 'No checkout URL returned. Check terminal.')
+    }
+  } catch (error) {
+    console.error('Checkout error:', error)
+    alert('Checkout failed')
+  }
+}
+
+if (loading) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-[#0a0f1a] to-background flex items-center justify-center">
+      <div className="w-12 h-12 rounded-full border-2 border-transparent border-t-primary border-r-primary animate-spin" />
+    </div>
+  )
+}
 
   const features = [
     { icon: Zap, title: 'Unlimited Meal Scans', desc: 'Log unlimited meals daily without restrictions' },
@@ -89,35 +133,67 @@ export default function PremiumPage() {
             <span className="text-sm font-semibold text-primary">Premium Member</span>
           </div>
           <h2 className="text-5xl font-black text-foreground mb-4 text-balance">
-            You&apos;re a Premium Member
-          </h2>
+  {isPremium ? "You're a Premium Member" : "Unlock VRRA Premium"}
+</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Welcome to unlimited nutrition tracking with AI-powered insights and advanced analytics.
-          </p>
+  {isPremium
+    ? 'Welcome to unlimited nutrition tracking with AI-powered insights and advanced analytics.'
+    : 'Get unlimited meal scans, full guided workouts, video guides, timers, and premium progress tracking.'}
+</p>
         </div>
 
-        {/* Premium Badge */}
-        <div className="mb-16 p-8 bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 rounded-3xl shadow-2xl">
-          <div className="flex items-start gap-6">
-            <div className="p-4 bg-primary/20 rounded-full">
-              <Crown size={32} className="text-primary" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-primary mb-2">Premium Active</h3>
-              <p className="text-muted-foreground mb-4">
-                All premium features are unlocked and ready to use. Enjoy unlimited access to advanced nutrition tracking and AI insights.
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => router.push('/dashboard')}
-                  className="px-6 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 rounded-lg text-sm font-semibold text-primary transition-all"
-                >
-                  Back to Dashboard
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {isPremium ? (
+  <div className="mb-16 p-8 bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 rounded-3xl shadow-2xl">
+    <div className="flex items-start gap-6">
+      <div className="p-4 bg-primary/20 rounded-full">
+        <Crown size={32} className="text-primary" />
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-primary mb-2">
+          Premium Active
+        </h3>
+
+        <p className="text-muted-foreground mb-4">
+          All premium features are unlocked and ready to use.
+        </p>
+
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="px-6 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 rounded-lg text-sm font-semibold text-primary transition-all"
+        >
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+) : (
+  <div className="mb-16 p-8 bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 rounded-3xl shadow-2xl text-center">
+    <Crown size={42} className="text-primary mx-auto mb-4" />
+
+    <h3 className="text-3xl font-black text-primary mb-3">
+      Start Premium
+    </h3>
+
+    <p className="text-muted-foreground mb-6">
+      Unlock guided workouts, unlimited scans, and AI fitness tracking.
+    </p>
+
+    <button
+      onClick={() => handleCheckout('monthly')}
+      className="w-full mb-3 rounded-2xl bg-primary py-4 font-black text-black"
+    >
+      Monthly — USD 4.99
+    </button>
+
+    <button
+      onClick={() => handleCheckout('yearly')}
+      className="w-full rounded-2xl bg-white py-4 font-black text-black"
+    >
+      Yearly — USD 19.99
+    </button>
+  </div>
+)}
 
         {/* Unlocked Features Grid */}
         <div className="mb-16">

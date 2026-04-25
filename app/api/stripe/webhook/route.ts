@@ -81,10 +81,19 @@ export async function POST(req: NextRequest) {
       // Update Supabase - Set premium status
       console.log('[v0] Updating user:', userId)
 
-      const updatePayload: any = {
-        is_premium: true,
-        updated_at: new Date().toISOString(),
-      }
+      const customerId =
+  typeof session.customer === 'string' ? session.customer : session.customer?.id
+
+const planName = session.metadata?.plan || 'monthly'
+
+const updatePayload: any = {
+  is_premium: true,
+  premium_plan: planName,
+  stripe_customer_id: customerId || null,
+  stripe_subscription_id: subscriptionId || null,
+  premium_started_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+}
 
       console.log('[v0] Update payload:', JSON.stringify(updatePayload))
 
@@ -93,6 +102,21 @@ export async function POST(req: NextRequest) {
         .update(updatePayload)
         .eq('id', userId)
         .select()
+        
+      await supabase.from('subscriptions').upsert(
+  {
+    user_id: userId,
+    stripe_customer_id: customerId || null,
+    stripe_subscription_id: subscriptionId || null,
+    plan_type: planName,
+    status: 'active',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    onConflict: 'stripe_subscription_id',
+  }
+)
 
       console.log('[v0] Update result - data:', data)
       console.log('[v0] Update result - error:', error)

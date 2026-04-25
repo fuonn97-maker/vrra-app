@@ -34,6 +34,7 @@ export default function ProgressScreen() {
   const [bestDayCount, setBestDayCount] = useState<number>(0)
   const [hasBestDayData, setHasBestDayData] = useState<boolean>(false)
   const [isTodayActive, setIsTodayActive] = useState<boolean>(false)
+  const [workoutsCompleted, setWorkoutsCompleted] = useState(0)
 
   useEffect(() => {
     fetchProgressData()
@@ -93,11 +94,12 @@ export default function ProgressScreen() {
         // Fetch user profile to get timezone
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('timezone')
+          .select('timezone,workouts_completed')
           .eq('id', user.id)
           .single()
 
         const userTimezone = profileData?.timezone || 'UTC'
+        setWorkoutsCompleted(profileData?.workouts_completed || 0)
         console.log('[v0] User timezone from profile:', userTimezone)
 
         // Filter to valid (non-deleted) scans for all calculations
@@ -257,7 +259,7 @@ export default function ProgressScreen() {
       </div>
     )
   }
-
+const streak = scoreData?.streak || 0
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="w-full max-w-md mx-auto px-6 py-16 space-y-8">
@@ -265,7 +267,7 @@ export default function ProgressScreen() {
         <ProgressHeader />
 
         {/* Highlight Stats - Streak & Today Scans */}
-        <HighlightStats streak={scoreData?.streak || 0} todayScans={todayScans} />
+        <HighlightStats streak={streak || 0} todayScans={todayScans} />
 
         {/* Insights Section */}
         <ProgressInsights 
@@ -287,31 +289,31 @@ export default function ProgressScreen() {
         <div className="grid grid-cols-2 gap-4">
           {/* Streak */}
           <div className={`bg-gradient-to-br rounded-2xl p-5 space-y-3 border transition-all ${
-            scoreData?.streak === 0
+            streak === 0
               ? 'from-slate-500/10 to-slate-500/5 border-slate-500/20'
-              : scoreData?.streak >= 7
+              : streak >= 7
               ? 'from-emerald-500/20 to-emerald-500/10 border-emerald-500/50 shadow-lg shadow-emerald-500/20'
-              : scoreData?.streak >= 3
+              : streak >= 3
               ? 'from-emerald-500/15 to-emerald-500/5 border-emerald-500/30'
               : 'from-emerald-500/10 to-emerald-500/5 border-emerald-500/20'
           }`}>
             <div className="flex items-center gap-2">
-              <Flame size={18} className={scoreData?.streak >= 7 ? 'text-emerald-300' : 'text-emerald-400'} />
+              <Flame size={18} className={streak >= 7 ? 'text-emerald-300' : 'text-emerald-400'} />
               <p className={`text-xs uppercase tracking-wider font-medium ${
-                scoreData?.streak >= 7 ? 'text-emerald-300/70' : scoreData?.streak >= 3 ? 'text-emerald-400/70' : scoreData?.streak === 0 ? 'text-slate-400/70' : 'text-emerald-400/70'
+                streak >= 7 ? 'text-emerald-300/70' : streak >= 3 ? 'text-emerald-400/70' : streak === 0 ? 'text-slate-400/70' : 'text-emerald-400/70'
               }`}>Streak</p>
             </div>
-            <p className={`text-3xl font-black ${scoreData?.streak >= 7 ? 'text-emerald-300' : scoreData?.streak === 0 ? 'text-slate-400' : 'text-emerald-400'}`}>
-              {scoreData?.streak || 0}
+            <p className={`text-3xl font-black ${streak >= 7 ? 'text-emerald-300' : streak === 0 ? 'text-slate-400' : 'text-emerald-400'}`}>
+              {streak || 0}
             </p>
             <div className="space-y-1">
               <p className="text-xs text-foreground/60">
-                {scoreData?.streak === 0 ? 'Start today 🔥' : 'days in a row'}
+                {streak === 0 ? 'Start today 🔥' : 'days in a row'}
               </p>
-              {scoreData?.streak >= 7 && (
+              {streak >= 7 && (
                 <p className="text-xs font-semibold text-emerald-300">You're unstoppable!</p>
               )}
-              {scoreData?.streak >= 3 && scoreData?.streak < 7 && (
+              {streak >= 3 && streak < 7 && (
                 <p className="text-xs font-semibold text-emerald-400">Building momentum!</p>
               )}
             </div>

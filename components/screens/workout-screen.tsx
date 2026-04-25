@@ -214,14 +214,22 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
       {/* Unlock CTA */}
       {workout.name !== 'Recovery' && (
         <button
-          onClick={handleStart}
-          className="w-full rounded-2xl bg-gradient-to-r from-primary to-secondary py-4 font-black text-primary-foreground shadow-xl shadow-primary/20 active:scale-[0.98] transition-all"
-        >
-          {isPremium ? '▶ Start Guided Workout' : '🔒 Unlock Full Guided Workout'}
-          <p className="text-xs font-medium opacity-80 mt-1">
-            Real-time coach • video guide • progress tracking
-          </p>
-        </button>
+  onClick={() => {
+    if (!isPremium) {
+      window.location.href = '/premium'
+      return
+    }
+
+    handleStart()
+  }}
+  className="w-full rounded-2xl bg-gradient-to-r from-primary to-secondary py-4 font-black"
+>
+  {isPremium ? '▶ Start Guided Workout' : '🔒 Unlock Full Guided Workout'}
+
+  <p className="text-xs font-medium opacity-80 mt-1">
+    Real-time coach • video guide • progress tracking
+  </p>
+</button>
       )}
 
       {/* Exercises */}
