@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 type Exercise = {
   name: string
   sets: number | null
   reps: number | null
   note?: string
+  target?: string
   video?: string
 }
 
@@ -26,6 +28,28 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
 
   const current = exercises[exerciseIndex]
   const nextExercise = exercises[exerciseIndex + 1]
+  const saveWorkoutCompleted = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('workouts_completed')
+    .eq('id', user.id)
+    .single()
+
+  const currentCount = profile?.workouts_completed || 0
+
+  await supabase
+    .from('profiles')
+    .update({
+      workouts_completed: currentCount + 1,
+    })
+    .eq('id', user.id)
+}
 
   const progress =
     ((exerciseIndex + setCount / (current.sets || 1)) / exercises.length) * 100
@@ -67,50 +91,99 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
       } else {
         setIsFinished(true)
         setIsRunning(false)
+        saveWorkoutCompleted()
       }
     }
   }
 
   if (isFinished) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center space-y-6 p-6">
-        <h1 className="text-3xl font-black">🎉 Workout Complete</h1>
+      <div className="fixed inset-0 z-50 bg-black text-white flex flex-col items-center justify-center text-center p-6 space-y-8">
+        <div className="space-y-4">
+          <div className="text-7xl animate-bounce">🎉</div>
 
-        <p className="text-foreground/60">
-          You finished {workoutName} 💪
-        </p>
+          <h1 className="text-4xl font-black">
+            Workout Complete
+          </h1>
+
+          <p className="text-white/60">
+            You finished {workoutName} 💪
+          </p>
+
+          <div className="grid grid-cols-3 gap-3 pt-4">
+            <div className="rounded-2xl bg-white/10 p-4">
+              <p className="text-2xl font-black">{exercises.length}</p>
+              <p className="text-xs text-white/50">Moves</p>
+            </div>
+
+            <div className="rounded-2xl bg-white/10 p-4">
+              <p className="text-2xl font-black">🔥</p>
+              <p className="text-xs text-white/50">Done</p>
+            </div>
+
+            <div className="rounded-2xl bg-white/10 p-4">
+              <p className="text-2xl font-black">+1</p>
+              <p className="text-xs text-white/50">Workout</p>
+            </div>
+          </div>
+        </div>
 
         <button
           onClick={onClose}
-          className="bg-primary text-white px-6 py-3 rounded-xl font-bold"
+          className="w-full max-w-sm bg-primary text-white py-4 rounded-2xl font-black"
         >
-          Back
+          Back to Workout
         </button>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-between p-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-lg font-bold">{workoutName}</h1>
-        <button onClick={onClose}>✕</button>
+    <div className="fixed inset-0 z-50 bg-black text-white flex flex-col justify-between p-5">
+      {/* Top */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-white/40">
+              Guided Workout
+            </p>
+            <h1 className="text-lg font-black">
+              {workoutName}
+            </h1>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
-      <div className="w-full h-2 bg-background/40 rounded-full overflow-hidden">
+      {/* Main */}
+      <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6">
         <div
-          className="h-full bg-primary transition-all"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-
-      <div className="text-center space-y-6">
-        <p className="text-sm text-foreground/50">
-          {isResting ? 'Rest' : 'Exercise'}
-        </p>
+          className={`px-4 py-2 rounded-full text-xs font-black ${
+            isResting
+              ? 'bg-green-500/20 text-green-400'
+              : 'bg-primary/20 text-primary'
+          }`}
+        >
+          {isResting ? 'RECOVER' : 'EXERCISE'}
+        </div>
 
         {current.video && (
-          <div className="flex justify-center mb-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
+
             <video
               key={current.video}
               src={current.video}
@@ -118,51 +191,78 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
               loop
               muted
               playsInline
-              className="w-56 h-56 object-cover rounded-2xl"
+              className="relative w-64 h-64 object-cover rounded-3xl border border-white/10 shadow-2xl"
             />
           </div>
         )}
 
-        <h2 className="text-3xl font-black">{current.name}</h2>
+        <div className="space-y-3">
+          <h2 className="text-3xl font-black leading-tight">
+            {current.name}
+          </h2>
 
-        <p className="text-foreground/60">
-          Set {setCount} {current.sets ? `/ ${current.sets}` : ''}
-        </p>
+          <p className="text-white/50 text-sm">
+            Set {setCount} {current.sets ? `/ ${current.sets}` : ''}
+          </p>
 
-        <div className="text-6xl font-black">
-          {`${timer}s`}
+          {current.target && (
+            <p className="text-xs text-white/50">
+              Target: <span className="text-white font-bold">{current.target}</span>
+            </p>
+          )}
+        </div>
+
+        <div
+          className={`text-8xl font-black tracking-tight ${
+            isResting ? 'text-green-400' : 'text-white'
+          }`}
+        >
+          {timer}s
         </div>
 
         {isResting && (
-          <div className="space-y-2">
-            <p className="text-lg font-black text-primary">Recover</p>
-            <p className="text-sm text-foreground/60">
+          <div className="rounded-3xl bg-white/10 border border-white/10 px-5 py-4 max-w-sm w-full">
+            <p className="text-green-400 font-black">
+              Recover
+            </p>
+            <p className="text-sm text-white/60 mt-1">
               Next: {nextExercise?.name || current.name}
+            </p>
+          </div>
+        )}
+
+        {!isResting && current.note && (
+          <div className="rounded-3xl bg-white/10 border border-white/10 px-5 py-4 max-w-sm w-full">
+            <p className="text-sm text-white/60">
+              💡 {current.note}
             </p>
           </div>
         )}
       </div>
 
+      {/* Controls */}
       <div className="space-y-3">
         <button
           onClick={() => {
             if (!isRunning) {
-              if (timer <= 0) {
-                setTimer(30)
-              }
+              if (timer <= 0) setTimer(30)
               setIsRunning(true)
             } else {
               setIsRunning(false)
             }
           }}
-          className="w-full bg-primary text-white py-3 rounded-xl font-bold"
+          className={`w-full py-4 rounded-2xl font-black text-lg transition-all ${
+            isRunning
+              ? 'bg-white text-black'
+              : 'bg-primary text-white'
+          }`}
         >
           {isRunning ? 'Pause' : 'Start'}
         </button>
 
         <button
           onClick={handleNext}
-          className="w-full bg-secondary text-white py-3 rounded-xl"
+          className="w-full py-4 rounded-2xl font-bold bg-white/10 text-white border border-white/10"
         >
           Skip
         </button>
