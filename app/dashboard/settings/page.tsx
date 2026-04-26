@@ -26,12 +26,15 @@ const TIMEZONES = [
 
 export default function SettingsPage() {
   const router = useRouter()
-  const { userTimezone, setUserTimezone } = useUserTimezone()
+  const { userTimezone, setUserTimezone }:any  = useUserTimezone()
   const [selectedTimezone, setSelectedTimezone] = useState(userTimezone || 'UTC')
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setShowSaveSuccess] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [username, setUsername] = useState('')
+  const [isSavingUsername, setIsSavingUsername] = useState(false)
+  const [usernameMessage, setUsernameMessage] = useState('')
 
   useEffect(() => {
     const getUser = async () => {
@@ -43,12 +46,46 @@ export default function SettingsPage() {
         return
       }
       setUser(user)
+      const { data: profile } = await supabase
+  .from('profiles')
+  .select('username')
+  .eq('id', user.id)
+  .single()
+
+if (profile?.username) {
+  setUsername(profile.username)
+}
       setSelectedTimezone(userTimezone || 'UTC')
       setIsLoading(false)
     }
     getUser()
   }, [userTimezone, router])
 
+  const handleSaveUsername = async () => {
+  if (!username.trim()) {
+    setUsernameMessage('Username cannot be empty.')
+    return
+  }
+
+  setIsSavingUsername(true)
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      username: username.trim(),
+    })
+    .eq('id', user.id)
+
+  if (error) {
+    setUsernameMessage('Username already taken.')
+    setIsSavingUsername(false)
+    return
+  }
+
+  setUsernameMessage('Username updated successfully.')
+  setIsSavingUsername(false)
+}
+  
   const handleSaveTimezone = async () => {
     if (selectedTimezone === userTimezone) {
       return
@@ -167,6 +204,41 @@ export default function SettingsPage() {
 
         {/* Settings Sections */}
         <div className="space-y-6">
+          {/* Profile Setting */}
+<div className="bg-card/40 border border-border/30 rounded-xl p-6">
+  <div className="flex items-center gap-3 mb-4">
+    <Save size={20} />
+    <h2 className="text-lg font-semibold">Profile</h2>
+  </div>
+
+  <p className="text-foreground/60 text-sm mb-4">
+    Set your username. This name will appear in Community posts and friend search.
+  </p>
+
+  <div className="space-y-3">
+    <input
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+      placeholder="Enter username"
+      className="w-full bg-background border border-border/50 rounded-lg p-3 text-foreground focus:outline-none focus:border-primary"
+    />
+
+    {usernameMessage && (
+      <p className="text-sm text-foreground/60">
+        {usernameMessage}
+      </p>
+    )}
+
+    <button
+      onClick={handleSaveUsername}
+      disabled={isSavingUsername || !username.trim()}
+      className="w-full bg-primary text-primary-foreground rounded-lg p-3 font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      <Save size={18} />
+      {isSavingUsername ? 'Saving...' : 'Save Username'}
+    </button>
+  </div>
+</div>
           {/* Timezone Setting */}
           <div className="bg-card/40 border border-border/30 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">

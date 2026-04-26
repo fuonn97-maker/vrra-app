@@ -8,6 +8,7 @@ import HomeScreen from '@/components/screens/home-screen'
 import ProgressScreen from '@/components/screens/progress-screen'
 import WorkoutScreen from '@/components/screens/workout-screen'
 import Navigation from '@/components/navigation'
+import CommunityScreen from '@/components/screens/community-screen'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -149,6 +150,8 @@ const now = new Date()
         return <ProgressScreen />
       case 'workout':
         return <WorkoutScreen isPremium={isPremium} />
+        case 'community':
+  return <CommunityScreen user={user} />
       default:
         return (
           <HomeScreen

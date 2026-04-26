@@ -1,4 +1,4 @@
-import { Home, Camera, TrendingUp, Settings, Dumbbell } from 'lucide-react'
+import { Home, Camera, TrendingUp, Settings, Dumbbell, Users } from 'lucide-react'
 import Link from 'next/link'
 
 interface NavigationProps {
@@ -9,11 +9,12 @@ interface NavigationProps {
 
 export default function Navigation({ activeTab, setActiveTab, onScanClick }: NavigationProps) {
   const tabs = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'scan', label: 'Scan', icon: Camera },
-    { id: 'progress', label: 'Progress', icon: TrendingUp },
-    { id: 'workout', label: 'Workout', icon: Dumbbell },
-  ]
+  { id: 'home', label: 'Home', icon: Home },
+  { id: 'scan', label: 'Scan', icon: Camera },
+  { id: 'progress', label: 'Progress', icon: TrendingUp },
+  { id: 'community', label: 'Community', icon: Users },
+  { id: 'workout', label: 'Workout', icon: Dumbbell },
+]
 
   return (
     <>
