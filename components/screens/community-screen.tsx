@@ -912,7 +912,7 @@ const sendFriendRequest = async (receiverId: string) => {
   ))}
 </div>
 
-<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
+<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3 max-h-[220px] overflow-y-auto">
   <h2 className="font-semibold">Friends</h2>
 
   {friends.length === 0 && (
@@ -1180,6 +1180,6 @@ const sendFriendRequest = async (receiverId: string) => {
           </div>
         ))}
       </div>
-    </>
+      </>
   )
 }
