@@ -602,7 +602,7 @@ const sendFriendRequest = async (receiverId: string) => {
       </p>
 
       <div className="grid grid-cols-3 gap-3 text-center">
-  <div className="bg-white/5 rounded-xl p-3">
+  <div className="bg-white/5 rounded-x1 p-3">
     <p className="text-lg font-bold">
       {posts.filter((post) => post.user_id === selectedProfile.id).length}
     </p>
@@ -630,7 +630,7 @@ const sendFriendRequest = async (receiverId: string) => {
           .map((post) => (
             <div
               key={post.id}
-              className="bg-white/5 rounded-2xl p-3"
+              className="bg-white/5 rounded-3xl p-4 border border-white/10 shadow-xl space-y-3"
             >
               {post.caption && <p>{post.caption}</p>}
 
@@ -988,12 +988,12 @@ const sendFriendRequest = async (receiverId: string) => {
       <textarea
   value={caption}
   onChange={(e) => setCaption(e.target.value)}
-  placeholder="Share your fitness journey..."
+  placeholder="Share your workout, meal, progress, or fitness moment..."
   className="w-full min-h-[90px] p-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
 />
 
       <label className="flex items-center justify-center w-full h-14 rounded-2xl border border-white/10 bg-white/5 cursor-pointer">
-  Upload Photo / Video
+  Upload Photo or Video
   <input
     type="file"
     accept="image/,video/"
