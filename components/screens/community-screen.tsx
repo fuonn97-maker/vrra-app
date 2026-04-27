@@ -837,7 +837,7 @@ const sendFriendRequest = async (receiverId: string) => {
 
 </div>
 
-{showNotifications && (
+{showNotifications ? (
   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
     <h2 className="font-semibold">Notifications</h2>
 
@@ -856,7 +856,7 @@ const sendFriendRequest = async (receiverId: string) => {
       ))
     )}
   </div>
-)}
+) : null}
 
 <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
   <h2 className="font-semibold">Friend Requests</h2>
