@@ -818,7 +818,30 @@ const sendFriendRequest = async (receiverId: string) => {
     Community
   </h1>
 
-  <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
+  <button
+    onClick={async () => {
+  setShowNotifications(!showNotifications)
+
+  await supabase
+    .from('notifications')
+    .update({ is_read: true })
+    .eq('user_id', user.id)
+
+  fetchNotifications()
+}}
+    className="relative"
+  >
+    🔔
+
+    {notifications.filter((n) => !n.is_read).length > 0 && (
+      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
+        {notifications.filter((n) => !n.is_read).length}
+      </span>
+    )}
+  </button>
+</div>
+
+<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
   <h2 className="font-semibold">Find Friends</h2>
 
   <div className="flex gap-2">
@@ -866,29 +889,6 @@ const sendFriendRequest = async (receiverId: string) => {
       </div>
     ))}
   </div>
-</div>
-
-  <button
-    onClick={async () => {
-  setShowNotifications(!showNotifications)
-
-  await supabase
-    .from('notifications')
-    .update({ is_read: true })
-    .eq('user_id', user.id)
-
-  fetchNotifications()
-}}
-    className="relative"
-  >
-    🔔
-
-    {notifications.filter((n) => !n.is_read).length > 0 && (
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
-        {notifications.filter((n) => !n.is_read).length}
-      </span>
-    )}
-  </button>
 </div>
 
 </div>
