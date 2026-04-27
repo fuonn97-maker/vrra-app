@@ -637,11 +637,18 @@ const sendFriendRequest = async (receiverId: string) => {
               {post.video_url ? (
   <video
   src={post.video_url}
-  controls
-  playsInline
-  preload="metadata"
+  autoPlay
   muted
-  onClick={() =>setSelectedPost(post)}
+  loop
+  playsInline
+  preload="auto"
+  controls
+  onLoadedData={(e) => {
+    const video = e.currentTarget
+    video.muted = true
+    video.play().catch(() => {})
+  }}
+  onClick={() => setSelectedPost(post)}
   className="w-full h-[280px] object-cover rounded-2xl"
 />
 ) : null}
