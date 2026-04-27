@@ -858,51 +858,6 @@ const sendFriendRequest = async (receiverId: string) => {
   </div>
 )}
 
-      <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
-  <h2 className="font-semibold">Find Friends</h2>
-
-  <div className="flex gap-2">
-    <input
-      value={searchUsername}
-      onChange={(e) => setSearchUsername(e.target.value)}
-      placeholder="Search username..."
-      className="flex-1 h-12 px-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none"
-    />
-
-    <button
-      onClick={searchUsers}
-      className="px-4 rounded-2xl bg-lime-400 text-black font-semibold"
-    >
-      Search
-    </button>
-  </div>
-
-  {friendMessage && (
-    <p className="text-sm text-lime-400">{friendMessage}</p>
-  )}
-
-  <div className="space-y-2">
-    {searchResults.map((profile) => (
-      <div
-        key={profile.id}
-        className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
-      >
-        <div>
-          <p className="font-medium">@{profile.username}</p>
-          <p className="text-xs text-white/40">{profile.email}</p>
-        </div>
-
-        <button
-          onClick={() => sendFriendRequest(profile.id)}
-          className="px-3 py-2 rounded-xl bg-white/10 text-sm"
-        >
-          Add
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
-
 <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
   <h2 className="font-semibold">Friend Requests</h2>
 
@@ -1001,6 +956,51 @@ const sendFriendRequest = async (receiverId: string) => {
     className="hidden"
   />
 </label>
+
+<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
+  <h2 className="font-semibold">Find Friends</h2>
+
+  <div className="flex gap-2">
+    <input
+      value={searchUsername}
+      onChange={(e) => setSearchUsername(e.target.value)}
+      placeholder="Search username..."
+      className="flex-1 h-12 px-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none"
+    />
+
+    <button
+      onClick={searchUsers}
+      className="px-4 rounded-2xl bg-lime-400 text-black font-semibold"
+    >
+      Search
+    </button>
+  </div>
+
+  {friendMessage && (
+    <p className="text-sm text-lime-400">{friendMessage}</p>
+  )}
+
+  <div className="space-y-2">
+    {searchResults.map((profile) => (
+      <div
+        key={profile.id}
+        className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
+      >
+        <div>
+          <p className="font-medium">@{profile.username}</p>
+          <p className="text-xs text-white/40">{profile.email}</p>
+        </div>
+
+        <button
+          onClick={() => sendFriendRequest(profile.id)}
+          className="px-3 py-2 rounded-xl bg-white/10 text-sm"
+        >
+          Add
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
 
       {uploading && (
   <p className="text-sm text-white/70">
