@@ -944,7 +944,7 @@ const sendFriendRequest = async (receiverId: string) => {
   value={caption}
   onChange={(e) => setCaption(e.target.value)}
   placeholder="Share your workout, meal, progress, or fitness moment..."
-  className="w-full min-h-[90px] p-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
+  className="w-full h-16 p-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
 />
 
       <label className="flex items-center justify-center w-full h-14 rounded-2xl border border-white/10 bg-white/5 cursor-pointer">
