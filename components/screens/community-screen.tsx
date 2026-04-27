@@ -594,6 +594,12 @@ const sendFriendRequest = async (receiverId: string) => {
     <p className="text-sm text-white/60">
       VRRA Community Member
     </p>
+    <button
+  onClick={() => removeFriend(selectedProfile.id)}
+  className="mt-3 px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
+>
+  Remove Friend
+</button>
   </div>
 </div>
 
@@ -927,15 +933,15 @@ const sendFriendRequest = async (receiverId: string) => {
       className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
     >
       <div>
-        <p className="font-medium">@{friend.username || 'User'}</p>
+        <button
+  onClick={() => setSelectedProfile(friend)}
+  className="font-medium text-left"
+>
+  @{friend.username || 'User'}
+</button>
         <p className="text-xs text-white/40">{friend.email}</p>
       </div>
-      <button
-  onClick={() => removeFriend(friend.id)}
-  className="px-3 py-2 rounded-xl bg-red-500 text-white text-sm"
->
-  Remove
-</button>
+      
     </div>
   ))}
 </div>
@@ -987,7 +993,12 @@ const sendFriendRequest = async (receiverId: string) => {
         className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
       >
         <div>
-          <p className="font-medium">@{profile.username}</p>
+          <button
+  onClick={() => setSelectedProfile(profile)}
+  className="font-medium text-left"
+>
+  @{profile.username || 'User'}
+</button>
           <p className="text-xs text-white/40">{profile.email}</p>
         </div>
 
