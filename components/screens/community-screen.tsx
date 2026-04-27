@@ -806,7 +806,7 @@ const sendFriendRequest = async (receiverId: string) => {
   </div>
 )}
     
-    <div className="min-h-screen px-3 pt-1 pb-24 space-y-3">
+    <div className="px-3 pt-1 pb-24 space-y-3">
       <div className="flex items-center justify-between">
   <h1 className="text-2xl font-bold">
     Community
