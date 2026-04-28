@@ -61,19 +61,27 @@ export default function ProfileScreen({ user }: { user: any }) {
         </div>
       </div>
 
-      <div className="space-y-3">
-        {posts.map((post) => (
-          <div key={post.id} className="rounded-2xl overflow-hidden">
-            {post.video_url && (
-              <video
-                src={post.video_url}
-                controls
-                className="w-full rounded-2xl"
-              />
-            )}
-          </div>
-        ))}
-      </div>
+      <div className="grid grid-cols-3 gap-2 mt-6">
+  {posts.map((post: any) => (
+    <div
+      key={post.id}
+      className="aspect-square overflow-hidden rounded-xl bg-card"
+    >
+      {post.media_type === 'image' ? (
+        <img
+          src={post.media_url}
+          alt=""
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <video
+          src={post.media_url}
+          className="w-full h-full object-cover"
+        />
+      )}
+    </div>
+  ))}
+</div>
     </div>
   )
 }
