@@ -896,14 +896,29 @@ const sendFriendRequest = async (receiverId: string) => {
 {showNotifications ? (
   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
     <h2 className="font-semibold">Notifications</h2>
-<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
-  <h2 className="font-semibold">Friend Requests</h2>
 
-  {friendRequests.length === 0 && (
-    <p className="text-sm text-white/40">
-      No pending friend requests.
-    </p>
-  )}
+
+  
+    {notifications.length === 0 ? (
+      <p className="text-sm text-white/60">
+        No notifications yet
+      </p>
+    ) : (
+      notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className="bg-white/5 rounded-xl p-3 text-sm"
+        >
+          {notification.message}
+        </div>
+      ))
+    )}
+  </div>
+) : null}
+
+{friendRequests.length > 0 && (
+    <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
+  <h2 className="font-semibold">Friend Requests</h2>
 
   {friendRequests.map((request) => (
     <div
@@ -914,7 +929,7 @@ const sendFriendRequest = async (receiverId: string) => {
   <img
     src={request.profile?.avatar_url || '/default-avatar.png'}
     alt={request.profile?.username || 'User'}
-    className="w-14 h-14 rounded-full object-cover"
+    className="w-16 h-16 rounded-full object-cover border-2 border-lime-400"
   />
 
   <div>
@@ -957,22 +972,7 @@ const sendFriendRequest = async (receiverId: string) => {
     </div>
   ))}
 </div>
-    {notifications.length === 0 ? (
-      <p className="text-sm text-white/60">
-        No notifications yet
-      </p>
-    ) : (
-      notifications.map((notification) => (
-        <div
-          key={notification.id}
-          className="bg-white/5 rounded-xl p-3 text-sm"
-        >
-          {notification.message}
-        </div>
-      ))
-    )}
-  </div>
-) : null}
+  )}
 
 <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
   <h2 className="font-semibold">Friends</h2>
@@ -998,7 +998,7 @@ const sendFriendRequest = async (receiverId: string) => {
   <img
     src={friend.avatar_url}
     alt={name}
-    className="w-14 h-14 rounded-full object-cover"
+    className="w-16 h-16 rounded-full object-cover border-2 border-lime-400"
   />
 ) : (
   name.charAt(0).toUpperCase()
@@ -1013,6 +1013,7 @@ const sendFriendRequest = async (receiverId: string) => {
 </div>
 </div>
 
+<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
       <textarea
   value={caption}
   onChange={(e) => setCaption(e.target.value)}
@@ -1020,7 +1021,7 @@ const sendFriendRequest = async (receiverId: string) => {
   className="w-full h-16 p-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
 />
 
-      <label className="flex items-center justify-center w-full h-14 rounded-2xl border border-white/10 bg-white/5 cursor-pointer">
+    <label className="flex items-center justify-center w-full h-16 rounded-2xl border border-dashed border-white/20 bg-white/5 cursor-pointer hover:bg-white/10 transition">
   Upload Photo or Video
   <input
     type="file"
@@ -1029,6 +1030,8 @@ const sendFriendRequest = async (receiverId: string) => {
     className="hidden"
   />
 </label>
+</div>
+
 
       {uploading && (
   <p className="text-sm text-white/70">
@@ -1036,7 +1039,7 @@ const sendFriendRequest = async (receiverId: string) => {
   </p>
 )}
       
-      <div className="flex gap-2">
+      <div className="flex gap-2 bg-white/5 p-1 rounded-2xl">
   <button
     onClick={() => {
       setShowSavedOnly(false)
@@ -1095,7 +1098,7 @@ const sendFriendRequest = async (receiverId: string) => {
     .map((post) => (
       <div
         key={post.id}
-        className="bg-white/5 border border-white/10 rounded-2xl p-3 space-y-3 shadow-lg"
+        className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3 shadow-lg"
       >
            
 
@@ -1136,9 +1139,23 @@ const sendFriendRequest = async (receiverId: string) => {
 
 <button
   onClick={() => toggleLike(post)}
-  className="text-sm font-medium"
->
+  className="flex items-center gap-2 text-sm font-medium bg-white/5 px-3 py-2 rounded-xl">
   {post.liked_by_me ? '❤️' : '🤍'} {post.likes_count || 0}
+</button>
+
+<button
+  onClick={() => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'VRRA Community Post',
+        text: post.caption || 'Check this out!',
+        url: post.image_url || post.video_url || window.location.href
+      })
+    }
+  }}
+  className="text-sm font-medium bg-white/5 px-3 py-2 rounded-xl mt-2"
+>
+  🔗 Share
 </button>
 
 <p className="text-xs text-white/50 mt-1">
@@ -1185,7 +1202,7 @@ const sendFriendRequest = async (receiverId: string) => {
   })
 }
       placeholder="Write a comment..."
-      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
+      className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
     />
 
     <button
