@@ -540,6 +540,13 @@ setTimeout(() => {
 const sendFriendRequest = async (receiverId: string) => {
   setFriendMessage('')
 
+  await supabase
+  .from('friend_requests')
+  .delete()
+  .or(
+    `and(sender_id.eq.${user.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${user.id})`
+  )
+  
   const { error } = await supabase
     .from('friend_requests')
     .insert({
