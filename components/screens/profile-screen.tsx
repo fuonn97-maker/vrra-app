@@ -72,6 +72,12 @@ if (uniqueFriendIds.length > 0) {
   }
 
   const handleRemoveFriend = async () => {
+  const confirmed = window.confirm(
+    'Are you sure you want to remove this friend?'
+  )
+
+  if (!confirmed) return
+
   await supabase
     .from('friendships')
     .delete()
