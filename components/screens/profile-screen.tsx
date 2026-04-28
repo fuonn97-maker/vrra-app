@@ -12,22 +12,23 @@ export default function ProfileScreen({ user }: { user: any }) {
   const [showFriends, setShowFriends] = useState(false)
   const [selectedPost, setSelectedPost] = useState<any>(null)
   const router = useRouter()
+  const [viewingUserId, setViewingUserId] = useState(user.id)
 
   useEffect(() => {
-    loadProfile()
-  }, [])
+  loadProfile()
+}, [viewingUserId])
 
   const loadProfile = async () => {
     const { data: profileData } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('id', viewingUserId)
       .single()
 
     const { data: postData } = await supabase
       .from('community_posts')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('id', viewingUserId)
 
     const { data: friendData } = await supabase
       .from('friendships')
@@ -146,10 +147,14 @@ if (uniqueFriendIds.length > 0) {
 
     <div className="space-y-3">
       {friends.map((friend: any) => (
-        <div
-          key={friend.id}
-          className="bg-white/5 rounded-xl p-4 flex items-center gap-3"
-        >
+  <div
+    key={friend.id}
+    onClick={() => {
+      setViewingUserId(friend.id)
+      setShowFriends(false)
+    }}
+    className="bg-white/5 rounded-xl p-4 flex items-center gap-3 cursor-pointer"
+  >
           <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
             {friend.username?.charAt(0)?.toUpperCase()}
           </div>
