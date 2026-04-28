@@ -142,12 +142,12 @@ return (
     </button>
 
     <div className="flex items-center gap-4">
-      <label className="w-24 h-24 rounded-full bg-lime-400 flex items-center justify-center text-4xl font-bold text-black overflow-hidden cursor-pointer">
+      <label className="w-24 h-24 rounded-full bg-lime-400 overflow-hidden cursor-pointer shrink-0">
         {profile?.avatar_url ? (
           <img
             src={profile.avatar_url}
             alt=""
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-full"
           />
         ) : (
           profile?.username?.charAt(0)?.toUpperCase()
