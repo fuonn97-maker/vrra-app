@@ -975,7 +975,7 @@ const isPending = (profileId: string) => {
   {friendRequests.map((request) => (
     <div
       key={request.id}
-      className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
+      className="bg-black/20 rounded-2xl p-4 flex items-center justify-between gap-3 overflow-hidden"
     >
       <div className="flex items-center gap-3">
   <img
@@ -994,7 +994,7 @@ const isPending = (profileId: string) => {
   </div>
 </div>
 
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={() =>
             respondFriendRequest(
@@ -1003,7 +1003,7 @@ const isPending = (profileId: string) => {
               'accepted'
             )
           }
-          className="px-3 py-2 rounded-xl bg-lime-400 text-black text-sm font-semibold"
+          className="px-4 py-2 rounded-full bg-lime-400 text-black text-sm font-semibold"
         >
           Accept
         </button>
@@ -1016,7 +1016,7 @@ const isPending = (profileId: string) => {
               'rejected'
             )
           }
-          className="px-3 py-2 rounded-xl bg-white/10 text-sm"
+          className="px-4 py-2 rounded-full bg-red-500 text-white text-sm font-semibold"
         >
           Reject
         </button>
