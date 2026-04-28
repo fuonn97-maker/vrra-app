@@ -235,7 +235,14 @@ const removeFriend = async (friendId: string) => {
     .delete()
     .or(`and(user_id.eq.${user.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${user.id})`)
 
-  fetchFriends()
+  await supabase
+  .from('friend_requests')
+  .delete()
+  .or(
+    `and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`
+  )
+    
+    fetchFriends()
 }
 
   const fetchPosts = async () => {
