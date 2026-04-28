@@ -8,6 +8,8 @@ export default function ProfileScreen({ user }: { user: any }) {
   const [profile, setProfile] = useState<any>(null)
   const [posts, setPosts] = useState<any[]>([])
   const [friendsCount, setFriendsCount] = useState(0)
+  const [friends, setFriends] = useState<any[]>([])
+  const [showFriends, setShowFriends] = useState(false)
   const [selectedPost, setSelectedPost] = useState<any>(null)
   const router = useRouter()
 
@@ -33,16 +35,34 @@ export default function ProfileScreen({ user }: { user: any }) {
       .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
 
     setProfile(profileData)
-    setPosts(postData || [])
-    const acceptedFriends = friendData?.filter(
-  (friend: any) =>
-    friend.user_id === user.id || friend.friend_id === user.id
-)
+setPosts(postData || [])
 
-setFriendsCount(acceptedFriends?.length || 0)
+const friendIds = (friendData || []).map((friend: any) => {
+  if (friend.user_id === user.id) {
+    return friend.friend_id
+  }
+
+  return friend.user_id
+})
+
+const uniqueFriendIds = Array.from(new Set(friendIds))
+
+setFriendsCount(uniqueFriendIds.length)
+
+if (uniqueFriendIds.length > 0) {
+  const { data: friendsProfileData } = await supabase
+    .from('profiles')
+    .select('*')
+    .in('id', uniqueFriendIds)
+
+  setFriends(friendsProfileData || [])
+} else {
+  setFriends([])
+}
   }
 
   return (
+
   <div className="p-4 space-y-5">
     <button
       onClick={() => router.back()}
@@ -69,7 +89,10 @@ setFriendsCount(acceptedFriends?.length || 0)
           <p className="text-white/60">Posts</p>
         </div>
 
-        <div className="bg-white/5 rounded-xl p-4 text-center">
+        <div
+  onClick={() => setShowFriends(true)}
+  className="bg-white/5 rounded-xl p-4 text-center cursor-pointer"
+>
           <p className="text-2xl font-bold">{friendsCount}</p>
           <p className="text-white/60">Friends</p>
         </div>
