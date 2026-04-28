@@ -131,6 +131,36 @@ if (uniqueFriendIds.length > 0) {
   ))}
 </div>
 
+{showFriends && (
+  <div
+    className="fixed inset-0 bg-black/90 z-50 p-4 overflow-y-auto"
+  >
+    <button
+      onClick={() => setShowFriends(false)}
+      className="text-white mb-4"
+    >
+      ← Close
+    </button>
+
+    <h2 className="text-2xl font-bold mb-4">Friends</h2>
+
+    <div className="space-y-3">
+      {friends.map((friend: any) => (
+        <div
+          key={friend.id}
+          className="bg-white/5 rounded-xl p-4 flex items-center gap-3"
+        >
+          <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
+            {friend.username?.charAt(0)?.toUpperCase()}
+          </div>
+
+          <p className="font-semibold">@{friend.username}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
 {selectedPost && (
   <div
     className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
