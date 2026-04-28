@@ -68,6 +68,9 @@ if (uniqueFriendIds.length > 0) {
     <button
       onClick={() => {
   if (viewingUserId !== user.id) {
+    setProfile(null)
+    setPosts([])
+    setFriends([])
     setViewingUserId(user.id)
   } else {
     router.back()
