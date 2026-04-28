@@ -19,7 +19,36 @@ export default function ProfileScreen({ user }: { user: any }) {
   loadProfile()
 }, [viewingUserId])
 
-  const loadProfile = async () => {
+  const handleAvatarUpload = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${user.id}.${fileExt}`
+
+  await supabase.storage
+    .from('avatars')
+    .upload(fileName, file, {
+      upsert: true,
+    })
+
+  const { data } = supabase.storage
+    .from('avatars')
+    .getPublicUrl(fileName)
+
+  await supabase
+    .from('profiles')
+    .update({
+      avatar_url: data.publicUrl,
+    })
+    .eq('id', user.id)
+
+  loadProfile()
+}
+
+const loadProfile = async () => {
     const { data: profileData } = await supabase
       .from('profiles')
       .select('*')
@@ -113,9 +142,26 @@ return (
     </button>
 
     <div className="flex items-center gap-4">
-      <div className="w-24 h-24 rounded-full bg-lime-400 flex items-center justify-center text-4xl font-bold text-black">
-        {profile?.username?.charAt(0)?.toUpperCase()}
-      </div>
+      <label className="w-24 h-24 rounded-full bg-lime-400 flex items-center justify-center text-4xl font-bold text-black overflow-hidden cursor-pointer">
+        {profile?.avatar_url ? (
+          <img
+            src={profile.avatar_url}
+            alt=""
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          profile?.username?.charAt(0)?.toUpperCase()
+        )}
+
+        {viewingUserId === user.id && (
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleAvatarUpload}
+          />
+        )}
+      </label>
 
       <div>
         <h1 className="text-2xl font-bold">@{profile?.username}</h1>
