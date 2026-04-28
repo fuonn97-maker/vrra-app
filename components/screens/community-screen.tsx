@@ -937,15 +937,32 @@ const isPending = (profileId: string) => {
         key={profile.id}
         className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
       >
-        <div>
-          <button
-  onClick={() => setSelectedProfile(profile)}
-  className="font-medium text-left"
->
-  @{profile.username || 'User'}
-</button>
-          <p className="text-xs text-white/40">{profile.email}</p>
-        </div>
+        <div className="flex items-center gap-3">
+  {profile.avatar_url ? (
+    <img
+      src={profile.avatar_url}
+      alt=""
+      className="w-12 h-12 rounded-full object-cover"
+    />
+  ) : (
+    <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
+      {(profile.username || 'U').charAt(0).toUpperCase()}
+    </div>
+  )}
+
+  <div>
+    <button
+      onClick={() => setSelectedProfile(profile)}
+      className="font-medium text-left"
+    >
+      @{profile.username || 'User'}
+    </button>
+
+    <p className="text-xs text-white/40">
+      {profile.email}
+    </p>
+  </div>
+</div>
 
         <button
           onClick={() => sendFriendRequest(profile.id)}
