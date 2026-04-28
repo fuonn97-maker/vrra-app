@@ -85,6 +85,13 @@ if (uniqueFriendIds.length > 0) {
       `and(user_id.eq.${user.id},friend_id.eq.${viewingUserId}),and(user_id.eq.${viewingUserId},friend_id.eq.${user.id})`
     )
 
+    await supabase
+  .from('friend_requests')
+  .delete()
+  .or(
+    `and(sender_id.eq.${user.id},receiver_id.eq.${viewingUserId}),and(sender_id.eq.${viewingUserId},receiver_id.eq.${user.id})`
+  )
+
   loadProfile()
 }
 return (
