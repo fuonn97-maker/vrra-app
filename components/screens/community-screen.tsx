@@ -1169,26 +1169,40 @@ const isPending = (profileId: string) => {
       >
            
 
-            <p
-  className="font-semibold cursor-pointer"
-  onClick={async () => {
-  const { data } = await supabase
-    .from('profiles')
-    .select('id, username, avatar_url, is_premium')
-    .eq('id', post.user_id)
-    .single()
+           <div className="flex items-center gap-3">
+  {post.profile?.avatar_url ? (
+    <img
+      src={post.profile.avatar_url}
+      alt=""
+      className="w-10 h-10 rounded-full object-cover"
+    />
+  ) : (
+    <div className="w-10 h-10 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
+      {post.profile?.username?.charAt(0)?.toUpperCase()}
+    </div>
+  )}
 
-  if (data) {
-    setSelectedProfile(data)
-  }
-}}
->
-  @{post.profile?.username || 'User'}
+  <p
+    className="font-semibold cursor-pointer"
+    onClick={async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url, is_premium')
+        .eq('id', post.user_id)
+        .single()
 
-  <span className="ml-2 text-xs text-white/40">
-    {formatTimeAgo(post.created_at)}
-  </span>
-</p>
+      if (data) {
+        setSelectedProfile(data)
+      }
+    }}
+  >
+    @{post.profile?.username || 'User'}
+
+    <span className="ml-2 text-xs text-white/40">
+      {formatTimeAgo(post.created_at)}
+    </span>
+  </p>
+</div>
 
 {post.caption && (
   <p className="mt-2">
