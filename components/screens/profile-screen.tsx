@@ -68,14 +68,20 @@ export default function ProfileScreen({ user }: { user: any }) {
       className="aspect-square overflow-hidden rounded-xl bg-white/5"
     >
       {post.video_url ? (
-        <video
-  src={post.video_url}
-  className="w-full h-full object-cover"
-  muted
-  playsInline
-  preload="auto"
-  controls={false}
-/>
+        <div className="relative w-full h-full">
+  <video
+    src={post.video_url}
+    className="w-full h-full object-cover"
+    muted
+    playsInline
+    preload="metadata"
+  />
+  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+    <div className="w-10 h-10 rounded-full bg-white/80 text-black flex items-center justify-center text-lg">
+      ▶
+    </div>
+  </div>
+</div>
       ) : post.image_url ? (
         <img
           src={post.image_url}
