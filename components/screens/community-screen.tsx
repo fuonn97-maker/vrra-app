@@ -896,24 +896,6 @@ const sendFriendRequest = async (receiverId: string) => {
 {showNotifications ? (
   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
     <h2 className="font-semibold">Notifications</h2>
-
-    {notifications.length === 0 ? (
-      <p className="text-sm text-white/60">
-        No notifications yet
-      </p>
-    ) : (
-      notifications.map((notification) => (
-        <div
-          key={notification.id}
-          className="bg-white/5 rounded-xl p-3 text-sm"
-        >
-          {notification.message}
-        </div>
-      ))
-    )}
-  </div>
-) : null}
-
 <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
   <h2 className="font-semibold">Friend Requests</h2>
 
@@ -928,14 +910,22 @@ const sendFriendRequest = async (receiverId: string) => {
       key={request.id}
       className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
     >
-      <div>
-        <p className="font-medium">
-          @{request.profile?.username || 'Unknown user'}
-        </p>
-        <p className="text-xs text-white/40">
-          wants to add you
-        </p>
-      </div>
+      <div className="flex items-center gap-3">
+  <img
+    src={request.profile?.avatar_url || '/default-avatar.png'}
+    alt={request.profile?.username || 'User'}
+    className="w-14 h-14 rounded-full object-cover"
+  />
+
+  <div>
+    <p className="font-medium">
+      @{request.profile?.username || 'Unknown user'}
+    </p>
+    <p className="text-sm text-white/40">
+      {request.profile?.email}
+    </p>
+  </div>
+</div>
 
       <div className="flex gap-2">
         <button
@@ -967,6 +957,22 @@ const sendFriendRequest = async (receiverId: string) => {
     </div>
   ))}
 </div>
+    {notifications.length === 0 ? (
+      <p className="text-sm text-white/60">
+        No notifications yet
+      </p>
+    ) : (
+      notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className="bg-white/5 rounded-xl p-3 text-sm"
+        >
+          {notification.message}
+        </div>
+      ))
+    )}
+  </div>
+) : null}
 
 <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3 max-h-[220px] overflow-y-auto">
   <h2 className="font-semibold">Friends</h2>
@@ -977,23 +983,30 @@ const sendFriendRequest = async (receiverId: string) => {
     </p>
   )}
 
-  {friends.map((friend) => (
-    <div
-      key={friend.id}
-      className="flex items-center justify-between bg-black/20 rounded-2xl p-3"
-    >
-      <div>
-        <button
-  onClick={() => setSelectedProfile(friend)}
-  className="font-medium text-left"
->
-  @{friend.username || 'User'}
-</button>
-        <p className="text-xs text-white/40">{friend.email}</p>
-      </div>
-      
-    </div>
-  ))}
+<div className="flex gap-3 overflow-x-auto pb-2">
+  {friends.map((friend) => {
+    const name = friend.username || 'User'
+
+    return (
+      <button
+        key={friend.id}
+        type="button"
+        onClick={() => setSelectedProfile(friend)}
+        className="shrink-0 w-14 h-14 rounded-full bg-lime-400 text-black flex items-center justify-center text-xl font-bold border border-white/20"
+      >
+        {friend.avatar_url ? (
+  <img
+    src={friend.avatar_url}
+    alt={name}
+    className="w-14 h-14 rounded-full object-cover"
+  />
+) : (
+  name.charAt(0).toUpperCase()
+)}
+      </button>
+    )
+  })}
+</div>
 </div>
 
       <textarea
