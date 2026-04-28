@@ -555,6 +555,14 @@ const sendFriendRequest = async (receiverId: string) => {
 
   setFriendMessage('Friend request sent.')
 }
+const isPending = (profileId: string) => {
+  return friendRequests.some(
+    (request: any) =>
+      request.receiver_id === profileId &&
+      request.sender_id === user.id &&
+      request.status === 'pending'
+  )
+}
 
   return (
   <>
@@ -610,9 +618,16 @@ const sendFriendRequest = async (receiverId: string) => {
     >
       Remove Friend
     </button>
-  ) : (
-    <button
-      onClick={() => sendFriendRequest(selectedProfile.id)}
+  ) : isPending(selectedProfile.id) ? (
+  <button
+    disabled
+    className="mt-4 px-5 py-2 rounded-full bg-yellow-500 text-black text-sm font-medium opacity-70"
+  >
+    Pending
+  </button>
+) : (
+  <button
+    onClick={() => sendFriendRequest(selectedProfile.id)}
       className="mt-4 px-5 py-2 rounded-full bg-lime-500 text-black text-sm font-medium"
     >
       Add Friend
