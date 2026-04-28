@@ -66,7 +66,13 @@ if (uniqueFriendIds.length > 0) {
 
   <div className="p-4 space-y-5">
     <button
-      onClick={() => router.back()}
+      onClick={() => {
+  if (viewingUserId !== user.id) {
+    setViewingUserId(user.id)
+  } else {
+    router.back()
+  }
+}}
       className="text-white/70 text-sm mb-2"
     >
       ← Back
