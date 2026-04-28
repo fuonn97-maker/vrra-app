@@ -1144,16 +1144,21 @@ const sendFriendRequest = async (receiverId: string) => {
 </button>
 
 <button
-  onClick={() => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'VRRA Community Post',
-        text: post.caption || 'Check this out!',
-        url: post.image_url || post.video_url || window.location.href
-      })
-    }
-  }}
-  className="text-sm font-medium bg-white/5 px-3 py-2 rounded-xl mt-2"
+  onClick={async () => {
+  const shareUrl = post.image_url || post.video_url || window.location.href
+
+  if (navigator.share) {
+    await navigator.share({
+      title: 'VRRA Community Post',
+      text: post.caption || 'Check this out!',
+      url: shareUrl,
+    })
+  } else {
+    await navigator.clipboard.writeText(shareUrl)
+    alert('Post link copied!')
+  }
+}}
+className="text-sm font-medium bg-white/5 px-3 py-2 rounded-xl mt-2"
 >
   🔗 Share
 </button>
