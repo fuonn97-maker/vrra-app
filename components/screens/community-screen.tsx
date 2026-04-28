@@ -182,7 +182,7 @@ const fetchFriends = async () => {
 
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, username, email')
+    .select('id, username, avatar_url')
     .in('id', friendIds)
 
   setFriends(profiles || [])
@@ -1051,7 +1051,15 @@ const isPending = (profileId: string) => {
   />
 ) : (
   <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
-    {friend.username?.charAt(0)?.toUpperCase()}
+    {friend.avatar_url ? (
+  <img
+    src={friend.avatar_url}
+    alt={friend.username}
+    className="w-12 h-12 rounded-full object-cover"
+  />
+) : (
+  friend.username?.charAt(0)?.toUpperCase()
+)}
   </div>
 )}
 
