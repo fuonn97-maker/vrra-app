@@ -988,9 +988,6 @@ const isPending = (profileId: string) => {
     <p className="font-medium">
       @{request.profile?.username || 'Unknown user'}
     </p>
-    <p className="text-sm text-white/40">
-      {request.profile?.email}
-    </p>
   </div>
 </div>
 
@@ -1003,7 +1000,7 @@ const isPending = (profileId: string) => {
               'accepted'
             )
           }
-          className="px-4 py-2 rounded-full bg-lime-400 text-black text-sm font-semibold"
+          className="px-3 py-2 rounded-x1 bg-lime-400 text-black text-sm font-semibold"
         >
           Accept
         </button>
@@ -1016,7 +1013,7 @@ const isPending = (profileId: string) => {
               'rejected'
             )
           }
-          className="px-4 py-2 rounded-full bg-red-500 text-white text-sm font-semibold"
+          className="px-3 py-2 rounded-x1 bg-red-500 text-white text-sm font-semibold"
         >
           Reject
         </button>
