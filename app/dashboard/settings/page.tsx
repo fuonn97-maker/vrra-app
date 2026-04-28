@@ -204,6 +204,17 @@ if (profile?.username) {
 
         {/* Settings Sections */}
         <div className="space-y-6">
+
+{/* My Profile */}
+<div className="bg-card/40 border border-border/30 rounded-xl p-6 mb-6">
+  <button
+    onClick={() => router.push('/dashboard/profile')}
+    className="w-full bg-lime-400 text-black rounded-2xl p-4 font-bold text-lg"
+  >
+    View My Profile
+  </button>
+</div>
+
           {/* Profile Setting */}
 <div className="bg-card/40 border border-border/30 rounded-xl p-6">
   <div className="flex items-center gap-3 mb-4">
