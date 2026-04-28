@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { Share } from '@capacitor/share'
 
 export default function CommunityScreen({ user }: { user: any }) {
   const [posts, setPosts] = useState<any[]>([])
@@ -414,18 +415,13 @@ const formatTimeAgo = (dateString: string) => {
 }
 
 const sharePost = async (post: any) => {
-  const shareUrl = `${window.location.origin}/post/${post.id}`
+  alert('NEW SHARE FUNCTION RUNNING')
 
-  if (navigator.share) {
-    await navigator.share({
-      title: 'Check out this post',
-      text: post.caption || 'See this post',
-      url: shareUrl,
-    })
-  } else {
-    await navigator.clipboard.writeText(shareUrl)
-    alert('Link copied!')
-  }
+  await Share.share({
+    title: 'VRRA Community Post',
+    text: `${post.caption || 'Check this out!'}\n\n${post.image_url || post.video_url || window.location.href}`,
+    dialogTitle: 'Share this post',
+  })
 }
 
   const toggleLike = async (post: any) => {
@@ -1144,21 +1140,8 @@ const sendFriendRequest = async (receiverId: string) => {
 </button>
 
 <button
-  onClick={async () => {
-  const shareUrl = post.image_url || post.video_url || window.location.href
-
-  if (navigator.share) {
-    await navigator.share({
-      title: 'VRRA Community Post',
-      text: post.caption || 'Check this out!',
-      url: shareUrl,
-    })
-  } else {
-    await navigator.clipboard.writeText(shareUrl)
-    alert('Post link copied!')
-  }
-}}
-className="text-sm font-medium bg-white/5 px-3 py-2 rounded-xl mt-2"
+  onClick={() => sharePost(post)}
+  className="text-sm font-medium bg-white/5 px-3 py-2 rounded-xl mt-2"
 >
   🔗 Share
 </button>
