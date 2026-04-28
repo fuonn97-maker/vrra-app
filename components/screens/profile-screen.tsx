@@ -145,7 +145,7 @@ return (
       <label className="w-24 h-24 rounded-full bg-lime-400 overflow-hidden cursor-pointer shrink-0">
         {profile?.avatar_url ? (
           <img
-            src={profile.avatar_url}
+            src={`${profile.avatar_url}?t=${Date.now()}`}
             alt=""
             className="w-full h-full object-cover rounded-full"
           />
