@@ -106,7 +106,7 @@ const fetchComments = async () => {
 
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, username')
+    .select('id, username, avatar_url')
     .in('id', commentUserIds)
 
   const commentsWithProfiles = commentsData.map((comment) => ({
@@ -151,7 +151,7 @@ const fetchSavedPosts = async () => {
 
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, username, email')
+    .select('id, username, avatar_url')
     .in('id', senderIds)
 
   const requestsWithProfiles = requests.map((request) => ({
@@ -262,7 +262,7 @@ const removeFriend = async (friendId: string) => {
 
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, username')
+    .select('id, username, avatar_url')
     .in('id', postUserIds)
 
   const postIds = postsData.map((post) => post.id)
@@ -527,7 +527,7 @@ setTimeout(() => {
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, username, email')
+    .select('id, username, avatar_url')
     .ilike('username', `%${searchUsername.trim()}%`)
     .neq('id', user.id)
     .limit(10)
@@ -604,9 +604,17 @@ const isPending = (profileId: string) => {
       <div className="px-5 pt-6">
 
         <div className="flex items-center gap-4">
-          <div className="w-24 h-24 rounded-full bg-lime-400 text-black flex items-center justify-center text-4xl font-bold">
-            {(selectedProfile.username || 'U').charAt(0).toUpperCase()}
-          </div>
+          <div className="w-24 h-24 rounded-full bg-lime-400 overflow-hidden flex items-center justify-center text-4xl font-bold text-black">
+  {selectedProfile.avatar_url ? (
+    <img
+      src={selectedProfile.avatar_url}
+      alt={selectedProfile.username}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    (selectedProfile.username || 'U').charAt(0).toUpperCase()
+  )}
+</div>
 
           <div className="flex-1">
             <h2 className="text-2xl font-bold">
@@ -1163,7 +1171,17 @@ const isPending = (profileId: string) => {
 
             <p
   className="font-semibold cursor-pointer"
-  onClick={() => setSelectedProfile(post.profile)}
+  onClick={async () => {
+  const { data } = await supabase
+    .from('profiles')
+    .select('id, username, avatar_url, is_premium')
+    .eq('id', post.user_id)
+    .single()
+
+  if (data) {
+    setSelectedProfile(data)
+  }
+}}
 >
   @{post.profile?.username || 'User'}
 
