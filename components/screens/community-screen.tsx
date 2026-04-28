@@ -1046,11 +1046,13 @@ const isPending = (profileId: string) => {
         {friend.avatar_url ? (
   <img
     src={friend.avatar_url}
-    alt={name}
-    className="w-16 h-16 rounded-full object-cover border-2 border-lime-400"
+    alt=""
+    className="w-12 h-12 rounded-full object-cover"
   />
 ) : (
-  name.charAt(0).toUpperCase()
+  <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
+    {friend.username?.charAt(0)?.toUpperCase()}
+  </div>
 )}
 
 <p className="text-xs text-white/80 text-center truncate w-16">
