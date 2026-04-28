@@ -64,9 +64,16 @@ export default function ProfileScreen({ user }: { user: any }) {
       <div className="grid grid-cols-3 gap-2 mt-6">
   {posts.map((post: any) => (
     <div
-      key={post.id}
-      className="aspect-square overflow-hidden rounded-xl bg-white/5"
-    >
+  key={post.id}
+  onClick={() => {
+    if (post.video_url) {
+      window.open(post.video_url, '_blank')
+    } else if (post.image_url) {
+      window.open(post.image_url, '_blank')
+    }
+  }}
+  className="aspect-square overflow-hidden rounded-xl bg-white/5 cursor-pointer"
+>
       {post.video_url ? (
         <div className="relative w-full h-full">
   <video
