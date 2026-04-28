@@ -225,6 +225,10 @@ const respondFriendRequest = async (
   fetchFriendRequests()
 }
 
+const isFriend = (profileId: string) => {
+  return friends.some((friend: any) => friend.id === profileId)
+}
+
 const removeFriend = async (friendId: string) => {
   await supabase
     .from('friendships')
@@ -598,12 +602,23 @@ const sendFriendRequest = async (receiverId: string) => {
               VRRA Community Member
             </p>
 
-            <button
-              onClick={() => removeFriend(selectedProfile.id)}
-              className="mt-4 px-5 py-2 rounded-full bg-red-500 text-white text-sm font-medium"
-            >
-              Remove Friend
-            </button>
+            {selectedProfile.id !== user.id && (
+  isFriend(selectedProfile.id) ? (
+    <button
+      onClick={() => removeFriend(selectedProfile.id)}
+      className="mt-4 px-5 py-2 rounded-full bg-red-500 text-white text-sm font-medium"
+    >
+      Remove Friend
+    </button>
+  ) : (
+    <button
+      onClick={() => sendFriendRequest(selectedProfile.id)}
+      className="mt-4 px-5 py-2 rounded-full bg-lime-500 text-black text-sm font-medium"
+    >
+      Add Friend
+    </button>
+  )
+)}
           </div>
         </div>
 
@@ -637,10 +652,11 @@ const sendFriendRequest = async (receiverId: string) => {
             Posts
           </p>
 
-          <div className="grid grid-cols-2 gap-3">
-            {posts
-              .filter((post) => post.user_id === selectedProfile.id)
-              .map((post) => (
+          {isFriend(selectedProfile.id) ? (
+  <div className="grid grid-cols-2 gap-3">
+    {posts
+      .filter((post) => post.user_id === selectedProfile.id)
+      .map((post) => (
                 <div
                   key={post.id}
                   onClick={() => setSelectedPost(post)}
@@ -663,7 +679,12 @@ const sendFriendRequest = async (receiverId: string) => {
                   ) : null}
                 </div>
               ))}
-          </div>
+  </div>
+) : (
+  <div className="rounded-2xl bg-white/5 p-6 text-center text-white/60">
+    Add friend to view posts
+  </div>
+)}
         </div>
 
       </div>
