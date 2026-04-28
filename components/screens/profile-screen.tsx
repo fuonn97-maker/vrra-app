@@ -7,6 +7,7 @@ export default function ProfileScreen({ user }: { user: any }) {
   const [profile, setProfile] = useState<any>(null)
   const [posts, setPosts] = useState<any[]>([])
   const [friendsCount, setFriendsCount] = useState(0)
+  const [selectedPost, setSelectedPost] = useState<any>(null)
 
   useEffect(() => {
     loadProfile()
@@ -65,13 +66,7 @@ export default function ProfileScreen({ user }: { user: any }) {
   {posts.map((post: any) => (
     <div
   key={post.id}
-  onClick={() => {
-    if (post.video_url) {
-      window.open(post.video_url, '_blank')
-    } else if (post.image_url) {
-      window.open(post.image_url, '_blank')
-    }
-  }}
+  onClick={() => setSelectedPost(post)}
   className="aspect-square overflow-hidden rounded-xl bg-white/5 cursor-pointer"
 >
       {post.video_url ? (
@@ -99,6 +94,30 @@ export default function ProfileScreen({ user }: { user: any }) {
     </div>
   ))}
 </div>
+
+{selectedPost && (
+  <div
+    className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+    onClick={() => setSelectedPost(null)}
+  >
+    {selectedPost.video_url ? (
+      <video
+        src={selectedPost.video_url}
+        controls
+        autoPlay
+        playsInline
+        className="max-w-full max-h-full rounded-xl"
+      />
+    ) : (
+      <img
+        src={selectedPost.image_url}
+        alt=""
+        className="max-w-full max-h-full rounded-xl"
+      />
+    )}
+  </div>
+)}
+
     </div>
   )
 }
