@@ -418,7 +418,7 @@ const sharePost = async (post: any) => {
 
   await Share.share({
     title: 'VRRA Community Post',
-    text: `${post.caption || 'Check this out!'}\n\n${post.image_url || post.video_url || window.location.href}`,
+    text: `${post.caption || 'Check this out!'}\n\nwatch here:\n${post.image_url || post.video_url || window.location.href}`,
     dialogTitle: 'Share this post',
   })
 }
@@ -566,92 +566,106 @@ const sendFriendRequest = async (receiverId: string) => {
         />
       </div>
     )}
-    
+
     {selectedProfile && (
-  <div className="fixed inset-0 z-50 bg-black p-4 overflow-y-auto">
-    <button
-      onClick={() => setSelectedProfile(null)}
-      className="mb-4 text-sm text-white/70"
-    >
-      Back
-    </button>
+  <div className="fixed inset-0 z-50 bg-black overflow-y-auto">
+    <div className="min-h-screen pb-20">
 
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
-  <div className="w-20 h-20 rounded-full bg-lime-400 text-black flex items-center justify-center text-3xl font-bold">
-    {(selectedProfile.username || 'U').charAt(0).toUpperCase()}
-  </div>
+      {/* Header */}
+      <div className="sticky top-0 z-20 bg-black/80 backdrop-blur-xl px-4 py-4 border-b border-white/10">
+        <button
+          onClick={() => setSelectedProfile(null)}
+          className="text-white text-sm"
+        >
+          ← Back
+        </button>
+      </div>
 
-  <div>
-    <h2 className="text-xl font-bold">
-      @{selectedProfile.username || 'User'}
-    </h2>
-    <p className="text-sm text-white/60">
-      VRRA Community Member
-    </p>
-    <button
-  onClick={() => removeFriend(selectedProfile.id)}
-  className="mt-3 px-4 py-2 rounded-xl bg-red-500 text-white text-sm"
->
-  Remove Friend
-</button>
-  </div>
-</div>
+      {/* Profile Top */}
+      <div className="px-5 pt-6">
 
-      <p className="text-sm text-white/60">
-        User Profile
-      </p>
+        <div className="flex items-center gap-4">
+          <div className="w-24 h-24 rounded-full bg-lime-400 text-black flex items-center justify-center text-4xl font-bold">
+            {(selectedProfile.username || 'U').charAt(0).toUpperCase()}
+          </div>
 
-      <div className="grid grid-cols-3 gap-3 text-center">
-  <div className="bg-white/5 rounded-x1 p-3">
-    <p className="text-lg font-bold">
-      {posts.filter((post) => post.user_id === selectedProfile.id).length}
-    </p>
-    <p className="text-xs text-white/60">Posts</p>
-  </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold">
+              @{selectedProfile.username || 'User'}
+            </h2>
 
-  <div className="bg-white/5 rounded-xl p-3">
-    <p className="text-lg font-bold">
-      {savedPostIds.length}
-    </p>
-    <p className="text-xs text-white/60">Saved</p>
-  </div>
+            <p className="text-white/60 text-sm mt-1">
+              VRRA Community Member
+            </p>
 
-  <div className="bg-white/5 rounded-xl p-3">
-    <p className="text-lg font-bold">
-      {friends.length}
-    </p>
-    <p className="text-xs text-white/60">Friends</p>
-  </div>
-</div>
-
-      <div className="space-y-3">
-        {posts
-          .filter((post) => post.user_id === selectedProfile.id)
-          .map((post) => (
-            <div
-              key={post.id}
-              className="bg-white/5 rounded-3xl p-4 border border-white/10 shadow-xl space-y-3"
+            <button
+              onClick={() => removeFriend(selectedProfile.id)}
+              className="mt-4 px-5 py-2 rounded-full bg-red-500 text-white text-sm font-medium"
             >
-              {post.caption && <p>{post.caption}</p>}
+              Remove Friend
+            </button>
+          </div>
+        </div>
 
-              {post.video_url ? (
-  <video
-  src={post.video_url}
-  autoPlay
-  muted
-  loop
-  playsInline
-  preload="auto"
-  onLoadedMetadata={(e) => {
-    e.currentTarget.play().catch(() => {})
-  }}
-  onClick={() => setSelectedPost(post)}
-  className="w-full h-[280px] object-cover rounded-2xl"
-/>
-) : null}
-            </div>
-          ))}
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-3 mt-8">
+          <div className="bg-white/5 rounded-2xl p-4 text-center">
+            <p className="text-2xl font-bold">
+              {posts.filter((post) => post.user_id === selectedProfile.id).length}
+            </p>
+            <p className="text-white/60 text-sm">Posts</p>
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-4 text-center">
+            <p className="text-2xl font-bold">
+              {savedPostIds.length}
+            </p>
+            <p className="text-white/60 text-sm">Saved</p>
+          </div>
+
+          <div className="bg-white/5 rounded-2xl p-4 text-center">
+            <p className="text-2xl font-bold">
+              {friends.length}
+            </p>
+            <p className="text-white/60 text-sm">Friends</p>
+          </div>
+        </div>
+
+        {/* Posts */}
+        <div className="mt-8">
+          <p className="text-lg font-bold mb-4">
+            Posts
+          </p>
+
+          <div className="grid grid-cols-2 gap-3">
+            {posts
+              .filter((post) => post.user_id === selectedProfile.id)
+              .map((post) => (
+                <div
+                  key={post.id}
+                  onClick={() => setSelectedPost(post)}
+                  className="relative rounded-2xl overflow-hidden bg-white/5"
+                >
+                  {post.video_url ? (
+                    <video
+                      src={post.video_url}
+                      className="w-full h-[220px] object-cover"
+                      muted
+                      loop
+                      autoPlay
+                      playsInline
+                    />
+                  ) : post.image_url ? (
+                    <img
+                      src={post.image_url}
+                      className="w-full h-[220px] object-cover"
+                    />
+                  ) : null}
+                </div>
+              ))}
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
