@@ -28,7 +28,7 @@ export default function ProfileScreen({ user }: { user: any }) {
     const { data: postData } = await supabase
       .from('community_posts')
       .select('*')
-      .eq('id', viewingUserId)
+      .eq('user_id', viewingUserId)
 
     const { data: friendData } = await supabase
       .from('friendships')
