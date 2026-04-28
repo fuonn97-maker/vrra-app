@@ -26,24 +26,32 @@ export default function ProfileScreen({ user }: { user: any }) {
   if (!file) return
 
   const fileExt = file.name.split('.').pop()
-  const fileName = `${user.id}.${fileExt}`
+  const fileName = `${user.id}-${Date.now()}.${fileExt}`
 
-  await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from('avatars')
-    .upload(fileName, file, {
-      upsert: true,
-    })
+    .upload(fileName, file)
+
+  if (uploadError) {
+    alert(uploadError.message)
+    return
+  }
 
   const { data } = supabase.storage
     .from('avatars')
     .getPublicUrl(fileName)
 
-  await supabase
+  const { error: updateError } = await supabase
     .from('profiles')
     .update({
       avatar_url: data.publicUrl,
     })
     .eq('id', user.id)
+
+  if (updateError) {
+    alert(updateError.message)
+    return
+  }
 
   loadProfile()
 }
