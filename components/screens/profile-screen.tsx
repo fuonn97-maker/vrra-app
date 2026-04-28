@@ -69,12 +69,13 @@ export default function ProfileScreen({ user }: { user: any }) {
     >
       {post.video_url ? (
         <video
-          src={post.video_url}
-          className="w-full h-full object-cover"
-          muted
-          playsInline
-          preload="metadata"
-        />
+  src={post.video_url}
+  className="w-full h-full object-cover"
+  muted
+  playsInline
+  preload="auto"
+  controls={false}
+/>
       ) : post.image_url ? (
         <img
           src={post.image_url}
