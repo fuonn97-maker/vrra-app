@@ -65,20 +65,23 @@ export default function ProfileScreen({ user }: { user: any }) {
   {posts.map((post: any) => (
     <div
       key={post.id}
-      className="aspect-square overflow-hidden rounded-xl bg-card"
+      className="aspect-square overflow-hidden rounded-xl bg-white/5"
     >
-      {post.media_type === 'image' ? (
+      {post.video_url ? (
+        <video
+          src={post.video_url}
+          className="w-full h-full object-cover"
+          muted
+          playsInline
+          preload="metadata"
+        />
+      ) : post.image_url ? (
         <img
-          src={post.media_url}
+          src={post.image_url}
           alt=""
           className="w-full h-full object-cover"
         />
-      ) : (
-        <video
-          src={post.media_url}
-          className="w-full h-full object-cover"
-        />
-      )}
+      ) : null}
     </div>
   ))}
 </div>
