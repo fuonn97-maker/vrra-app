@@ -28,7 +28,7 @@ export default function ProfileScreen({ user }: { user: any }) {
       .eq('user_id', user.id)
 
     const { data: friendData } = await supabase
-      .from('friends')
+      .from('friendships')
       .select('*')
       .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
 
