@@ -260,9 +260,17 @@ return (
     }}
     className="bg-white/5 rounded-xl p-4 flex items-center gap-3 cursor-pointer"
   >
-          <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
-            {friend.username?.charAt(0)?.toUpperCase()}
-          </div>
+          {friend.avatar_url ? (
+  <img
+    src={friend.avatar_url}
+    alt=""
+    className="w-12 h-12 rounded-full object-cover"
+  />
+) : (
+  <div className="w-12 h-12 rounded-full bg-lime-400 text-black flex items-center justify-center font-bold">
+    {(friend.username || 'U').charAt(0).toUpperCase()}
+  </div>
+)}
 
           <p className="font-semibold">@{friend.username}</p>
         </div>
