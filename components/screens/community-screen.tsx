@@ -974,7 +974,7 @@ const sendFriendRequest = async (receiverId: string) => {
   </div>
 ) : null}
 
-<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3 max-h-[220px] overflow-y-auto">
+<div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
   <h2 className="font-semibold">Friends</h2>
 
   {friends.length === 0 && (
@@ -983,7 +983,7 @@ const sendFriendRequest = async (receiverId: string) => {
     </p>
   )}
 
-<div className="flex gap-3 overflow-x-auto pb-2">
+<div className="flex gap-4 overflow-x-auto pb-2">
   {friends.map((friend) => {
     const name = friend.username || 'User'
 
@@ -992,7 +992,7 @@ const sendFriendRequest = async (receiverId: string) => {
         key={friend.id}
         type="button"
         onClick={() => setSelectedProfile(friend)}
-        className="shrink-0 w-14 h-14 rounded-full bg-lime-400 text-black flex items-center justify-center text-xl font-bold border border-white/20"
+        className="shrink-0 flex flex-col items-center gap-1 min-w-[64px]"
       >
         {friend.avatar_url ? (
   <img
@@ -1003,6 +1003,10 @@ const sendFriendRequest = async (receiverId: string) => {
 ) : (
   name.charAt(0).toUpperCase()
 )}
+
+<p className="text-xs text-white/80 text-center truncate w-16">
+  {name}
+</p>
       </button>
     )
   })}
