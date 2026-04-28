@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
 export default function ProfileScreen({ user }: { user: any }) {
   const [profile, setProfile] = useState<any>(null)
   const [posts, setPosts] = useState<any[]>([])
   const [friendsCount, setFriendsCount] = useState(0)
   const [selectedPost, setSelectedPost] = useState<any>(null)
+  const router = useRouter()
 
   useEffect(() => {
     loadProfile()
@@ -32,11 +34,22 @@ export default function ProfileScreen({ user }: { user: any }) {
 
     setProfile(profileData)
     setPosts(postData || [])
-    setFriendsCount(friendData?.length || 0)
+    const acceptedFriends = friendData?.filter(
+  (friend: any) =>
+    friend.user_id === user.id || friend.friend_id === user.id
+)
+
+setFriendsCount(acceptedFriends?.length || 0)
   }
 
   return (
-    <div className="p-4 space-y-5">
+  <div className="p-4 space-y-5">
+    <button
+      onClick={() => router.back()}
+      className="text-white/70 text-sm mb-2"
+    >
+      ← Back
+    </button>
       <div className="flex items-center gap-4">
         <div className="w-24 h-24 rounded-full bg-lime-400 flex items-center justify-center text-4xl font-bold text-black">
           {profile?.username?.charAt(0)?.toUpperCase()}
