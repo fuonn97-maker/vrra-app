@@ -415,7 +415,6 @@ const formatTimeAgo = (dateString: string) => {
 }
 
 const sharePost = async (post: any) => {
-  alert('NEW SHARE FUNCTION RUNNING')
 
   await Share.share({
     title: 'VRRA Community Post',
