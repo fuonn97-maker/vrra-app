@@ -586,7 +586,7 @@ const sendFriendRequest = async (receiverId: string) => {
       status: 'pending'
     })
 
-  if (error) {
+    if (error) {
     setFriendMessage('Friend request already sent or failed.')
     return
   }
@@ -598,6 +598,8 @@ await supabase.from('notifications').insert({
   message: 'sent you a friend request',
   is_read: false,
 })
+
+fetchNotifications()
 
 setFriendMessage('Friend request sent.')
 }
@@ -1034,7 +1036,7 @@ const isPending = (profileId: string) => {
   .update({ is_read: true })
   .eq('id', notification.id)
 
-  fetchNotifications()
+fetchNotifications()
     const targetPost = posts.find(
       (post) => post.id === notification.post_id
     )
