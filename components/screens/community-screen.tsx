@@ -93,9 +93,6 @@ useEffect(() => {
   .eq('user_id', user.id)
   .order('created_at', { ascending: false })
 
-    console.log('NOTIFICATION ERROR:', error)
-    console.log('NOTIFICATION DATA:', data)
-
   if (!error && data) {
     setNotifications(data)
   }
@@ -572,7 +569,6 @@ setTimeout(() => {
 }
 
 const sendFriendRequest = async (receiverId: string) => {
-  console.log('SEND FRIEND REQUEST CLICKED:', receiverId)
   setFriendMessage('')
 
   await supabase
@@ -604,8 +600,6 @@ const { error: notificationError } = await supabase
     message: 'sent you a friend request',
     is_read: false,
   })
-
-console.log('FRIEND REQUEST NOTIFICATION ERROR:', notificationError)
 
 fetchNotifications()
 
@@ -692,7 +686,6 @@ const isPending = (profileId: string) => {
 ) : (
   <button
     onClick={() => {
-  alert('BUTTON WORKING')
   sendFriendRequest(selectedProfile.id)
 }}
       className="mt-4 px-5 py-2 rounded-full bg-lime-500 text-black text-sm font-medium"
