@@ -585,13 +585,17 @@ const sendFriendRequest = async (receiverId: string) => {
     return
   }
 
-await supabase.from('notifications').insert({
-  user_id: receiverId,
-  actor_id: user.id,
-  type: 'friend_request',
-  message: 'sent you a friend request',
-  is_read: false,
-})
+const { error: notificationError } = await supabase
+  .from('notifications')
+  .insert({
+    user_id: receiverId,
+    actor_id: user.id,
+    type: 'friend_request',
+    message: 'sent you a friend request',
+    is_read: false,
+  })
+
+console.log('FRIEND REQUEST NOTIFICATION ERROR:', notificationError)
 
 fetchNotifications()
 
