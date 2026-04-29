@@ -82,7 +82,14 @@ useEffect(() => {
 
   const { data, error } = await supabase
     .from('notifications')
-    .select('*')
+    .select(`
+  *,
+  actor:profiles!notifications_actor_id_fkey (
+    id,
+    username,
+    avatar_url
+  )
+`)
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -997,13 +1004,26 @@ const isPending = (profileId: string) => {
       </p>
     ) : (
       notifications.map((notification) => (
-        <div
-          key={notification.id}
-          className="bg-white/5 rounded-xl p-3 text-sm"
-        >
-          {notification.message}
-        </div>
-      ))
+  <div
+    key={notification.id}
+    className="bg-white/5 rounded-xl p-3 flex items-center gap-3"
+  >
+    <img
+      src={notification.actor?.avatar_url || '/default-avatar.png'}
+      alt={notification.actor?.username || 'User'}
+      className="w-10 h-10 rounded-full object-cover"
+    />
+
+    <div className="text-sm">
+      <span className="font-semibold">
+        {notification.actor?.username || 'Someone'}
+      </span>{' '}
+      {notification.type === 'like' && 'liked your post'}
+      {notification.type === 'comment' && 'commented on your post'}
+      {notification.type === 'share' && 'shared your post'}
+    </div>
+  </div>
+))
     )}
   </div>
 ) : null}
