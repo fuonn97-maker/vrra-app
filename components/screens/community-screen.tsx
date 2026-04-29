@@ -563,6 +563,7 @@ setTimeout(() => {
 }
 
 const sendFriendRequest = async (receiverId: string) => {
+  console.log('SEND FRIEND REQUEST CLICKED:', receiverId)
   setFriendMessage('')
 
   await supabase
