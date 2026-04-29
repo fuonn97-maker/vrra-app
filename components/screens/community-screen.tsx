@@ -1016,13 +1016,14 @@ const isPending = (profileId: string) => {
   <div
   key={notification.id}
   onClick={() => {
-    setShowNotifications(false)
+    const targetPost = posts.find(
+      (post) => post.id === notification.post_id
+    )
 
-    setTimeout(() => {
-      document
-        .getElementById(`post-${notification.post_id}`)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }, 100)
+    if (targetPost) {
+      setSelectedPost(targetPost)
+      setShowNotifications(false)
+    }
   }}
   className="bg-white/5 rounded-xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98]"
 >
