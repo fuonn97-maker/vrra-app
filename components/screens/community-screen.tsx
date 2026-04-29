@@ -1061,6 +1061,8 @@ fetchNotifications()
       {notification.type === 'like' && 'liked your post'}
       {notification.type === 'comment' && 'commented on your post'}
       {notification.type === 'share' && 'shared your post'}
+      {notification.type === 'friend_request' && 'sent you a friend request'}
+      {notification.type === 'friend_accept' && 'accepted your friend request'}
     </div>
   </div>
 ))
