@@ -14,7 +14,13 @@ import ProfileScreen from '@/components/screens/profile-screen'
 export default function DashboardPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('home')
+  const [activeTab, setActiveTab] = useState(() => {
+  if (typeof window !== 'undefined') {
+    const tab = new URLSearchParams(window.location.search).get('tab')
+    return tab || 'home'
+  }
+  return 'home'
+})
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [scansToday, setScansToday] = useState(0)
