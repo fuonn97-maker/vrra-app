@@ -919,12 +919,12 @@ const isPending = (profileId: string) => {
 
   fetchNotifications()
 }}
-    className="relative"
+    className="relative inline-flex items-center justify-center"
   >
     🔔
 
     {notifications.filter((n) => !n.is_read).length > 0 && (
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
+      <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center">
         {notifications.filter((n) => !n.is_read).length}
       </span>
     )}
