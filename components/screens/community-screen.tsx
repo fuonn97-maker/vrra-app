@@ -1039,14 +1039,26 @@ const isPending = (profileId: string) => {
   .eq('id', notification.id)
 
 fetchNotifications()
-    const targetPost = posts.find(
-      (post) => post.id === notification.post_id
-    )
+    if (notification.type === 'friend_request') {
+  setShowNotifications(false)
 
-    if (targetPost) {
-      setSelectedPost(targetPost)
-      setShowNotifications(false)
-    }
+  setTimeout(() => {
+    document
+      .getElementById('friend-requests-section')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, 100)
+
+  return
+}
+
+const targetPost = posts.find(
+  (post) => post.id === notification.post_id
+)
+
+if (targetPost) {
+  setSelectedPost(targetPost)
+  setShowNotifications(false)
+}
   }}
   className="bg-white/5 rounded-xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98]"
 >
@@ -1073,7 +1085,10 @@ fetchNotifications()
 ) : null}
 
 {friendRequests.length > 0 && (
-    <div className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3">
+    <div
+  id="friend-requests-section"
+  className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3"
+>
   <h2 className="font-semibold">Friend Requests</h2>
 
   {friendRequests.map((request) => (
