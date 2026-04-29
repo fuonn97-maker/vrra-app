@@ -920,15 +920,10 @@ const isPending = (profileId: string) => {
   </h1>
 
   <button
-    onClick={async () => {
+    onClick={() => {
   setShowNotifications(!showNotifications)
 
-  await supabase
-    .from('notifications')
-    .update({ is_read: true })
-    .eq('user_id', user.id)
-
-  fetchNotifications()
+  
 }}
     className="relative inline-flex items-center justify-center"
   >
@@ -1025,7 +1020,13 @@ const isPending = (profileId: string) => {
       notifications.map((notification) => (
   <div
   key={notification.id}
-  onClick={() => {
+  onClick={async () => {
+    await supabase
+  .from('notifications')
+  .update({ is_read: true })
+  .eq('id', notification.id)
+
+  fetchNotifications()
     const targetPost = posts.find(
       (post) => post.id === notification.post_id
     )
