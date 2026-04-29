@@ -1060,6 +1060,15 @@ fetchNotifications()
   return
 }
 
+if (notification.type === 'friend_accept') {
+  if (notification.actor) {
+    setSelectedProfile(notification.actor)
+    setShowNotifications(false)
+  }
+
+  return
+}
+
 const targetPost = posts.find(
   (post) => post.id === notification.post_id
 )
