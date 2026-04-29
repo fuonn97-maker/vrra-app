@@ -799,13 +799,23 @@ const isPending = (profileId: string) => {
 )}
 
       <div className="p-4 space-y-3">
-        <p className="font-semibold">
-          @{selectedPost.profile?.username || 'User'}
+  <div className="flex items-center gap-2">
+    <img
+      src={selectedPost.profile?.avatar_url || '/default-avatar.png'}
+      alt={selectedPost.profile?.username || 'User'}
+      className="w-8 h-8 rounded-full object-cover"
+    />
 
-          <span className="ml-2 text-xs text-white/40">
-            {formatTimeAgo(selectedPost.created_at)}
-          </span>
-        </p>
+    <div>
+      <p className="font-semibold">
+        @{selectedPost.profile?.username || 'User'}
+      </p>
+
+      <span className="text-xs text-white/40">
+        {formatTimeAgo(selectedPost.created_at)}
+      </span>
+    </div>
+  </div>
 
         {selectedPost.caption && (
           <p className="text-sm text-white/80">
