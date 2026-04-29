@@ -591,7 +591,15 @@ const sendFriendRequest = async (receiverId: string) => {
     return
   }
 
-  setFriendMessage('Friend request sent.')
+await supabase.from('notifications').insert({
+  user_id: receiverId,
+  actor_id: user.id,
+  type: 'friend_request',
+  message: 'sent you a friend request',
+  is_read: false,
+})
+
+setFriendMessage('Friend request sent.')
 }
 const isPending = (profileId: string) => {
   return friendRequests.some(
