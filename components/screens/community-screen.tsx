@@ -682,7 +682,10 @@ const isPending = (profileId: string) => {
   </button>
 ) : (
   <button
-    onClick={() => sendFriendRequest(selectedProfile.id)}
+    onClick={() => {
+  alert('BUTTON WORKING')
+  sendFriendRequest(selectedProfile.id)
+}}
       className="mt-4 px-5 py-2 rounded-full bg-lime-500 text-black text-sm font-medium"
     >
       Add Friend
