@@ -92,7 +92,7 @@ export default function AppHeader({
 
               <button
                 onClick={() => {
-                  router.push('/dashboard')
+                  router.push('/dashboard/settings')
                   setShowMenu(false)
                 }}
                 className="w-full px-4 py-3 text-left text-sm text-foreground hover:bg-card/60 transition-colors"
