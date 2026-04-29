@@ -224,6 +224,15 @@ const respondFriendRequest = async (
         friend_id: user.id,
       },
     ])
+
+await supabase.from('notifications').insert({
+  user_id: senderId,
+  actor_id: user.id,
+  type: 'friend_accept',
+  message: 'accepted your friend request',
+  is_read: false,
+})
+
   }
 
   setFriendMessage(
