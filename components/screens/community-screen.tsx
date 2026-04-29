@@ -83,19 +83,13 @@ useEffect(() => {
   const { data, error } = await supabase
   .from('notifications')
   .select(`
+  *,
+  actor:profiles!notifications_actor_id_fkey(
     id,
-    type,
-    message,
-    is_read,
-    created_at,
-    post_id,
-    actor_id,
-    actor:profiles!notifications_actor_id_fkey(
-      id,
-      username,
-      avatar_url
-    )
-  `)
+    username,
+    avatar_url
+  )
+`)
   .eq('user_id', user.id)
   .order('created_at', { ascending: false })
 
