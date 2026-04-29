@@ -84,7 +84,7 @@ useEffect(() => {
     .from('notifications')
     .select(`
   *,
-  actor:profiles!notifications_actor_id_fkey (
+  actor:profiles!actor_id (
     id,
     username,
     avatar_url
@@ -92,6 +92,9 @@ useEffect(() => {
 `)
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+    console.log('NOTIFICATION ERROR:', error)
+    console.log('NOTIFICATION DATA:', data)
 
   if (!error && data) {
     setNotifications(data)
