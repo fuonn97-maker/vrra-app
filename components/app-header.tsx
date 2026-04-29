@@ -22,7 +22,7 @@ export default function AppHeader({ userEmail, isPremium }: AppHeaderProps) {
   }
 
   return (
-    <header className="border-b border-border/10 bg-background">
+    <header className="sticky top-0 z-50 border-b border-border/10 bg-background/90 backdrop-blur-xl">
       <div className="max-w-md mx-auto px-6 py-4 flex items-center justify-between gap-4">
         {/* Left: VRRA Logo */}
         <div className="text-2xl font-black text-primary tracking-tight flex-shrink-0">
