@@ -88,6 +88,7 @@ useEffect(() => {
     message,
     is_read,
     created_at,
+    post_id,
     actor_id,
     actor:profiles!notifications_actor_id_fkey(
       id,
@@ -1013,9 +1014,18 @@ const isPending = (profileId: string) => {
     ) : (
       notifications.map((notification) => (
   <div
-    key={notification.id}
-    className="bg-white/5 rounded-xl p-3 flex items-center gap-3"
-  >
+  key={notification.id}
+  onClick={() => {
+    setShowNotifications(false)
+
+    setTimeout(() => {
+      document
+        .getElementById(`post-${notification.post_id}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 100)
+  }}
+  className="bg-white/5 rounded-xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98]"
+>
     <img
       src={notification.actor?.avatar_url || '/default-avatar.png'}
       alt={notification.actor?.username || 'User'}
@@ -1224,9 +1234,10 @@ const isPending = (profileId: string) => {
     })
     .map((post) => (
       <div
-        key={post.id}
-        className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3 shadow-lg"
-      >
+  id={`post-${post.id}`}
+  key={post.id}
+  className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3 shadow-lg"
+>
            
 
            <div className="flex items-center gap-3">
