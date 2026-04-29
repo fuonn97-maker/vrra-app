@@ -43,6 +43,13 @@ export default function AppHeader({ userEmail, isPremium }: AppHeaderProps) {
 
         {/* Right: User Avatar/Menu */}
         <div className="relative flex-shrink-0">
+
+          <button
+  onClick={() => setShowMenu(!showMenu)}
+  className="w-10 h-10 rounded-full flex items-center justify-center"
+>
+  ⚙️
+</button>
           
           {/* Dropdown Menu */}
           {showMenu && (
