@@ -111,6 +111,12 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
   const [isGuidedMode, setIsGuidedMode] = useState(false)
   const [showLocked, setShowLocked] = useState(false)
+  const [gender, setGender] = useState<'male' | 'female' | null>(null)
+  const [age, setAge] = useState<number | null>(null)
+  const [goal, setGoal] = useState<'lose_weight' | 'gain_strength' | 'gain_muscle' | null>(null)
+  const [level, setLevel] = useState<'novice' | 'beginner' | 'intermediate' | 'advanced' | null>(null)
+  const [equipment, setEquipment] = useState<'barbell' | 'dumbbells' | 'bodyweight' | 'machine' | 'kettlebells' | 'cables' | 'band' | 'all' | null>(null)
+  const [bodyFocus, setBodyFocus] = useState<'upper_push' | 'upper_pull' | 'lower_push' | 'lower_pull' | 'core' | 'arms' | 'shoulders' | 'full_body' | null>(null)
 
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const currentDay = days[new Date().getDay()]
@@ -128,6 +134,9 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
     setIsGuidedMode(true)
   }
 
+  const isWorkoutProfileComplete =
+  gender && age && goal && level && equipment && bodyFocus
+
   if (isGuidedMode && workout.name !== 'Recovery') {
     return (
       <GuidedWorkout
@@ -138,6 +147,130 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
     )
   }
 
+  if (!isWorkoutProfileComplete) {
+  return (
+    <div className="pb-24 px-4 space-y-6">
+      <div className="pt-6 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/20 via-card/70 to-background p-5 shadow-xl">
+        <p className="text-sm text-primary font-bold">AI Workout Builder</p>
+        <h1 className="text-3xl font-black text-foreground mt-1">
+          Build Your Plan
+        </h1>
+        <p className="text-sm text-foreground/60 mt-2">
+          Answer a few questions and VRRA will prepare a workout plan for you.
+        </p>
+      </div>
+
+      <div className="space-y-5">
+        <SelectionBlock
+          title="1. Gender"
+          options={[
+            { label: 'Male', value: 'male' },
+            { label: 'Female', value: 'female' },
+          ]}
+          selected={gender}
+          onSelect={(value) => setGender(value as 'male' | 'female')}
+        />
+
+        <div className="rounded-3xl border border-white/10 bg-card/50 p-4 space-y-3">
+          <h2 className="text-sm font-bold text-foreground/70">2. Age</h2>
+          <input
+            type="number"
+            min="12"
+            max="90"
+            value={age || ''}
+            onChange={(e) => setAge(Number(e.target.value))}
+            placeholder="Enter your age"
+            className="w-full rounded-2xl bg-background/60 border border-white/10 px-4 py-3 outline-none"
+          />
+        </div>
+
+        <SelectionBlock
+          title="3. Goal"
+          options={[
+            { label: 'Lose Weight', value: 'lose_weight' },
+            { label: 'Gain Strength', value: 'gain_strength' },
+            { label: 'Gain Muscle', value: 'gain_muscle' },
+          ]}
+          selected={goal}
+          onSelect={(value) =>
+            setGoal(value as 'lose_weight' | 'gain_strength' | 'gain_muscle')
+          }
+        />
+
+        <SelectionBlock
+          title="4. Experience Level"
+          options={[
+            { label: 'Novice', value: 'novice' },
+            { label: 'Beginner', value: 'beginner' },
+            { label: 'Intermediate', value: 'intermediate' },
+            { label: 'Advanced', value: 'advanced' },
+          ]}
+          selected={level}
+          onSelect={(value) =>
+            setLevel(value as 'novice' | 'beginner' | 'intermediate' | 'advanced')
+          }
+        />
+
+        <SelectionBlock
+          title="5. Equipment"
+          options={[
+            { label: 'Barbell', value: 'barbell' },
+            { label: 'Dumbbells', value: 'dumbbells' },
+            { label: 'Bodyweight', value: 'bodyweight' },
+            { label: 'Machine', value: 'machine' },
+            { label: 'Kettlebells', value: 'kettlebells' },
+            { label: 'Cables', value: 'cables' },
+            { label: 'Band', value: 'band' },
+            { label: 'All', value: 'all' },
+          ]}
+          selected={equipment}
+          onSelect={(value) =>
+            setEquipment(
+              value as
+                | 'barbell'
+                | 'dumbbells'
+                | 'bodyweight'
+                | 'machine'
+                | 'kettlebells'
+                | 'cables'
+                | 'band'
+                | 'all'
+            )
+          }
+        />
+
+        <SelectionBlock
+          title="6. Body Focus"
+          options={[
+            { label: 'Upper Body Push', value: 'upper_push' },
+            { label: 'Upper Body Pull', value: 'upper_pull' },
+            { label: 'Lower Body Push', value: 'lower_push' },
+            { label: 'Lower Body Pull', value: 'lower_pull' },
+            { label: 'Core', value: 'core' },
+            { label: 'Arms', value: 'arms' },
+            { label: 'Shoulders', value: 'shoulders' },
+            { label: 'Full Body', value: 'full_body' },
+          ]}
+          selected={bodyFocus}
+          onSelect={(value) =>
+            setBodyFocus(
+              value as
+                | 'upper_push'
+                | 'upper_pull'
+                | 'lower_push'
+                | 'lower_pull'
+                | 'core'
+                | 'arms'
+                | 'shoulders'
+                | 'full_body'
+            )
+          }
+        />
+      </div>
+    </div>
+  )
+}
+  
   return (
     <div className="pb-24 px-4 space-y-6">
       {/* Hero */}
@@ -298,6 +431,44 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
           </p>
         </div>
       )}
+    </div>
+  )
+}
+
+function SelectionBlock({
+  title,
+  options,
+  selected,
+  onSelect,
+}: {
+  title: string
+  options: { label: string; value: string }[]
+  selected: string | null
+  onSelect: (value: string) => void
+}) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-card/50 p-4 space-y-3">
+      <h2 className="text-sm font-bold text-foreground/70">{title}</h2>
+
+      <div className="grid grid-cols-2 gap-2">
+        {options.map((option) => {
+          const active = selected === option.value
+
+          return (
+            <button
+              key={option.value}
+              onClick={() => onSelect(option.value)}
+              className={`rounded-2xl border px-3 py-3 text-sm font-bold transition-all ${
+                active
+                  ? 'bg-primary/25 border-primary text-primary'
+                  : 'bg-background/40 border-white/10 text-foreground/70'
+              }`}
+            >
+              {option.label}
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }
