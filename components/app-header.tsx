@@ -43,14 +43,7 @@ export default function AppHeader({ userEmail, isPremium }: AppHeaderProps) {
 
         {/* Right: User Avatar/Menu */}
         <div className="relative flex-shrink-0">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-bold text-sm hover:shadow-[0_0_16px_rgba(156,204,102,0.3)] transition-all"
-            title="User menu"
-          >
-            {userEmail.charAt(0).toUpperCase()}
-          </button>
-
+          
           {/* Dropdown Menu */}
           {showMenu && (
             <div className="absolute right-0 mt-2 bg-card border border-border/30 rounded-lg shadow-lg min-w-48 z-50">
