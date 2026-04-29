@@ -1360,8 +1360,16 @@ if (targetPost) {
 
 <button
   onClick={() => toggleLike(post)}
-  className="flex items-center gap-2 text-sm font-medium bg-white/5 px-3 py-2 rounded-xl">
+  className="flex items-center gap-2 text-sm font-medium bg-white/5 px-3 py-2 rounded-xl"
+>
   {post.liked_by_me ? '❤️' : '🤍'} {post.likes_count || 0}
+</button>
+
+<button
+  onClick={() => toggleSave(post)}
+  className="text-sm font-medium bg-white/5 px-3 py-2 rounded-xl mt-2"
+>
+  {savedPostIds.includes(post.id) ? 'Saved' : 'Save'}
 </button>
 
 <button
