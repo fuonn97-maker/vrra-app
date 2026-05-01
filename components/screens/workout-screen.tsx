@@ -27,17 +27,36 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
   const handleGenerateWorkout = () => {
   if (!goal || !level || !equipment || !bodyFocus) return
 
+  const goalMap: any = {
+    'Lose Weight': 'lose_weight',
+    'Gain Strength': 'gain_strength',
+    'Gain Muscle': 'gain_muscle',
+  }
+
+  const levelMap: any = {
+    Novice: 'novice',
+    Beginner: 'beginner',
+    Intermediate: 'intermediate',
+    Advanced: 'advanced',
+  }
+
+  const equipmentMap: any = {
+    Barbell: 'barbell',
+    Dumbbells: 'dumbbells',
+    Bodyweight: 'bodyweight',
+    Machine: 'machine',
+    Kettlebells: 'kettlebells',
+    Cables: 'cables',
+    Band: 'band',
+  }
+
   const exercises = getExercisesByPreferences({
-  goal: goal as any,
-  level: level as any,
-  equipment: [equipment] as any,
-})
+    goal: goalMap[goal] as any,
+    level: levelMap[level] as any,
+    equipment: [equipmentMap[equipment]] as any,
+  })
 
-  const filteredExercises = exercises.filter(
-    (exercise) => exercise.category === bodyFocus.toLowerCase()
-  )
-
-  setGeneratedWorkout(filteredExercises)
+  setGeneratedWorkout(exercises)
   setStep(8)
 }
 
