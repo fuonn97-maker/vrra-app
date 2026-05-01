@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { getExercisesByPreferences } from '@/lib/workout-library'
 
 interface WorkoutScreenProps {
   isPremium: boolean
@@ -15,6 +16,7 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
   const [level, setLevel] = useState<string | null>(null)
   const [equipment, setEquipment] = useState<string | null>(null)
   const [bodyFocus, setBodyFocus] = useState<string | null>(null)
+  const [generatedWorkout, setGeneratedWorkout] = useState<any[]>([])
 
   useEffect(() => {
     if (!isPremium) {
@@ -23,9 +25,21 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
   }, [isPremium])
 
   const handleGenerateWorkout = () => {
-    // 以后这里接你的真实 workout library
-    alert('Workout generation ready for next step')
-  }
+  if (!goal || !level || !equipment || !bodyFocus) return
+
+  const exercises = getExercisesByPreferences({
+  goal: goal as any,
+  level: level as any,
+  equipment: [equipment] as any,
+})
+
+  const filteredExercises = exercises.filter(
+    (exercise) => exercise.category === bodyFocus.toLowerCase()
+  )
+
+  setGeneratedWorkout(filteredExercises)
+  setStep(8)
+}
 
   return (
     <div className="pb-24 px-4 pt-6 space-y-6">
@@ -154,6 +168,33 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
           </button>
         </div>
       )}
+
+{step === 8 && (
+  <div className="space-y-4">
+    <h1 className="text-3xl font-black">Your Workout Plan</h1>
+
+    {generatedWorkout.map((exercise) => (
+      <div
+        key={exercise.id}
+        className="rounded-3xl border border-white/10 bg-card/50 p-4 space-y-3"
+      >
+        <video
+          src={exercise.video}
+          controls
+          className="w-full rounded-2xl"
+        />
+
+        <h2 className="text-xl font-bold">{exercise.name}</h2>
+
+        <p>Muscle: {exercise.muscleGroup}</p>
+        <p>Sets: {exercise.sets}</p>
+        <p>Reps: {exercise.reps}</p>
+        <p>Rest: {exercise.rest}s</p>
+      </div>
+    ))}
+  </div>
+)}
+
     </div>
   )
 }
