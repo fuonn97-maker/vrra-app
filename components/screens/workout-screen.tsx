@@ -56,7 +56,11 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
     equipment: [equipmentMap[equipment]] as any,
   })
 
-  setGeneratedWorkout(exercises.slice(0, 6))
+  const filteredExercises = exercises.filter(
+    (exercise) => exercise.category === bodyFocus.toLowerCase()
+  )
+
+  setGeneratedWorkout(filteredExercises)
   setStep(8)
 }
 
@@ -150,14 +154,20 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
         <SelectionPage
           title="Select Body Focus"
           options={[
-            'Upper Body Push',
-            'Upper Body Pull',
-            'Lower Body Push',
-            'Lower Body Pull',
-            'Core',
-            'Arms',
-            'Shoulders',
-            'Full Body',
+            'glutes',
+            'obliques',
+            'hamstrings',
+            'abdominis',
+            'chest',
+            'back',
+            'legs',
+            'shoulders',
+            'arms',
+            'core',
+            'quads',
+            'full body',
+            'lats',
+            'quads/glutes',
           ]}
           onSelect={(value) => {
             setBodyFocus(value)

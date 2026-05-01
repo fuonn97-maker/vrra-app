@@ -18,7 +18,7 @@ export type Equipment =
 export type WorkoutExercise = {
   id: string
   name: string
-  category: "glutes" | "obliques" | "hamstrings" | "abdominis" | "chest" | "back" | "legs" | "shoulders" | "arms" | "core" | "quads" | "shoulders" | "full body" | "lats" | "quads/glutes"
+  category: "glutes" | "obliques" | "hamstrings" | "abdominis" | "chest" | "back" | "legs" | "shoulders" | "arms" | "core" | "quads" | "full body" | "lats" | "quads/glutes"
   muscleGroup: string
   goal: WorkoutGoal[]
   level: FitnessLevel[]
