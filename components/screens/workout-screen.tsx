@@ -141,7 +141,6 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             'Kettlebells',
             'Cables',
             'Band',
-            'Select All',
           ]}
           onSelect={(value) => {
             setEquipment(value)
@@ -165,7 +164,6 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             'arms',
             'core',
             'quads',
-            'full body',
             'lats',
             'quads/glutes',
           ]}
