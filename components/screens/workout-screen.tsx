@@ -24,6 +24,12 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
     }
   }, [isPremium])
 
+  const handleBack = () => {
+  if (step > 1) {
+    setStep(step - 1)
+  }
+}
+
   const handleGenerateWorkout = () => {
   if (!goal || !level || !equipment || !bodyFocus) return
 
@@ -65,41 +71,60 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
 }
 
   return (
-    <div className="pb-24 px-4 pt-6 space-y-6">
-      {step === 1 && (
-        <SelectionPage
-          title="Select Gender"
-          options={['Male', 'Female']}
-          onSelect={(value) => {
-            setGender(value)
-            setStep(2)
-          }}
+  <div className="pb-24 px-4 pt-6 space-y-6">
+
+    {/* STEP 1 */}
+    {step === 1 && (
+      <SelectionPage
+        title="Select Gender"
+        options={['Male', 'Female']}
+        onSelect={(value) => {
+          setGender(value)
+          setStep(2)
+        }}
+      />
+    )}
+
+    {/* STEP 2 */}
+    {step === 2 && (
+      <div className="space-y-6">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
+
+        <h1 className="text-3xl font-black">Select Age</h1>
+
+        <input
+          type="number"
+          min="12"
+          max="90"
+          placeholder="Enter your age"
+          className="w-full rounded-2xl border border-white/10 bg-card/50 px-4 py-4"
+          onChange={(e) => setAge(Number(e.target.value))}
         />
-      )}
 
-      {step === 2 && (
-        <div className="space-y-6">
-          <h1 className="text-3xl font-black">Select Age</h1>
+        <button
+          onClick={() => setStep(3)}
+          className="w-full rounded-2xl bg-primary py-4 font-black"
+        >
+          Continue
+        </button>
+      </div>
+    )}
 
-          <input
-            type="number"
-            min="12"
-            max="90"
-            placeholder="Enter your age"
-            className="w-full rounded-2xl border border-white/10 bg-card/50 px-4 py-4"
-            onChange={(e) => setAge(Number(e.target.value))}
-          />
+    {/* STEP 3 */}
+    {step === 3 && (
+      <div className="space-y-6">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
 
-          <button
-            onClick={() => setStep(3)}
-            className="w-full rounded-2xl bg-primary py-4 font-black"
-          >
-            Continue
-          </button>
-        </div>
-      )}
-
-      {step === 3 && (
         <SelectionPage
           title="Fitness Goal"
           options={[
@@ -112,9 +137,19 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             setStep(4)
           }}
         />
-      )}
+      </div>
+    )}
 
-      {step === 4 && (
+    {/* STEP 4 */}
+    {step === 4 && (
+      <div className="space-y-6">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
+
         <SelectionPage
           title="Fitness Level"
           options={[
@@ -128,9 +163,19 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             setStep(5)
           }}
         />
-      )}
+      </div>
+    )}
 
-      {step === 5 && (
+    {/* STEP 5 */}
+    {step === 5 && (
+      <div className="space-y-6">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
+
         <SelectionPage
           title="Select Equipment"
           options={[
@@ -147,9 +192,19 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             setStep(6)
           }}
         />
-      )}
+      </div>
+    )}
 
-      {step === 6 && (
+    {/* STEP 6 */}
+    {step === 6 && (
+      <div className="space-y-6">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
+
         <SelectionPage
           title="Select Body Focus"
           options={[
@@ -172,58 +227,79 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             setStep(7)
           }}
         />
-      )}
-
-      {step === 7 && (
-        <div className="space-y-5">
-          <h1 className="text-3xl font-black">
-            Workout Summary
-          </h1>
-
-          <SummaryCard title="Gender" value={gender} />
-          <SummaryCard title="Age" value={age?.toString()} />
-          <SummaryCard title="Goal" value={goal} />
-          <SummaryCard title="Level" value={level} />
-          <SummaryCard title="Equipment" value={equipment} />
-          <SummaryCard title="Body Focus" value={bodyFocus} />
-
-          <button
-            onClick={handleGenerateWorkout}
-            className="w-full rounded-2xl bg-gradient-to-r from-primary to-secondary py-4 font-black"
-          >
-            Generate Workout
-          </button>
-        </div>
-      )}
-
-{step === 8 && (
-  <div className="space-y-4">
-    <h1 className="text-3xl font-black">Your Workout Plan</h1>
-
-    {generatedWorkout.map((exercise) => (
-      <div
-        key={exercise.id}
-        className="rounded-3xl border border-white/10 bg-card/50 p-4 space-y-3"
-      >
-        <video
-          src={exercise.video}
-          controls
-          className="w-full rounded-2xl"
-        />
-
-        <h2 className="text-xl font-bold">{exercise.name}</h2>
-
-        <p>Muscle: {exercise.muscleGroup}</p>
-        <p>Sets: {exercise.sets}</p>
-        <p>Reps: {exercise.reps}</p>
-        <p>Rest: {exercise.rest}s</p>
       </div>
-    ))}
-  </div>
-)}
+    )}
 
-    </div>
-  )
+    {/* STEP 7 */}
+    {step === 7 && (
+      <div className="space-y-5">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
+
+        <h1 className="text-3xl font-black">
+          Workout Summary
+        </h1>
+
+        <SummaryCard title="Gender" value={gender} />
+        <SummaryCard title="Age" value={age?.toString()} />
+        <SummaryCard title="Goal" value={goal} />
+        <SummaryCard title="Level" value={level} />
+        <SummaryCard title="Equipment" value={equipment} />
+        <SummaryCard title="Body Focus" value={bodyFocus} />
+
+        <button
+          onClick={handleGenerateWorkout}
+          className="w-full rounded-2xl bg-gradient-to-r from-primary to-secondary py-4 font-black"
+        >
+          Generate Workout
+        </button>
+      </div>
+    )}
+
+    {/* STEP 8 */}
+    {step === 8 && (
+      <div className="space-y-4">
+        <button
+          onClick={handleBack}
+          className="rounded-2xl border border-white/10 px-4 py-2"
+        >
+          ← Back
+        </button>
+
+        <h1 className="text-3xl font-black">
+          Your Workout Plan
+        </h1>
+
+        {generatedWorkout.map((exercise) => (
+          <div
+            key={exercise.id}
+            className="rounded-3xl border border-white/10 bg-card/50 p-4 space-y-3"
+          >
+            <video
+              src={exercise.video}
+              controls
+              className="w-full rounded-2xl"
+            />
+
+            <h2 className="text-xl font-bold">
+              {exercise.name}
+            </h2>
+
+            <p>Muscle: {exercise.muscleGroup}</p>
+            <p>Sets: {exercise.sets}</p>
+            <p>Reps: {exercise.reps}</p>
+            <p>Rest: {exercise.rest}s</p>
+          </div>
+        ))}
+      </div>
+    )}
+
+  </div>
+)
 }
 
 function SelectionPage({
