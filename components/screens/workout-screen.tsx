@@ -56,7 +56,7 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
     equipment: [equipmentMap[equipment]] as any,
   })
 
-  setGeneratedWorkout(exercises)
+  setGeneratedWorkout(exercises.slice(0, 6))
   setStep(8)
 }
 
