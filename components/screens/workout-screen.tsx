@@ -57,10 +57,11 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
   }
 
   const exercises = getExercisesByPreferences({
-    goal: goalMap[goal] as any,
-    level: levelMap[level] as any,
-    equipment: [equipmentMap[equipment]] as any,
-  })
+  goal: goalMap[goal] as any,
+  level: levelMap[level] as any,
+  equipment: [equipmentMap[equipment]] as any,
+  bodyFocus: bodyFocus,
+})
 
   const filteredExercises = exercises.filter(
     (exercise) => exercise.category === bodyFocus.toLowerCase()

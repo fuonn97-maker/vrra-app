@@ -4196,14 +4196,19 @@ export function getExercisesByPreferences(params: {
   goal: WorkoutGoal
   level: FitnessLevel
   equipment: Equipment[]
+  bodyFocus: string
 }) {
   return WORKOUT_LIBRARY.filter((exercise) => {
     const goalMatch = exercise.goal.includes(params.goal)
     const levelMatch = exercise.level.includes(params.level)
+
     const equipmentMatch = exercise.equipment.some((item) =>
       params.equipment.includes(item)
     )
 
-    return goalMatch && levelMatch && equipmentMatch
+    const bodyFocusMatch =
+      exercise.category.toLowerCase() === params.bodyFocus.toLowerCase()
+
+    return goalMatch && levelMatch && equipmentMatch && bodyFocusMatch
   })
 }
