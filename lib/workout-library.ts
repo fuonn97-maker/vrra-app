@@ -2088,7 +2088,7 @@ export const WORKOUT_LIBRARY: WorkoutExercise[] = [
   {
     id: "barbell-split-squat",
     name: "Barbell Split Squat",
-    category: "quads", 
+    category: "lower body", 
     muscleGroup: "quads",
     goal: ["lose_weight", "gain_strength","gain_muscle"],
     level: ["intermediate","advanced"],

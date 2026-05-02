@@ -14,11 +14,49 @@ export default function ProfileScreen({ user }: { user: any }) {
   const [selectedPost, setSelectedPost] = useState<any>(null)
   const router = useRouter()
   const [viewingUserId, setViewingUserId] = useState(user.id)
+  const [workoutStats, setWorkoutStats] = useState({
+  total: 0,
+  thisWeek: 0,
+  calories: 0,
+  lastWorkout: null as any,
+})
 
   useEffect(() => {
   loadProfile()
+  loadWorkoutStats()
 }, [viewingUserId])
 
+  const loadWorkoutStats = async () => {
+  const { data } = await supabase
+    .from('workout_history')
+    .select('*')
+    .eq('user_id', viewingUserId)
+    .order('completed_at', { ascending: false })
+
+  if (!data) return
+
+  const now = new Date()
+  const weekAgo = new Date()
+  weekAgo.setDate(now.getDate() - 7)
+
+  const thisWeekWorkouts = data.filter(
+    (workout) =>
+      new Date(workout.completed_at) >= weekAgo
+  )
+
+  const totalCalories = data.reduce(
+    (sum, workout) => sum + workout.calories,
+    0
+  )
+
+  setWorkoutStats({
+    total: data.length,
+    thisWeek: thisWeekWorkouts.length,
+    calories: totalCalories,
+    lastWorkout: data[0] || null,
+  })
+}
+  
   const handleAvatarUpload = async (
   e: React.ChangeEvent<HTMLInputElement>
 ) => {
@@ -149,7 +187,7 @@ return (
       ← Back
     </button>
 
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 mb-6">
       <label className="w-24 h-24 rounded-full bg-lime-400 overflow-hidden cursor-pointer shrink-0">
         {profile?.avatar_url ? (
           <img
@@ -189,7 +227,7 @@ return (
       </div>
     </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         <div className="bg-white/5 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold">{posts.length}</p>
           <p className="text-white/60">Posts</p>
@@ -201,8 +239,19 @@ return (
 >
           <p className="text-2xl font-bold">{friendsCount}</p>
           <p className="text-white/60">Friends</p>
-        </div>
-      </div>
+</div>
+
+<div className="bg-white/5 rounded-xl p-4 text-center">
+  <p className="text-2xl font-bold">{workoutStats.total}</p>
+  <p className="text-white/60">Workouts</p>
+</div>
+
+<div className="bg-white/5 rounded-xl p-4 text-center">
+  <p className="text-2xl font-bold">{workoutStats.calories}</p>
+  <p className="text-white/60">Calories</p>
+</div>
+
+</div>
 
       <div className="grid grid-cols-3 gap-2 mt-6">
   {posts.map((post: any) => (
