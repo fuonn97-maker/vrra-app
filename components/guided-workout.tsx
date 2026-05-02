@@ -28,6 +28,12 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
   const [isFinished, setIsFinished] = useState(false)
 
   const current = exercises[exerciseIndex]
+  const totalSets = exercises.reduce(
+  (total, exercise) => total + (exercise.sets || 0),
+  0
+)
+
+const estimatedCalories = totalSets * 8
   const restTime =
   typeof current?.rest === 'number' ? current.rest : 60
   const nextExercise = exercises[exerciseIndex + 1]
@@ -52,6 +58,15 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
       workouts_completed: currentCount + 1,
     })
     .eq('id', user.id)
+    await supabase
+  .from('workout_history')
+  .insert({
+    user_id: user.id,
+    workout_name: workoutName,
+    total_exercises: exercises.length,
+    total_sets: totalSets,
+    calories: estimatedCalories,
+  })
 }
 
   const progress =
@@ -120,13 +135,13 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
             </div>
 
             <div className="rounded-2xl bg-white/10 p-4">
-              <p className="text-2xl font-black">🔥</p>
-              <p className="text-xs text-white/50">Done</p>
+              <p className="text-2xl font-black">{totalSets}</p>
+              <p className="text-xs text-white/50">Sets</p>
             </div>
 
             <div className="rounded-2xl bg-white/10 p-4">
-              <p className="text-2xl font-black">+1</p>
-              <p className="text-xs text-white/50">Workout</p>
+              <p className="text-2xl font-black">{estimatedCalories}</p>
+              <p className="text-xs text-white/50">Calories</p>
             </div>
           </div>
         </div>
