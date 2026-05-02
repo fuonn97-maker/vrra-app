@@ -194,7 +194,7 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
               loop
               muted
               playsInline
-              className="relative w-64 h-64 object-cover rounded-3xl border border-white/10 shadow-2xl"
+              className="relative w-full max-h-64 object-cover rounded-3xl border border-white/10 shadow-xl"
             />
           </div>
         )}
@@ -216,7 +216,7 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
         </div>
 
         <div
-          className={`text-8xl font-black tracking-tight ${
+          className={`text-6xl font-black tracking-tight ${
             isResting ? 'text-green-400' : 'text-white'
           }`}
         >
