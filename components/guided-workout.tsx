@@ -6,7 +6,8 @@ import { supabase } from '@/lib/supabase'
 type Exercise = {
   name: string
   sets: number | null
-  reps: number | null
+  reps: number | string | null
+  rest?: number | string | null
   note?: string
   target?: string
   video?: string
@@ -21,12 +22,14 @@ interface Props {
 export default function GuidedWorkout({ exercises, workoutName, onClose }: Props) {
   const [exerciseIndex, setExerciseIndex] = useState(0)
   const [setCount, setSetCount] = useState(1)
-  const [timer, setTimer] = useState(30)
+  const [timer, setTimer] = useState(60)
   const [isRunning, setIsRunning] = useState(false)
   const [isResting, setIsResting] = useState(false)
   const [isFinished, setIsFinished] = useState(false)
 
   const current = exercises[exerciseIndex]
+  const restTime =
+  typeof current?.rest === 'number' ? current.rest : 60
   const nextExercise = exercises[exerciseIndex + 1]
   const saveWorkoutCompleted = async () => {
   const {
@@ -74,20 +77,20 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
   const handleNext = () => {
     if (isResting) {
       setIsResting(false)
-      setTimer(30)
+      setTimer(restTime)
       return
     }
 
     if (current.sets && setCount < current.sets) {
       setSetCount(setCount + 1)
       setIsResting(true)
-      setTimer(15)
+      setTimer(restTime)
     } else {
       if (exerciseIndex < exercises.length - 1) {
         setExerciseIndex(exerciseIndex + 1)
         setSetCount(1)
         setIsResting(false)
-        setTimer(30)
+        setTimer(restTime)
       } else {
         setIsFinished(true)
         setIsRunning(false)
