@@ -227,7 +227,7 @@ return (
       </div>
     </div>
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         <div className="bg-white/5 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold">{posts.length}</p>
           <p className="text-white/60">Posts</p>
