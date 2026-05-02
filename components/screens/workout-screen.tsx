@@ -208,19 +208,12 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
         <SelectionPage
           title="Select Body Focus"
           options={[
-            'glutes',
-            'obliques',
-            'hamstrings',
-            'abdominis',
+            'lower body',
             'chest',
             'back',
             'legs',
             'shoulders',
-            'arms',
             'core',
-            'quads',
-            'lats',
-            'quads/glutes',
           ]}
           onSelect={(value) => {
             setBodyFocus(value)
