@@ -142,7 +142,7 @@ export default function GuidedWorkout({ exercises, workoutName, onClose }: Props
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black text-white flex flex-col justify-between p-5">
+    <div className="fixed inset-0 z-50 bg-black text-white flex flex-col justify-between p-5 pb-28">
       {/* Top */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
