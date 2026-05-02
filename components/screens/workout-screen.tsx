@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getExercisesByPreferences } from '@/lib/workout-library'
+import GuidedWorkout from '@/components/guided-workout'
 
 interface WorkoutScreenProps {
   isPremium: boolean
@@ -17,6 +18,7 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
   const [equipment, setEquipment] = useState<string | null>(null)
   const [bodyFocus, setBodyFocus] = useState<string | null>(null)
   const [generatedWorkout, setGeneratedWorkout] = useState<any[]>([])
+  const [startWorkout, setStartWorkout] = useState(false)
 
   useEffect(() => {
     if (!isPremium) {
@@ -69,6 +71,16 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
 
   setGeneratedWorkout(filteredExercises)
   setStep(8)
+}
+
+if (startWorkout) {
+  return (
+    <GuidedWorkout
+      exercises={generatedWorkout}
+      workoutName="Your Workout Plan"
+      onClose={() => setStartWorkout(false)}
+    />
+  )
 }
 
   return (
@@ -268,7 +280,22 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
           Your Workout Plan
         </h1>
 
-        {generatedWorkout.map((exercise) => (
+        <button
+  onClick={() => setStartWorkout(true)}
+  className="w-full rounded-2xl bg-gradient-to-r from-primary to-secondary py-3 font-bold"
+>
+  Start Workout
+</button>
+
+        {generatedWorkout.length === 0 ? (
+  <div className="rounded-3xl border border-white/10 bg-card/50 p-6 text-center">
+    <h2 className="text-xl font-bold">No workouts found</h2>
+    <p className="text-sm text-foreground/70 mt-2">
+      Try changing your goal, equipment, or body focus.
+    </p>
+  </div>
+) : (
+  generatedWorkout.map((exercise) => (
           <div
             key={exercise.id}
             className="rounded-3xl border border-white/10 bg-card/50 p-4 space-y-3"
@@ -288,7 +315,8 @@ export default function WorkoutScreen({ isPremium }: WorkoutScreenProps) {
             <p>Reps: {exercise.reps}</p>
             <p>Rest: {exercise.rest}s</p>
           </div>
-        ))}
+        ))
+      )}
       </div>
     )}
 
