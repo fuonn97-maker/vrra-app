@@ -1075,7 +1075,7 @@ const isPending = (profileId: string) => {
     />
 
     <button
-      onClick={() => addComment(selectedPost.id, comment)}
+      onClick={() => addComment(selectedPost.id, replyingTo)}
       className="px-4 py-2 bg-primary rounded-xl text-sm"
     >
       Send
