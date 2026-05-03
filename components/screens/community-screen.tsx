@@ -1489,8 +1489,13 @@ if (targetPost) {
     .map((reply: any) => (
         <div
   key={reply.id}
-  className="block"
+  className="flex items-start gap-2"
 >
+  <img
+  src={reply.profile?.avatar_url || '/placeholder.svg'}
+  alt=""
+  className="w-7 h-7 rounded-full object-cover shrink-0"
+/>
 
   <div className="bg-white/5 rounded-xl px-3 py-2 inline-block max-w-[85%]">
         <div className="text-xs text-white/40 mb-1">
