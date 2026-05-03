@@ -901,16 +901,6 @@ const isPending = (profileId: string) => {
   </span>
 </div>
 
-<button
-  onClick={() => {
-    setReplyingTo(comment.id)
-    setCommentingPostId(selectedPost.id)
-  }}
-  className="text-xs text-primary mt-2"
->
-  Reply
-</button>
-
 <div className="flex items-center gap-3">
   <button
     onClick={() => {
@@ -921,6 +911,29 @@ const isPending = (profileId: string) => {
   >
     Reply
   </button>
+
+  {replyingTo === comment.id && (
+  <div className="mt-2 ml-4 flex gap-2">
+    <input
+      value={commentTexts[selectedPost.id] || ''}
+      onChange={(e) =>
+        setCommentTexts({
+          ...commentTexts,
+          [selectedPost.id]: e.target.value,
+        })
+      }
+      placeholder={`Reply to @${comment.profile?.username}`}
+      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
+    />
+
+    <button
+      onClick={() => addComment(selectedPost.id, comment)}
+      className="px-4 py-2 bg-primary rounded-xl text-sm"
+    >
+      Send
+    </button>
+  </div>
+)}
 
   {comment.user_id === user.id && (
     <button
@@ -935,7 +948,8 @@ const isPending = (profileId: string) => {
     ))}
 </div>
 
-<div className="flex gap-2">
+{!replyingTo && (
+  <div className="flex gap-2">
   <input
   value={commentTexts[selectedPost.id] || ''}
   onChange={(e) =>
@@ -961,6 +975,7 @@ const isPending = (profileId: string) => {
     {commentingPostId === selectedPost.id ? 'Sending...' : 'Send'}
   </button>
 </div>
+)}
         
         <button
           onClick={() => setSelectedPost(null)}
