@@ -29,6 +29,17 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [expandedReplies, setExpandedReplies] = useState<{ [key: string]: boolean }>({})
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({})
   const [commentReactions, setCommentReactions] = useState<any[]>([])
+  const [postReactions, setPostReactions] = useState<any[]>([])
+
+  const fetchPostReactions = async () => {
+  const { data, error } = await supabase
+    .from('post_reactions')
+    .select('*')
+
+  if (!error && data) {
+    setPostReactions(data)
+  }
+}
 
   const fetchCommentReactions = async () => {
   const { data, error } = await supabase
@@ -68,12 +79,42 @@ const toggleCommentReaction = async (commentId: string, emoji: string) => {
   fetchCommentReactions()
 }
 
+const togglePostReaction = async (postId: string, emoji: string) => {
+  const existing = postReactions.find(
+    (r) => String(r.post_id) === String(postId) && r.user_id === user.id
+  )
+
+  if (existing?.emoji === emoji) {
+    await supabase
+      .from('post_reactions')
+      .delete()
+      .eq('id', existing.id)
+  } else if (existing) {
+    await supabase
+      .from('post_reactions')
+      .update({ emoji })
+      .eq('id', existing.id)
+  } else {
+    await supabase
+      .from('post_reactions')
+      .insert({
+        post_id: postId,
+        user_id: user.id,
+        emoji,
+      })
+  }
+
+  fetchPostReactions()
+}
+
+
   useEffect(() => {
   fetchPosts()
   fetchFriendRequests()
   fetchSavedPosts()
   fetchComments()
   fetchCommentReactions()
+  fetchPostReactions()
   fetchFriends()
   fetchNotifications()
 }, [])
@@ -1508,6 +1549,24 @@ if (targetPost) {
 >
   {post.liked_by_me ? '❤️' : '🤍'} {post.likes_count || 0}
 </button>
+
+<div className="flex gap-2 mt-2 text-sm">
+  {['👍','😂','😍','😡','❤️'].map((emoji) => {
+    const count = postReactions.filter(
+      (r) => String(r.post_id) === String(post.id) && r.emoji === emoji
+    ).length
+
+    return (
+      <button
+        key={emoji}
+        onClick={() => togglePostReaction(String(post.id), emoji)}
+        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+      >
+        {emoji} {count > 0 ? count : ''}
+      </button>
+    )
+  })}
+</div>
 
 <button
   onClick={() => toggleSave(post)}
