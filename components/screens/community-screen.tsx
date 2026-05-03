@@ -883,11 +883,11 @@ const isPending = (profileId: string) => {
 
   <div className="ml-8 mt-2 space-y-2 border-l border-white/10 pl-4">
   {comments
-  .filter((reply: any) => reply.parent_id === comment.id)
+  .filter((reply: any) => String(reply.parent_id) === String(comment.id))
   .slice(
     0,
     expandedReplies[comment.id]
-      ? comments.filter((reply: any) => reply.parent_id === comment.id).length
+      ? comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length
       : 3
   )
   .map((reply: any) => (
