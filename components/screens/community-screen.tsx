@@ -26,6 +26,7 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showHeart, setShowHeart] = useState(false)
   const [commentingPostId, setCommentingPostId] = useState<string | null>(null)
+  const [expandedReplies, setExpandedReplies] = useState<{ [key: string]: boolean }>({})
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({})
 
   useEffect(() => {
@@ -882,18 +883,25 @@ const isPending = (profileId: string) => {
 
   <div className="ml-8 mt-2 space-y-2 border-l border-white/10 pl-4">
   {comments
-    .filter((reply) => reply.parent_id === comment.id)
-    .map((reply) => (
-      <div
-        key={reply.id}
-        className="bg-white/5 rounded-xl px-3 py-2"
-      >
-        <span className="font-semibold text-white">
-          @{reply.profile?.username || 'User'}
-        </span>{' '}
-        {reply.comment}
-      </div>
-    ))}
+  .filter((reply: any) => reply.parent_id === comment.id)
+  .slice(
+    0,
+    expandedReplies[comment.id]
+      ? comments.filter((reply: any) => reply.parent_id === comment.id).length
+      : 3
+  )
+  .map((reply: any) => (
+    <div
+      key={reply.id}
+      className="bg-white/5 rounded-xl px-3 py-2"
+    >
+      <span className="font-semibold text-white">
+        @{reply.profile?.username || 'User'}
+      </span>{' '}
+      {reply.comment}
+    </div>
+  ))}
+
 </div>
 
   <span className="ml-2 text-xs text-white/40">
