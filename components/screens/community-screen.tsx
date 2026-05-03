@@ -911,14 +911,26 @@ const isPending = (profileId: string) => {
   Reply
 </button>
 
-{comment.user_id === user.id && (
+<div className="flex items-center gap-3">
   <button
-    onClick={() => deleteComment(comment.id)}
-    className="text-red-400 text-xs ml-2"
+    onClick={() => {
+      setReplyingTo(comment.id)
+      setCommentingPostId(selectedPost.id)
+    }}
+    className="text-primary text-xs"
   >
-    Delete
+    Reply
   </button>
-)}
+
+  {comment.user_id === user.id && (
+    <button
+      onClick={() => deleteComment(comment.id)}
+      className="text-red-400 text-xs"
+    >
+      Delete
+    </button>
+  )}
+</div>
       </div>
     ))}
 </div>
