@@ -1458,7 +1458,7 @@ if (targetPost) {
   .map((comment: any) => (
     <div
       key={comment.id}
-      className="flex items-start justify-between gap-3"
+      className="flex items-start gap-3"
     >
 <img
   src={comment.profile?.avatar_url || '/placeholder.svg'}
