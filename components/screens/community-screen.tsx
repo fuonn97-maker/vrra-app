@@ -960,6 +960,23 @@ const isPending = (profileId: string) => {
         @{reply.profile?.username || 'User'}
       </span>{' '}
       {reply.comment}
+      <div className="flex gap-2 mt-2 text-sm">
+  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
+    const count = commentReactions.filter(
+      (r) => r.comment_id === reply.id && r.emoji === emoji
+    ).length
+
+    return (
+      <button
+        key={emoji}
+        onClick={() => toggleCommentReaction(reply.id, emoji)}
+        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+      >
+        {emoji} {count > 0 ? count : ''}
+      </button>
+    )
+  })}
+</div>
     </div>
   ))}
 
