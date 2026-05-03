@@ -407,7 +407,7 @@ if (insertError) {
     })
 
     setReplyingTo(null)
-
+    fetchComments()
     const postOwner = posts.find((p) => p.id === postId)
 
 if (postOwner && postOwner.user_id !== user.id) {
