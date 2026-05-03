@@ -253,6 +253,13 @@ return (
 
 </div>
 
+<button
+  onClick={() => router.push('/profile/workout-history')}
+  className="w-full mt-4 rounded-2xl bg-white/10 border border-white/10 py-3 font-bold"
+>
+  View Workout History
+</button>
+
       <div className="grid grid-cols-3 gap-2 mt-6">
   {posts.map((post: any) => (
     <div
