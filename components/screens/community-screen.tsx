@@ -1516,6 +1516,24 @@ if (targetPost) {
     ))}
 </div>
 
+{comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length > 3 && (
+  <button
+    onClick={() =>
+      setExpandedReplies({
+        ...expandedReplies,
+        [comment.id]: !expandedReplies[comment.id],
+      })
+    }
+    className="ml-11 mt-1 text-xs text-white/50"
+  >
+    {expandedReplies[comment.id]
+      ? 'Hide replies'
+      : `View ${
+          comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length - 3
+        } more replies`}
+  </button>
+)}
+
       <div className="flex items-center gap-3">
   <button
     onClick={() => {
