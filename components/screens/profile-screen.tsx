@@ -255,9 +255,20 @@ return (
 
 <button
   onClick={() => router.push('/profile/workout-history')}
-  className="w-full mt-4 rounded-2xl bg-white/10 border border-white/10 py-3 font-bold"
+  className="w-full mt-5 rounded-3xl bg-primary py-4 px-6 flex items-center justify-between shadow-lg"
 >
-  View Workout History
+  <div className="text-left">
+    <p className="text-lg font-black text-black">
+      Workout History
+    </p>
+    <p className="text-sm text-black/70">
+      View all completed workouts
+    </p>
+  </div>
+
+  <div className="text-2xl text-black font-black">
+    →
+  </div>
 </button>
 
       <div className="grid grid-cols-3 gap-2 mt-6">
