@@ -1501,6 +1501,16 @@ if (targetPost) {
           @{reply.profile?.username || 'User'}
         </span>{' '}
         {reply.comment}
+        <div className="flex gap-3 mt-2">
+  {reply.user_id === user.id && (
+    <button
+      onClick={() => deleteComment(reply.id)}
+      className="text-xs text-red-400"
+    >
+      Delete
+    </button>
+  )}
+</div>
       </div>
       </div>
     ))}
@@ -1517,7 +1527,7 @@ if (targetPost) {
     Reply
   </button>
 
-  {comment.user_id === user.id && (
+  {(comment.user_id === user.id || post.user_id === user.id) && (
     <button
       onClick={() => deleteComment(comment.id)}
       className="text-xs text-red-400"
