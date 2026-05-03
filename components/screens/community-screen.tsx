@@ -1478,7 +1478,7 @@ if (targetPost) {
 </p>
 </div>
 
-<div className="ml-12 mt-2 space-y-2 border-l-2 border-white/20 pl-4">
+<div className="ml-6 mt-2 space-y-2 border-l-2 border-white/20 pl-3">
   {comments
     .filter(
       (reply: any) =>
@@ -1491,7 +1491,7 @@ if (targetPost) {
   className="block"
 >
 
-  <div className="bg-white/5 rounded-xl px-3 py-2 flex-1">
+  <div className="bg-white/5 rounded-xl px-3 py-2 inline-block max-w-[85%]">
         <div className="text-xs text-white/40 mb-1">
           Replying to @{comment.profile?.username || 'User'}
         </div>
