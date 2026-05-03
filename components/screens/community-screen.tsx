@@ -385,7 +385,7 @@ if (insertError) {
 }
 
   const addComment = async (postId: string, parentId: string | null = null) => {
-  if (commentingPostId === postId) return
+  if (commentingPostId === postId && !parentId) return
   if (!commentTexts[postId]?.trim()) return
 
   setCommentingPostId(postId)
