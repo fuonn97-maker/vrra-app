@@ -1510,10 +1510,7 @@ if (targetPost) {
     ))}
 </div>
 
-{comments.filter(
-  (reply: any) => String(reply.parent_id) === String(comment.id)
-).length > 3 && (
-  <button
+<button
     onClick={() =>
       setExpandedReplies({
         ...expandedReplies,
@@ -1530,7 +1527,6 @@ if (targetPost) {
           ).length - 3
         } more replies`}
   </button>
-)}
 
       <div className="flex items-center gap-3">
   <button
