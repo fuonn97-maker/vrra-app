@@ -1458,8 +1458,15 @@ if (targetPost) {
   .map((comment: any) => (
     <div
       key={comment.id}
-      className="block"
+      className="flex items-start justify-between gap-3"
     >
+<img
+  src={comment.profile?.avatar_url || '/placeholder.svg'}
+  alt=""
+  className="w-8 h-8 rounded-full object-cover"
+/>
+
+<div className="flex-1">
       <p className="text-sm text-white/70">
   <span className="font-semibold text-white">
     @{comment.profile?.username || 'User'}
@@ -1469,6 +1476,7 @@ if (targetPost) {
     {formatTimeAgo(comment.created_at)}
   </span>
 </p>
+</div>
 
 <div className="ml-12 mt-2 space-y-2 border-l-2 border-white/20 pl-4">
   {comments
@@ -1478,10 +1486,17 @@ if (targetPost) {
     )
     .slice(0, expandedReplies[comment.id] ? 999 : 3)
     .map((reply: any) => (
-      <div
-        key={reply.id}
-        className="bg-white/5 rounded-xl px-3 py-2"
-      >
+        <div
+  key={reply.id}
+  className="flex items-start gap-2"
+>
+  <img
+    src={reply.profile?.avatar_url || '/placeholder.svg'}
+    alt=""
+    className="w-7 h-7 rounded-full object-cover"
+  />
+
+  <div className="bg-white/5 rounded-xl px-3 py-2 flex-1">
         <div className="text-xs text-white/40 mb-1">
           Replying to @{comment.profile?.username || 'User'}
         </div>
@@ -1490,6 +1505,7 @@ if (targetPost) {
           @{reply.profile?.username || 'User'}
         </span>{' '}
         {reply.comment}
+      </div>
       </div>
     ))}
 </div>
