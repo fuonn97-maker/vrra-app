@@ -1440,15 +1440,26 @@ if (targetPost) {
   </span>
 </p>
 
-      {(comment.user_id === user.id ||
-        post.user_id === user.id) && (
-        <button
-          onClick={() => deleteComment(comment.id)}
-          className="text-xs text-red-400"
-        >
-          Delete
-        </button>
-      )}
+      <div className="flex items-center gap-3">
+  <button
+    onClick={() => {
+      setReplyingTo(comment.id)
+      setCommentingPostId(post.id)
+    }}
+    className="text-xs text-primary"
+  >
+    Reply
+  </button>
+
+  {comment.user_id === user.id && (
+    <button
+      onClick={() => deleteComment(comment.id)}
+      className="text-xs text-red-400"
+    >
+      Delete
+    </button>
+  )}
+</div>
     </div>
 ))}
 
