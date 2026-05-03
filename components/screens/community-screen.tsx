@@ -489,15 +489,36 @@ if (insertError) {
 
     setReplyingTo(null)
     fetchComments()
+    
+    let targetUserId = null
+let notificationType = 'comment'
+
+if (parentId) {
+  const parentComment = comments.find((c) => c.id === parentId)
+
+  if (parentComment && parentComment.user_id !== user.id) {
+    targetUserId = parentComment.user_id
+    notificationType = 'reply'
+  }
+}
+    
     const postOwner = posts.find((p) => p.id === postId)
 
-if (postOwner && postOwner.user_id !== user.id) {
+if (!targetUserId && postOwner && postOwner.user_id !== user.id) {
+  targetUserId = postOwner.user_id
+}
+
+if (targetUserId) {
   await supabase.from('notifications').insert({
-    user_id: postOwner.user_id,
+    user_id: targetUserId,
     actor_id: user.id,
     post_id: postId,
-    type: 'comment',
-    message: 'Someone commented on your post',
+    type: notificationType,
+    comment_id: parentId || null,
+    message:
+      notificationType === 'reply'
+        ? 'Someone replied to your comment'
+        : 'Someone commented on your post',
     is_read: false,
   })
 }
