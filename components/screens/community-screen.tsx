@@ -880,7 +880,7 @@ const isPending = (profileId: string) => {
   </span>{' '}
   {comment.comment}
 
-  <div className="ml-4 mt-2 space-y-2">
+  <div className="ml-8 mt-2 space-y-2 border-l border-white/10 pl-4">
   {comments
     .filter((reply) => reply.parent_id === comment.id)
     .map((reply) => (
