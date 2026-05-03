@@ -868,7 +868,7 @@ const isPending = (profileId: string) => {
     .filter(
   (comment) =>
     comment.post_id === selectedPost.id &&
-    !comment.parent_id
+    (comment.parent_id === null || comment.parent_id === undefined)
 )
     .map((comment) => (
       <div
