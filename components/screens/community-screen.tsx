@@ -1450,8 +1450,8 @@ if (targetPost) {
 
 <div className="space-y-2 mt-3">
   {comments
-  .filter((comment) => comment.post_id === post.id)
-  .map((comment) => (
+  .filter((comment: any) => comment.post_id === post.id && !comment.parent_id)
+  .map((comment: any) => (
     <div
       key={comment.id}
       className="flex items-center justify-between"
@@ -1465,6 +1465,30 @@ if (targetPost) {
     {formatTimeAgo(comment.created_at)}
   </span>
 </p>
+
+<div className="ml-12 mt-2 space-y-2 border-l-2 border-white/20 pl-4">
+  {comments
+    .filter(
+      (reply: any) =>
+        String(reply.parent_id) === String(comment.id)
+    )
+    .slice(0, expandedReplies[comment.id] ? 999 : 3)
+    .map((reply: any) => (
+      <div
+        key={reply.id}
+        className="bg-white/5 rounded-xl px-3 py-2"
+      >
+        <div className="text-xs text-white/40 mb-1">
+          Replying to @{comment.profile?.username || 'User'}
+        </div>
+
+        <span className="font-semibold text-white">
+          @{reply.profile?.username || 'User'}
+        </span>{' '}
+        {reply.comment}
+      </div>
+    ))}
+</div>
 
       <div className="flex items-center gap-3">
   <button
