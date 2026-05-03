@@ -1479,7 +1479,7 @@ if (targetPost) {
 </p>
 </div>
 </div>
-<div className="ml-6 mt-2 space-y-2 border-l-2 border-white/20 pl-3">
+<div className="ml-11 mt-2 space-y-2 border-l-2 border-white/20 pl-4">
   {comments
     .filter(
       (reply: any) =>
