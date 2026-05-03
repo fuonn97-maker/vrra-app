@@ -1472,12 +1472,12 @@ if (targetPost) {
     [post.id]: e.target.value,
   })
 }
-      placeholder="Write a comment..."
+      placeholder={replyingTo ? "Write a reply..." : "Write a comment..."}
       className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
     />
 
     <button
-      onClick={() => addComment(post.id)}
+      onClick={() => addComment(post.id, replyingTo)}
       className="px-3 py-2 rounded-xl bg-white/10 text-sm"
     >
       Send
