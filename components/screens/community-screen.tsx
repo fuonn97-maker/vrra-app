@@ -1548,7 +1548,11 @@ if (targetPost) {
     [post.id]: e.target.value,
   })
 }
-      placeholder={replyingTo ? "Write a reply..." : "Write a comment..."}
+      placeholder={
+        replyingTo
+        ? `Replying to @${comments.find((c: any) => c.id === replyingTo)?.profile?.username || 'User'}...`
+        : "Write a comment..."
+}
       className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none focus:border-lime-400"
     />
 
