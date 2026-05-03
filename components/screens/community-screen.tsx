@@ -1531,6 +1531,25 @@ if (targetPost) {
     @{comment.profile?.username || 'User'}
   </span>{' '}
   {comment.comment}
+
+<div className="flex gap-2 mt-2 text-sm">
+  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
+    const count = commentReactions.filter(
+      (r) => r.comment_id === comment.id && r.emoji === emoji
+    ).length
+
+    return (
+      <button
+        key={emoji}
+        onClick={() => toggleCommentReaction(comment.id, emoji)}
+        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+      >
+        {emoji} {count > 0 ? count : ''}
+      </button>
+    )
+  })}
+</div>
+
   <span className="ml-2 text-xs text-white/40">
     {formatTimeAgo(comment.created_at)}
   </span>
