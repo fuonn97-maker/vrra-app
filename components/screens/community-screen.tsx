@@ -881,7 +881,7 @@ const isPending = (profileId: string) => {
   </span>{' '}
   {comment.comment}
 
-  <div className="ml-8 mt-2 space-y-2 border-l border-white/10 pl-4">
+  <div className="ml-12 mt-2 space-y-2 border-l-2 border-white/20 pl-4">
   {comments
   .filter((reply: any) => String(reply.parent_id) === String(comment.id))
   .slice(
@@ -892,9 +892,12 @@ const isPending = (profileId: string) => {
   )
   .map((reply: any) => (
     <div
-      key={reply.id}
-      className="bg-white/5 rounded-xl px-3 py-2"
-    >
+  key={reply.id}
+  className="ml-8 mt-2 border-l border-white/20 pl-4 bg-white/5 rounded-xl px-3 py-2"
+>
+  <div className="text-xs text-white/40 mb-1">
+    Replying to @{comment.profile?.username || 'User'}
+  </div>
       <span className="font-semibold text-white">
         @{reply.profile?.username || 'User'}
       </span>{' '}
