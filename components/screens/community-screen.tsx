@@ -865,10 +865,10 @@ const isPending = (profileId: string) => {
 
         <div className="space-y-2 max-h-40 overflow-y-auto">
   {comments
-    .filter(
+.filter(
   (comment) =>
     comment.post_id === selectedPost.id &&
-    (comment.parent_id === null || comment.parent_id === undefined)
+    !comment.parent_id
 )
     .map((comment) => (
       <div
