@@ -1600,6 +1600,25 @@ if (targetPost) {
           @{reply.profile?.username || 'User'}
         </span>{' '}
         {reply.comment}
+
+<div className="flex gap-2 mt-2 text-sm">
+  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
+    const count = commentReactions.filter(
+      (r) => String(r.comment_id) === String(reply.id) && r.emoji === emoji
+    ).length
+
+    return (
+      <button
+        key={emoji}
+       onClick={() => toggleCommentReaction(String(reply.id), emoji)}
+        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+      >
+        {emoji} {count > 0 ? count : ''}
+      </button>
+    )
+  })}
+</div>
+
         <div className="flex gap-3 mt-2">
   {reply.user_id === user.id && (
     <button
