@@ -28,12 +28,52 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [commentingPostId, setCommentingPostId] = useState<string | null>(null)
   const [expandedReplies, setExpandedReplies] = useState<{ [key: string]: boolean }>({})
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({})
+  const [commentReactions, setCommentReactions] = useState<any[]>([])
+
+  const fetchCommentReactions = async () => {
+  const { data, error } = await supabase
+    .from('comment_reactions')
+    .select('*')
+
+  if (!error && data) {
+    setCommentReactions(data)
+  }
+}
+
+const toggleCommentReaction = async (commentId: string, emoji: string) => {
+  const existing = commentReactions.find(
+    (r) => r.comment_id === commentId && r.user_id === user.id
+  )
+
+  if (existing?.emoji === emoji) {
+    await supabase
+      .from('comment_reactions')
+      .delete()
+      .eq('id', existing.id)
+  } else if (existing) {
+    await supabase
+      .from('comment_reactions')
+      .update({ emoji })
+      .eq('id', existing.id)
+  } else {
+    await supabase
+      .from('comment_reactions')
+      .insert({
+        comment_id: commentId,
+        user_id: user.id,
+        emoji,
+      })
+  }
+
+  fetchCommentReactions()
+}
 
   useEffect(() => {
   fetchPosts()
   fetchFriendRequests()
   fetchSavedPosts()
   fetchComments()
+  fetchCommentReactions()
   fetchFriends()
   fetchNotifications()
 }, [])
@@ -880,6 +920,24 @@ const isPending = (profileId: string) => {
     @{comment.profile?.username || 'User'}
   </span>{' '}
   {comment.comment}
+
+  <div className="flex gap-2 mt-2 text-sm">
+  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
+    const count = commentReactions.filter(
+      (r) => r.comment_id === comment.id && r.emoji === emoji
+    ).length
+
+    return (
+      <button
+        key={emoji}
+        onClick={() => toggleCommentReaction(comment.id, emoji)}
+        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+      >
+        {emoji} {count > 0 ? count : ''}
+      </button>
+    )
+  })}
+</div>
 
   <div className="ml-8 mt-2 space-y-2 border-l-2 border-white/20 pl-3">
   {comments
