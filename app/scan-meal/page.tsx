@@ -1,12 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Camera, Upload, Check } from 'lucide-react'
+import { ArrowLeft, Camera, Upload, Check, Crown } from 'lucide-react'
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera'
 import { useRef, useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import LimitReachedModal from '@/components/limit-reached-modal'
+import RecentMeals from '@/components/screens/recent-meals'
+import MealToast from '@/components/meal-toast'
+import ReminderCard from '@/components/reminder-card'
 
 type Step = 'options' | 'camera' | 'loading' | 'result'
 
@@ -30,6 +33,32 @@ export default function ScanMealPage() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [nutritionData, setNutritionData] = useState<NutritionData | null>(null)
   const [showLimitModal, setShowLimitModal] = useState(false)
+  const isPremium = true
+  const [mealTotals, setMealTotals] = useState({
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+  fat: 0,
+})
+
+const [showMealToast, setShowMealToast] = useState(false)
+
+const [todayMealsKey, setTodayMealsKey] = useState(0)
+
+const reminderState = {
+  shouldShow: mealTotals.calories === 0,
+  message: "You haven't logged any meals today",
+  reminderTime: 'Lunch Reminder',
+}
+
+const handleScanMeal = () => {
+  setStep('options')
+}
+
+const handleMealDeleted = () => {
+  setTodayMealsKey((prev) => prev + 1)
+}
+
   const openNativeCamera = async () => {
     try{
      const photo = await CapacitorCamera.getPhoto({
@@ -432,6 +461,110 @@ export default function ScanMealPage() {
                   </div>
                 </button>
               </div>
+
+              {isPremium && (
+  <div className="space-y-2">
+    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/20 border border-primary/40 rounded-full">
+      <Crown size={14} className="text-primary" />
+      <span className="text-xs font-bold text-primary">Premium Active</span>
+    </div>
+
+    <button
+      onClick={() => router.push('/premium')}
+      className="text-xs px-3 py-1.5 text-primary/70 hover:text-primary font-medium transition-colors"
+    >
+      Manage Plan
+    </button>
+  </div>
+)}
+
+{/* Premium Scan Button */}
+<div className="space-y-3 pt-2">
+  <p className="text-xs text-foreground/60 font-medium">
+    Stay on track with your next scan
+  </p>
+
+  <button
+    onClick={openNativeCamera}
+    className="w-full group relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-cyan-400 text-primary-foreground font-bold py-4 px-6 rounded-2xl"
+  >
+    <div className="relative flex items-center justify-center gap-2">
+      <Camera size={20} />
+      <span className="text-base tracking-wide">Scan Your Next Meal</span>
+    </div>
+  </button>
+</div>
+
+{/* Reminder */}
+{reminderState?.shouldShow && (
+  <ReminderCard
+    message={reminderState.message}
+    reminderTime={reminderState.reminderTime as any}
+    onScanClick={openNativeCamera}
+  />
+)}
+
+{/* Recent Meals */}
+<RecentMeals
+  refreshKey={todayMealsKey}
+  onTotalsUpdate={setMealTotals}
+/>
+
+{/* Calories */}
+<div className="space-y-5 bg-card/40 border border-border/30 rounded-2xl p-7 backdrop-blur-sm">
+  <div className="flex justify-between items-center">
+    <div>
+      <p className="text-foreground/60 text-xs uppercase tracking-wider font-semibold">
+        Calories
+      </p>
+      <p className="text-3xl font-black text-foreground mt-3">
+        {mealTotals.calories}
+      </p>
+    </div>
+
+    <div className="text-right">
+      <div className="text-3xl font-black text-primary">
+        {Math.min(Math.round((mealTotals.calories / 2000) * 100), 100)}%
+      </div>
+      <p className="text-xs text-muted-foreground mt-1">/ 2,000 kcal</p>
+    </div>
+  </div>
+</div>
+
+{/* Macronutrients */}
+<div className="space-y-5 bg-card/40 border border-border/30 rounded-2xl p-7 backdrop-blur-sm">
+  <p className="text-foreground/60 text-xs uppercase tracking-wider font-semibold">
+    Macronutrients
+  </p>
+
+  <div className="space-y-5">
+    <div>
+      <div className="flex justify-between">
+        <span>Protein</span>
+        <span>{mealTotals.protein}g</span>
+      </div>
+    </div>
+
+    <div>
+      <div className="flex justify-between">
+        <span>Carbs</span>
+        <span>{mealTotals.carbs}g</span>
+      </div>
+    </div>
+
+    <div>
+      <div className="flex justify-between">
+        <span>Fat</span>
+        <span>{mealTotals.fat}g</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<MealToast
+  isVisible={showMealToast}
+  onHide={() => setShowMealToast(false)}
+/>
 
               <input
                 ref={fileInputRef}
