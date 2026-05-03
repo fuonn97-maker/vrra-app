@@ -1460,13 +1460,14 @@ if (targetPost) {
       key={comment.id}
       className="block space-y-2"
     >
-<img
-  src={comment.profile?.avatar_url || '/placeholder.svg'}
-  alt=""
-  className="w-8 h-8 rounded-full object-cover"
-/>
+<div className="flex items-start gap-3">
+  <img
+    src={comment.profile?.avatar_url || '/placeholder.svg'}
+    alt=""
+    className="w-8 h-8 rounded-full object-cover"
+  />
 
-<div className="flex-1">
+  <div className="flex-1">
       <p className="text-sm text-white/70">
   <span className="font-semibold text-white">
     @{comment.profile?.username || 'User'}
@@ -1477,7 +1478,7 @@ if (targetPost) {
   </span>
 </p>
 </div>
-
+</div>
 <div className="ml-6 mt-2 space-y-2 border-l-2 border-white/20 pl-3">
   {comments
     .filter(
