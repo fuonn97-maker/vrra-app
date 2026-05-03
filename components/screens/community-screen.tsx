@@ -1454,7 +1454,7 @@ if (targetPost) {
   .map((comment: any) => (
     <div
       key={comment.id}
-      className="flex items-center justify-between"
+      className="block"
     >
       <p className="text-sm text-white/70">
   <span className="font-semibold text-white">
