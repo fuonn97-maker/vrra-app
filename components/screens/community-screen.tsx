@@ -16,6 +16,7 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [savedPostIds, setSavedPostIds] = useState<string[]>([])
   const [showSavedOnly, setShowSavedOnly] = useState(false)
   const [commentTexts, setCommentTexts] = useState<{ [key: string]: string }>({})
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState('')
   const [friends, setFriends] = useState<any[]>([])
   const [feedSort, setFeedSort] = useState<'latest' | 'trending'>('latest')
@@ -383,7 +384,7 @@ if (insertError) {
   fetchComments()
 }
 
-  const addComment = async (postId: string) => {
+  const addComment = async (postId: string, parentId: string | null = null) => {
   if (commentingPostId === postId) return
   if (!commentTexts[postId]?.trim()) return
 
@@ -392,16 +393,19 @@ if (insertError) {
   const { error } = await supabase
     .from('post_comments')
     .insert({
-      post_id: postId,
-      user_id: user.id,
-      comment: commentTexts[postId].trim(),
-    })
+  post_id: postId,
+  user_id: user.id,
+  comment: commentTexts[postId].trim(),
+  parent_id: parentId,
+})
 
   if (!error) {
     setCommentTexts({
       ...commentTexts,
       [postId]: '',
     })
+
+    setReplyingTo(null)
 
     const postOwner = posts.find((p) => p.id === postId)
 
@@ -860,7 +864,11 @@ const isPending = (profileId: string) => {
 
         <div className="space-y-2 max-h-40 overflow-y-auto">
   {comments
-    .filter((comment) => comment.post_id === selectedPost.id)
+    .filter(
+  (comment) =>
+    comment.post_id === selectedPost.id &&
+    !comment.parent_id
+)
     .map((comment) => (
       <div
   key={comment.id}
@@ -872,10 +880,36 @@ const isPending = (profileId: string) => {
   </span>{' '}
   {comment.comment}
 
+  <div className="ml-4 mt-2 space-y-2">
+  {comments
+    .filter((reply) => reply.parent_id === comment.id)
+    .map((reply) => (
+      <div
+        key={reply.id}
+        className="bg-white/5 rounded-xl px-3 py-2"
+      >
+        <span className="font-semibold text-white">
+          @{reply.profile?.username || 'User'}
+        </span>{' '}
+        {reply.comment}
+      </div>
+    ))}
+</div>
+
   <span className="ml-2 text-xs text-white/40">
     {formatTimeAgo(comment.created_at)}
   </span>
 </div>
+
+<button
+  onClick={() => {
+    setReplyingTo(comment.id)
+    setCommentingPostId(selectedPost.id)
+  }}
+  className="text-xs text-primary mt-2"
+>
+  Reply
+</button>
 
 {comment.user_id === user.id && (
   <button
@@ -900,7 +934,7 @@ const isPending = (profileId: string) => {
   }
   onKeyDown={(e) => {
     if (e.key === 'Enter') {
-      addComment(selectedPost.id)
+      addComment(selectedPost.id, replyingTo)
     }
   }}
   placeholder="Write a comment..."
@@ -908,7 +942,7 @@ const isPending = (profileId: string) => {
 />
 
   <button
-  onClick={() => addComment(selectedPost.id)}
+  onClick={() => addComment(selectedPost.id, replyingTo)}
   disabled={commentingPostId === selectedPost.id}
     className="px-3 py-2 rounded-xl bg-white/10 text-sm"
   >
