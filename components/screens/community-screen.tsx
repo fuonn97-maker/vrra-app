@@ -881,7 +881,7 @@ const isPending = (profileId: string) => {
   </span>{' '}
   {comment.comment}
 
-  <div className="ml-12 mt-2 space-y-2 border-l-2 border-white/20 pl-4">
+  <div className="ml-8 mt-2 space-y-2 border-l-2 border-white/20 pl-3">
   {comments
   .filter((reply: any) => String(reply.parent_id) === String(comment.id))
   .slice(
