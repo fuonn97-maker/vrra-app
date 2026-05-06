@@ -874,297 +874,29 @@ const isPending = (profileId: string) => {
     </div>
   </div>
 )}
-    
-    {selectedPost && (
-  <div
-  className="fixed inset-0 bg-black z-50 overflow-y-auto pb-36"
->
-    <div
-  className="p-4 space-y-4"
->
 
-  <button
-  onClick={() => setSelectedPost(null)}
-  className="text-white/70 text-sm mb-3"
->
-  ← Back
-</button>
-      
-{showHeart && (
-  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <div className="text-7xl animate-ping">
-      ❤️
-    </div>
-  </div>
-)}
+{selectedPost && selectedPost.fromNotification && (
+  <div className="fixed inset-0 bg-black z-50 overflow-y-auto pb-24">
+    <div className="p-4">
+      <button
+        onClick={() => setSelectedPost(null)}
+        className="text-white/70 text-sm mb-4"
+      >
+        ← Back
+      </button>
 
-      <div className="p-4 space-y-3">
-  <div className="flex items-center gap-2">
-    <img
-      src={selectedPost.profile?.avatar_url || '/default-avatar.png'}
-      alt={selectedPost.profile?.username || 'User'}
-      className="w-8 h-8 rounded-full object-cover"
-    />
-
-    <div>
-      <p className="font-semibold">
-        @{selectedPost.profile?.username || 'User'}
-      </p>
-
-      <span className="text-xs text-white/40">
-        {formatTimeAgo(selectedPost.created_at)}
-      </span>
-    </div>
-  </div>
-
-        {selectedPost.caption && (
-          <p className="text-sm text-white/80">
-            {selectedPost.caption}
-          </p>
-        )}
-
-        {selectedPost.video_url ? (
-  <video
-    src={selectedPost.video_url}
-    controls
-    autoPlay
-    playsInline
-    className="w-full max-h-[70vh] object-contain bg-black"
-  />
-) : (
-  <img
-    src={selectedPost.image_url}
-    onDoubleClick={() => {
-      doubleTapLike(selectedPost)
-
-      const updatedPost = {
-        ...selectedPost,
-        liked_by_me: true,
-        likes_count:
-          (selectedPost.likes_count || 0) +
-          (selectedPost.liked_by_me ? 0 : 1),
-      }
-
-      setSelectedPost(updatedPost)
-    }}
-    alt=""
-    className="w-full max-h-[70vh] object-contain bg-black"
-  />
-)}
-
-        <button
-          onClick={() => toggleLike(selectedPost)}
-          className="text-sm font-medium"
-        >
-          {selectedPost.liked_by_me ? '❤️' : '🤍'} {selectedPost.likes_count || 0}
-        </button>
-
-        <button
-  onClick={() => toggleSave(selectedPost)}
-  className="ml-3 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-medium"
->
-  {savedPostIds.includes(selectedPost.id) ? 'Saved' : 'Save'}
-</button>
-
-        <button
-  onClick={() => sharePost(selectedPost)}
-  className="ml-3 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-medium"
->
-  Share
-</button>
-
-        <div className="space-y-2 max-h-40 overflow-y-auto pb-28">
-  {comments
-.filter(
-  (comment) =>
-    comment.post_id === selectedPost.id &&
-    !comment.parent_id
-)
-    .map((comment) => (
       <div
-  key={comment.id}
-  className="text-sm text-white/70 flex items-center justify-between"
->
-        <div>
-  <span className="font-semibold text-white">
-    @{comment.profile?.username || 'User'}
-  </span>{' '}
-  {comment.comment}
-
-  <div className="flex gap-2 mt-2 text-sm">
-  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
-    const count = commentReactions.filter(
-      (r) => r.comment_id === comment.id && r.emoji === emoji
-    ).length
-
-    return (
-      <button
-        key={emoji}
-        onClick={() => toggleCommentReaction(comment.id, emoji)}
-        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+        id={`post-${selectedPost.id}`}
+        className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3"
       >
-        {emoji} {count > 0 ? count : ''}
-      </button>
-    )
-  })}
-</div>
-
-  <div className="ml-8 mt-2 space-y-2 border-l-2 border-white/20 pl-3">
-  {comments
-  .filter((reply: any) => String(reply.parent_id) === String(comment.id))
-  .slice(
-    0,
-    expandedReplies[comment.id]
-      ? comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length
-      : 3
-  )
-  .map((reply: any) => (
-    <div
-  key={reply.id}
-  className="ml-8 mt-2 border-l border-white/20 pl-4 bg-white/5 rounded-xl px-3 py-2"
->
-  <div className="text-xs text-white/40 mb-1">
-    Replying to @{comment.profile?.username || 'User'}
-  </div>
-      <span className="font-semibold text-white">
-        @{reply.profile?.username || 'User'}
-      </span>{' '}
-      {reply.comment}
-      <div className="flex gap-2 mt-2 text-sm">
-  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
-    const count = commentReactions.filter(
-      (r) => String(r.comment_id) === String(reply.id) && r.emoji === emoji
-    ).length
-
-    return (
-      <button
-        key={emoji}
-       onClick={() => toggleCommentReaction(String(reply.id), emoji)}
-        className="bg-white/5 px-2 py-1 rounded-full text-xs"
-      >
-        {emoji} {count > 0 ? count : ''}
-      </button>
-    )
-  })}
-</div>
-
-   <div className="flex gap-3 mt-2">
-  {reply.user_id === user.id && (
-    <button
-      onClick={() => deleteComment(reply.id)}
-      className="text-red-400 text-xs"
-    >
-      Delete
-    </button>
-  )}
-
-  <button
-  onClick={() => {
-    setReplyingTo(reply.id)
-    setCommentingPostId(selectedPost.id)
-  }}
-  className="text-primary text-xs"
->
-  Reply
-</button>
-
-{replyingTo === reply.id && (
-  <div className="mt-2 flex gap-2 w-full max-w-full">
-    <input
-      value={commentTexts[selectedPost.id] || ''}
-      onChange={(e) =>
-        setCommentTexts({
-          ...commentTexts,
-          [selectedPost.id]: e.target.value,
-        })
-      }
-      placeholder="Replying..."
-      className="min-w-0 flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
-    />
-
-    <button
-      onClick={() => addComment(selectedPost.id, replyingTo)}
-      className="shrink-0 px-3 py-2 bg-primary rounded-xl text-sm"
-    >
-      Send
-    </button>
-  </div>
-)}
-</div>
-
-    </div>
-  ))}
-
-</div>
-
-  <span className="ml-2 text-xs text-white/40">
-    {formatTimeAgo(comment.created_at)}
-  </span>
-</div>
-
-<div className="flex items-center gap-3">
-  <button
-    onClick={() => {
-      setReplyingTo(comment.id)
-      setCommentingPostId(selectedPost.id)
-    }}
-    className="text-primary text-xs"
-  >
-    Reply
-  </button>
-
-  {comment.user_id === user.id && (
-    <button
-      onClick={() => deleteComment(comment.id)}
-      className="text-red-400 text-xs"
-    >
-      Delete
-    </button>
-  )}
-</div>
-
-      </div>
-    ))}
-</div>
-
-{!replyingTo && (
-  <div className="flex gap-2 px-4 pb-6">
-  <input
-  value={commentTexts[selectedPost.id] || ''}
-  onChange={(e) =>
-    setCommentTexts({
-      ...commentTexts,
-      [selectedPost.id]: e.target.value,
-    })
-  }
-  onKeyDown={(e) => {
-    if (e.key === 'Enter') {
-      addComment(selectedPost.id, replyingTo)
-    }
-  }}
-  placeholder={
-  replyingTo
-    ? `Replying to @${comments.find((c: any) => String(c.id) === String(replyingTo))?.profile?.username || 'User'}...`
-    : 'Write a comment...'
-}
-  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
-/>
-
-  <button
-  onClick={() => addComment(selectedPost.id, replyingTo)}
-  disabled={commentingPostId === selectedPost.id}
-    className="px-3 py-2 rounded-xl bg-white/10 text-sm"
-  >
-    {commentingPostId === selectedPost.id ? 'Sending...' : 'Send'}
-  </button>
-</div>
-)}
-        
+        <p className="text-white font-bold">
+          Single post test
+        </p>
       </div>
     </div>
   </div>
 )}
-    
+
     <div className="px-3 pt-0 pb-24 space-y-1">
       <div className="flex items-center justify-between">
   <h1 className="text-xl font-bold mb-2">
@@ -1285,16 +1017,12 @@ const targetPost = posts.find(
 )
 
 if (targetPost) {
-  setSelectedPost(targetPost)
-  setShowNotifications(false)
+  setSelectedPost({
+    ...targetPost,
+    fromNotification: true
+  })
 
-  setTimeout(() => {
-    const postElement = document.getElementById(`post-${targetPost.id}`)
-    postElement?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    })
-  }, 200)
+  setShowNotifications(false)
 
   return
 }
