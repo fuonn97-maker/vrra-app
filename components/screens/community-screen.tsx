@@ -1103,6 +1103,15 @@ const isPending = (profileId: string) => {
 </div>
 
 <div className="flex items-center gap-3">
+  <button
+    onClick={() => {
+      setReplyingTo(comment.id)
+      setCommentingPostId(selectedPost.id)
+    }}
+    className="text-primary text-xs"
+  >
+    Reply
+  </button>
 
   {comment.user_id === user.id && (
     <button
