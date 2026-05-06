@@ -882,34 +882,14 @@ const isPending = (profileId: string) => {
     <div
   className="p-4 space-y-4"
 >
-      {selectedPost.video_url ? (
-  <video
-    src={selectedPost.video_url}
-    controls
-    autoPlay
-    playsInline
-    className="w-full max-h-[70vh] object-contain bg-black"
-  />
-) : (
-  <img
-    src={selectedPost.image_url}
-    onDoubleClick={() => {
-      doubleTapLike(selectedPost)
 
-      const updatedPost = {
-        ...selectedPost,
-        liked_by_me: true,
-        likes_count:
-          (selectedPost.likes_count || 0) +
-          (selectedPost.liked_by_me ? 0 : 1),
-      }
-
-      setSelectedPost(updatedPost)
-    }}
-    alt=""
-    className="w-full max-h-[70vh] object-contain bg-black"
-  />
-)}
+  <button
+  onClick={() => setSelectedPost(null)}
+  className="text-white/70 text-sm mb-3"
+>
+  ← Back
+</button>
+      
 {showHeart && (
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
     <div className="text-7xl animate-ping">
@@ -942,6 +922,35 @@ const isPending = (profileId: string) => {
             {selectedPost.caption}
           </p>
         )}
+
+        {selectedPost.video_url ? (
+  <video
+    src={selectedPost.video_url}
+    controls
+    autoPlay
+    playsInline
+    className="w-full max-h-[70vh] object-contain bg-black"
+  />
+) : (
+  <img
+    src={selectedPost.image_url}
+    onDoubleClick={() => {
+      doubleTapLike(selectedPost)
+
+      const updatedPost = {
+        ...selectedPost,
+        liked_by_me: true,
+        likes_count:
+          (selectedPost.likes_count || 0) +
+          (selectedPost.liked_by_me ? 0 : 1),
+      }
+
+      setSelectedPost(updatedPost)
+    }}
+    alt=""
+    className="w-full max-h-[70vh] object-contain bg-black"
+  />
+)}
 
         <button
           onClick={() => toggleLike(selectedPost)}
@@ -1139,12 +1148,6 @@ const isPending = (profileId: string) => {
 </div>
 )}
         
-        <button
-          onClick={() => setSelectedPost(null)}
-          className="w-full bg-white/10 rounded-xl py-2 text-sm"
-        >
-          Close
-        </button>
       </div>
     </div>
   </div>
