@@ -877,11 +877,11 @@ const isPending = (profileId: string) => {
     
     {selectedPost && (
   <div
-    className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+    className="fixed inset-0 bg-black z-50 overflow-y-auto"
     onClick={() => setSelectedPost(null)}
   >
     <div
-      className="w-full max-w-2xl bg-black border border-white/10 rounded-3xl overflow-hidden"
+      className="w-full min-h-screen bg-black"
       onClick={(e) => e.stopPropagation()}
     >
       {selectedPost.video_url ? (
