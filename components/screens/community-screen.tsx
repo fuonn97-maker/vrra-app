@@ -1114,29 +1114,6 @@ const isPending = (profileId: string) => {
   )}
 </div>
 
-  {replyingTo === comment.id && (
-  <div className="mt-2 ml-4 flex gap-2">
-    <input
-      value={commentTexts[selectedPost.id] || ''}
-      onChange={(e) =>
-        setCommentTexts({
-          ...commentTexts,
-          [selectedPost.id]: e.target.value,
-        })
-      }
-      placeholder="Replying..."
-      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
-    />
-
-    <button
-      onClick={() => addComment(selectedPost.id, replyingTo)}
-      className="px-4 py-2 bg-primary rounded-xl text-sm"
-    >
-      Send
-    </button>
-  </div>
-)}
-
       </div>
     ))}
 </div>
