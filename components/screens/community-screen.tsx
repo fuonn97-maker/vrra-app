@@ -877,7 +877,7 @@ const isPending = (profileId: string) => {
     
     {selectedPost && (
   <div
-  className="fixed inset-0 bg-black z-50 overflow-y-auto pb-24"
+  className="fixed inset-0 bg-black z-50 overflow-y-auto pb-36"
 >
     <div
   className="p-4 space-y-4"
@@ -973,7 +973,7 @@ const isPending = (profileId: string) => {
   Share
 </button>
 
-        <div className="space-y-2 max-h-40 overflow-y-auto">
+        <div className="space-y-2 max-h-40 overflow-y-auto pb-28">
   {comments
 .filter(
   (comment) =>
