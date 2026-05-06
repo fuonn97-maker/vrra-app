@@ -1283,12 +1283,22 @@ const isPending = (profileId: string) => {
 fetchNotifications()
 
 const targetPost = posts.find(
-  (post) => post.id === notification.post_id
+  (post) => String(post.id) === String(notification.post_id)
 )
 
 if (targetPost) {
   setSelectedPost(targetPost)
   setShowNotifications(false)
+
+  setTimeout(() => {
+    const postElement = document.getElementById(`post-${targetPost.id}`)
+    postElement?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    })
+  }, 200)
+
+  return
 }
 
     if (notification.type === 'friend_request') {
