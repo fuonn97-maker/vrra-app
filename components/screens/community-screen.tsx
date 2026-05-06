@@ -1048,14 +1048,26 @@ const isPending = (profileId: string) => {
   })}
 </div>
 
-    {reply.user_id === user.id && (
+   <div className="flex gap-3 mt-2">
+  {reply.user_id === user.id && (
+    <button
+      onClick={() => deleteComment(reply.id)}
+      className="text-red-400 text-xs"
+    >
+      Delete
+    </button>
+  )}
+
   <button
-    onClick={() => deleteComment(reply.id)}
-    className="text-red-400 text-xs mt-2"
+    onClick={() => {
+      setReplyingTo(reply.id)
+      setCommentingPostId(selectedPost.id)
+    }}
+    className="text-primary text-xs"
   >
-    Delete
+    Reply
   </button>
-)}
+</div>
 
     </div>
   ))}
@@ -1709,6 +1721,7 @@ if (notification.type === 'friend_accept') {
 </div>
 
         <div className="flex gap-3 mt-2">
+  <div className="flex gap-3 mt-2">
   {reply.user_id === user.id && (
     <button
       onClick={() => deleteComment(reply.id)}
@@ -1717,7 +1730,19 @@ if (notification.type === 'friend_accept') {
       Delete
     </button>
   )}
+
+  <button
+    onClick={() => {
+      setReplyingTo(reply.id)
+      setCommentingPostId(post.id)
+    }}
+    className="text-primary text-xs"
+  >
+    Reply
+  </button>
 </div>
+</div>
+
       </div>
       </div>
     ))}
