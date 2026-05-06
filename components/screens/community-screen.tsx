@@ -1068,15 +1068,6 @@ const isPending = (profileId: string) => {
 </div>
 
 <div className="flex items-center gap-3">
-  <button
-    onClick={() => {
-      setReplyingTo(comment.id)
-      setCommentingPostId(selectedPost.id)
-    }}
-    className="text-primary text-xs"
-  >
-    Reply
-  </button>
 
   {comment.user_id === user.id && (
     <button
@@ -1116,7 +1107,7 @@ const isPending = (profileId: string) => {
 </div>
 
 {!replyingTo && (
-  <div className="flex gap-2">
+  <div className="flex gap-2 px-4 pb-6">
   <input
   value={commentTexts[selectedPost.id] || ''}
   onChange={(e) =>
