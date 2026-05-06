@@ -1061,6 +1061,16 @@ const isPending = (profileId: string) => {
     Reply
   </button>
 
+  {comment.user_id === user.id && (
+    <button
+      onClick={() => deleteComment(comment.id)}
+      className="text-red-400 text-xs"
+    >
+      Delete
+    </button>
+  )}
+</div>
+
   {replyingTo === comment.id && (
   <div className="mt-2 ml-4 flex gap-2">
     <input
@@ -1084,15 +1094,6 @@ const isPending = (profileId: string) => {
   </div>
 )}
 
-  {comment.user_id === user.id && (
-    <button
-      onClick={() => deleteComment(comment.id)}
-      className="text-red-400 text-xs"
-    >
-      Delete
-    </button>
-  )}
-</div>
       </div>
     ))}
 </div>
