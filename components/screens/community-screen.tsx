@@ -1057,6 +1057,16 @@ const isPending = (profileId: string) => {
   </button>
 )}
 
+<button
+  onClick={() => {
+    setReplyingTo(reply.id)
+    setCommentingPostId(selectedPost.id)
+  }}
+  className="text-primary text-xs mt-2"
+>
+  Reply
+</button>
+
     </div>
   ))}
 
