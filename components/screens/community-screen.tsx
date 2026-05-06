@@ -1255,6 +1255,16 @@ const isPending = (profileId: string) => {
   .eq('id', notification.id)
 
 fetchNotifications()
+
+const targetPost = posts.find(
+  (post) => post.id === notification.post_id
+)
+
+if (targetPost) {
+  setSelectedPost(targetPost)
+  setShowNotifications(false)
+}
+
     if (notification.type === 'friend_request') {
   setShowNotifications(false)
 
@@ -1276,14 +1286,7 @@ if (notification.type === 'friend_accept') {
   return
 }
 
-const targetPost = posts.find(
-  (post) => post.id === notification.post_id
-)
 
-if (targetPost) {
-  setSelectedPost(targetPost)
-  setShowNotifications(false)
-}
   }}
   className="bg-white/5 rounded-xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98]"
 >
