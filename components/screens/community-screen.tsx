@@ -1069,7 +1069,7 @@ const isPending = (profileId: string) => {
 </button>
 
 {replyingTo === reply.id && (
-  <div className="mt-2 flex gap-2">
+  <div className="mt-2 flex gap-2 w-full max-w-full">
     <input
       value={commentTexts[selectedPost.id] || ''}
       onChange={(e) =>
@@ -1079,12 +1079,12 @@ const isPending = (profileId: string) => {
         })
       }
       placeholder="Replying..."
-      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
+      className="min-w-0 flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm"
     />
 
     <button
       onClick={() => addComment(selectedPost.id, replyingTo)}
-      className="px-3 py-2 bg-primary rounded-xl text-sm"
+      className="shrink-0 px-3 py-2 bg-primary rounded-xl text-sm"
     >
       Send
     </button>
