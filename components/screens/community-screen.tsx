@@ -889,9 +889,57 @@ const isPending = (profileId: string) => {
         id={`post-${selectedPost.id}`}
         className="bg-white/5 border border-white/10 rounded-3xl p-4 space-y-3"
       >
-        <p className="text-white font-bold">
-          Single post test
-        </p>
+        <div className="flex items-center gap-3">
+  <img
+    src={selectedPost.profile?.avatar_url || '/default-avatar.png'}
+    alt="avatar"
+    className="w-10 h-10 rounded-full object-cover"
+  />
+
+  <div>
+    <p className="font-semibold text-white">
+      @{selectedPost.profile?.username || 'User'}
+    </p>
+
+    <p className="text-xs text-white/50">
+      {formatTimeAgo(selectedPost.created_at)}
+    </p>
+  </div>
+</div>
+
+{selectedPost.caption && (
+  <p className="text-white text-sm">
+    {selectedPost.caption}
+  </p>
+)}
+
+{selectedPost.video_url ? (
+  <video
+    src={selectedPost.video_url}
+    controls
+    className="w-full rounded-2xl"
+  />
+) : (
+  <img
+    src={selectedPost.image_url}
+    alt="post"
+    className="w-full rounded-2xl"
+  />
+)}
+
+<div className="flex items-center gap-4 text-sm">
+  <button onClick={() => toggleLike(selectedPost)}>
+    ❤️ {selectedPost.likes_count || 0}
+  </button>
+
+  <button onClick={() => toggleSave(selectedPost)}>
+    Save
+  </button>
+
+  <button onClick={() => sharePost(selectedPost)}>
+    Share
+  </button>
+</div>
       </div>
     </div>
   </div>
