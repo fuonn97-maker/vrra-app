@@ -1040,6 +1040,16 @@ const isPending = (profileId: string) => {
     )
   })}
 </div>
+
+    {reply.user_id === user.id && (
+  <button
+    onClick={() => deleteComment(reply.id)}
+    className="text-red-400 text-xs mt-2"
+  >
+    Delete
+  </button>
+)}
+
     </div>
   ))}
 
