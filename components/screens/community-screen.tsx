@@ -875,7 +875,7 @@ const isPending = (profileId: string) => {
   </div>
 )}
 
-{selectedPost && selectedPost.fromNotification && (
+{selectedPost && (
   <div className="fixed inset-0 bg-black z-50 overflow-y-auto pb-24">
     <div className="p-4">
       <button
@@ -940,6 +940,45 @@ const isPending = (profileId: string) => {
     Share
   </button>
 </div>
+
+<p className="text-xs text-white/50 mt-3">
+  💬 {
+    comments.filter(
+      (comment) => comment.post_id === selectedPost.id
+    ).length
+  } comments
+</p>
+
+<div className="space-y-2 mt-3">
+  {comments
+    .filter(
+      (comment: any) =>
+        comment.post_id === selectedPost.id && !comment.parent_id
+    )
+    .map((comment: any) => (
+      <div
+        key={comment.id}
+        className="flex items-start gap-3"
+      >
+        <img
+          src={comment.profile?.avatar_url || '/placeholder.svg'}
+          alt=""
+          className="w-8 h-8 rounded-full object-cover"
+        />
+
+        <div className="flex-1">
+          <p className="text-sm text-white font-medium">
+            @{comment.profile?.username || 'User'}
+          </p>
+
+          <p className="text-sm text-white/80">
+            {comment.content}
+          </p>
+        </div>
+      </div>
+    ))}
+</div>
+
       </div>
     </div>
   </div>
