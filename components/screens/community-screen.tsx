@@ -984,6 +984,40 @@ const isPending = (profileId: string) => {
           >
           Reply
           </button>
+
+          <div className="ml-6 mt-2 space-y-2 border-l border-white/20 pl-3">
+          {comments
+          .filter(
+          (reply: any) =>
+          String(reply.parent_id) === String(comment.id)
+          )
+          .map((reply: any) => (
+          <div
+          key={reply.id}
+          className="flex items-start gap-2"
+          >
+          <img
+          src={reply.profile?.avatar_url || '/placeholder.svg'}
+          alt=""
+          className="w-7 h-7 rounded-full object-cover"
+          />
+
+          <div className="flex-1">
+          <p className="text-xs text-white/70">
+            Replying to @{comment.profile?.username || 'User'}
+            </p>
+
+          <p className="text-sm text-white">
+            <span className="font-semibold">
+              @{reply.profile?.username || 'User'}
+            </span>{' '}
+            {reply.content || reply.comment || reply.text || reply.message}
+            </p>
+            </div>
+            </div>
+            ))}
+      </div>
+
           <div className="flex gap-2 mt-4">
           <input
           value={commentTexts[selectedPost.id] || ''}
