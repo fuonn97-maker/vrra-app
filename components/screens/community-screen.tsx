@@ -1019,7 +1019,7 @@ const isPending = (profileId: string) => {
             ))}
       </div>
 
-          <div className="flex items-center gap-2 mt-4 w-full pr-3">
+          <div className="flex items-center gap-2 mt-4 w-full">
           <input
           value={commentTexts[selectedPost.id] || ''}
           onChange={(e) =>
@@ -1040,7 +1040,7 @@ const isPending = (profileId: string) => {
 
            <button
            onClick={() => addComment(selectedPost.id, replyingTo)}
-           className="px-3 py-3 rounded-xl bg-white/10 text-sm shrink-0"
+           className="ml-2 mr-3 px-4 py-3 rounded-xl bg-white/10 text-sm"
            >
            Send
            </button>
