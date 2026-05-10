@@ -1019,7 +1019,7 @@ const isPending = (profileId: string) => {
             ))}
       </div>
 
-          <div className="flex gap-2 mt-4 w-full">
+          <div className="flex items-center gap-2 mt-4 w-full">
           <input
           value={commentTexts[selectedPost.id] || ''}
           onChange={(e) =>
@@ -1035,7 +1035,7 @@ const isPending = (profileId: string) => {
            }...`
            : 'Write a comment...'
            }
-           className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none"
+           className="flex-1 min-w-0 px-3 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none"
            />
 
            <button
