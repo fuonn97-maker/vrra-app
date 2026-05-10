@@ -974,12 +974,48 @@ const isPending = (profileId: string) => {
           <p className="text-sm text-white/80">
             {comment.content || comment.comment || comment.text || comment.message}
           </p>
-        </div>
-      </div>
-    ))}
-</div>
 
-      </div>
+          <button
+          onClick={() => {
+          setReplyingTo(comment.id)
+          setCommentingPostId(selectedPost.id)
+          }}
+          className="text-xs text-primary mt-1"
+          >
+          Reply
+          </button>
+          <div className="flex gap-2 mt-4">
+          <input
+          value={commentTexts[selectedPost.id] || ''}
+          onChange={(e) =>
+          setCommentTexts({
+          ...commentTexts,
+          [selectedPost.id]: e.target.value,
+          })
+          }
+          placeholder={
+           replyingTo
+           ? `Replying to @${
+           comments.find((c: any) => c.id === replyingTo)?.profile?.username || 'User'
+           }...`
+           : 'Write a comment...'
+           }
+           className="flex-1 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 outline-none"
+           />
+
+           <button
+           onClick={() => addComment(selectedPost.id, replyingTo)}
+           className="px-4 py-3 rounded-xl bg-white/10 text-sm"
+           >
+           Send
+           </button>
+           </div>
+           </div>
+           </div>
+           ))}
+           </div>
+
+       </div>
     </div>
   </div>
 )}
