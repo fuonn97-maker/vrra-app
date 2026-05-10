@@ -496,7 +496,9 @@ if (insertError) {
 let notificationType = 'comment'
 
 if (parentId) {
-  const parentComment = comments.find((c) => c.id === parentId)
+  const parentComment = comments.find(
+  (c: any) => String(c.id) === String(parentId)
+)
 
   if (parentComment && parentComment.user_id !== user.id) {
     targetUserId = parentComment.user_id
@@ -504,7 +506,9 @@ if (parentId) {
   }
 }
     
-    const postOwner = posts.find((p) => p.id === postId)
+    const postOwner = posts.find(
+  (p: any) => String(p.id) === String(postId)
+)
 
 if (!targetUserId && postOwner && postOwner.user_id !== user.id) {
   targetUserId = postOwner.user_id
