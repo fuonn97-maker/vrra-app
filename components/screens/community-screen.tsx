@@ -972,7 +972,7 @@ const isPending = (profileId: string) => {
           </p>
 
           <p className="text-sm text-white/80">
-            {comment.content}
+            {comment.content || comment.comment || comment.text || comment.message}
           </p>
         </div>
       </div>
