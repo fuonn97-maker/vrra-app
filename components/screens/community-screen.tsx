@@ -986,7 +986,7 @@ const isPending = (profileId: string) => {
           Reply
           </button>
 
-          <div className="ml-6 mt-2 space-y-2 border-l border-white/20 pl-3">
+          <div className="ml-10 mt-2 space-y-2 border-l border-white/10 pl-4">
           {comments
           .filter(
           (reply: any) =>
@@ -1000,7 +1000,7 @@ const isPending = (profileId: string) => {
           <img
           src={reply.profile?.avatar_url || '/placeholder.svg'}
           alt=""
-          className="w-7 h-7 rounded-full object-cover"
+          className="w-6 h-6 rounded-full object-cover shrink-0"
           />
 
           <div className="flex-1">
