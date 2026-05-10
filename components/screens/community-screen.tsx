@@ -489,6 +489,7 @@ if (insertError) {
     })
 
     setReplyingTo(null)
+    setCommentingPostId(null)
     fetchComments()
     
     let targetUserId = null
