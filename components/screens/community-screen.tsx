@@ -1019,7 +1019,7 @@ const isPending = (profileId: string) => {
             ))}
       </div>
 
-          <div className="flex items-center gap-2 mt-4 w-full">
+          <div className="flex items-center gap-2 mt-4 w-full pr-3">
           <input
           value={commentTexts[selectedPost.id] || ''}
           onChange={(e) =>
