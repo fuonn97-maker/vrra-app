@@ -165,8 +165,13 @@ useEffect(() => {
 
   const { data, error } = await supabase
   .from('notifications')
-  .select(`
-  *,
+.select(`
+  id,
+  type,
+  message,
+  is_read,
+  created_at,
+  actor_id,
   actor:profiles!notifications_actor_id_fkey(
     id,
     username,
@@ -515,18 +520,26 @@ if (!targetUserId && postOwner && postOwner.user_id !== user.id) {
 }
 
 if (targetUserId) {
-  await supabase.from('notifications').insert({
+  const { error: notificationError } = await supabase.from('notifications').insert({
     user_id: targetUserId,
     actor_id: user.id,
     post_id: postId,
     type: notificationType,
     comment_id: parentId || null,
+    reply_id: null,
     message:
       notificationType === 'reply'
         ? 'Someone replied to your comment'
         : 'Someone commented on your post',
     is_read: false,
   })
+if (notificationError) {
+  console.log('NOTIFICATION INSERT ERROR:', notificationError)
+} else {
+  console.log('NOTIFICATION INSERT SUCCESS')
+  fetchNotifications()
+}
+
 }
     
     await fetchComments()
