@@ -193,6 +193,7 @@ useEffect(() => {
   message,
   is_read,
   created_at,
+  post_id,
   actor_id,
   actor:profiles!notifications_actor_id_fkey(
     id,
