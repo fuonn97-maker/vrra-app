@@ -980,8 +980,30 @@ const isPending = (profileId: string) => {
 
 <div className="flex items-center gap-4 text-sm">
   <button onClick={() => toggleLike(selectedPost)}>
-    ❤️ {selectedPost.likes_count || 0}
-  </button>
+  ❤️ {selectedPost.likes_count || 0}
+</button>
+
+<div className="flex gap-2 mt-2 text-sm">
+  {['👍', '😂', '😍', '😡', '❤️'].map((emoji) => {
+    const count = postReactions.filter(
+      (r) =>
+        String(r.post_id) === String(selectedPost.id) &&
+        r.emoji === emoji
+    ).length
+
+    return (
+      <button
+        key={emoji}
+        onClick={() =>
+          togglePostReaction(String(selectedPost.id), emoji)
+        }
+        className="bg-white/5 px-2 py-1 rounded-full text-xs"
+      >
+        {emoji} {count > 0 ? count : ''}
+      </button>
+    )
+  })}
+</div>
 
   <button onClick={() => toggleSave(selectedPost)}>
     Save
