@@ -1229,9 +1229,10 @@ console.log('NOTIFICATION POST ID:', notification.post_id)
 
 if (targetPost) {
   setSelectedPost({
-    ...targetPost,
-    fromNotification: true
-  })
+  ...targetPost,
+  likes_count: targetPost.likes_count || 0,
+  fromNotification: true
+})
 
   setShowNotifications(false)
 
