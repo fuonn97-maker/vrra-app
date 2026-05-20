@@ -557,6 +557,16 @@ if (parentId) {
     targetUserId = parentUserId
     notificationType = 'reply'
   }
+
+  console.log('REPLY DEBUG:', {
+  parentId,
+  parentUserId,
+  targetUserId,
+  notificationType,
+  postId,
+  currentUser: user.id,
+})
+
 }
     
     const postOwner = posts.find(
