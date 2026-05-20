@@ -507,6 +507,7 @@ if (insertError) {
 }
 
   const addComment = async (postId: string, parentId: string | null = null) => {
+  const notificationType = parentId ? 'reply' : 'comment'
     console.log('ADD COMMENT parentId:', parentId)
   if (commentingPostId === postId && !parentId) return
   if (!commentTexts[postId]?.trim()) return
@@ -1123,7 +1124,12 @@ const isPending = (profileId: string) => {
            />
 
            <button
-           onClick={() => addComment(selectedPost.id, replyingTo)}
+           onClick={() =>
+  addComment(
+    selectedPost.id,
+    replyingTo || null
+  )
+}
            className="px-2 py-3 rounded-xl bg-white/10 text-sm shrink-0"
            >
            Send
