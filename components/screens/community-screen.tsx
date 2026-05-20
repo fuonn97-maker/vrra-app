@@ -631,13 +631,20 @@ const sharePost = async (post: any) => {
       fetchPosts()
     }
     if (!error && post.user_id !== user.id) {
-  await supabase.from('notifications').insert({
-    user_id: post.user_id,
-    actor_id: user.id,
-    post_id: post.id,
-    type: 'like',
-    message: 'Someone liked your post',
-  })
+  const { error: notificationError } = await supabase.from('notifications').insert({
+  user_id: post.user_id,
+  actor_id: user.id,
+  post_id: post.id,
+  type: 'like',
+  message: 'Someone liked your post',
+  is_read: false,
+})
+
+if (notificationError) {
+  console.log('LIKE NOTIFICATION ERROR:', notificationError)
+} else {
+  console.log('LIKE NOTIFICATION SUCCESS')
+}
 }
     fetchNotifications()
   }
