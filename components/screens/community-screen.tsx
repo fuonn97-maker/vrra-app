@@ -538,11 +538,23 @@ let notificationType = 'comment'
 
 if (parentId) {
   const parentComment = comments.find(
-  (c: any) => String(c.id) === String(parentId)
-)
+    (c: any) => String(c.id) === String(parentId)
+  )
 
-  if (parentComment && parentComment.user_id !== user.id) {
-    targetUserId = parentComment.user_id
+  let parentUserId = parentComment?.user_id
+
+  if (!parentUserId) {
+    const { data: parentData } = await supabase
+      .from('post_comments')
+      .select('user_id')
+      .eq('id', parentId)
+      .single()
+
+    parentUserId = parentData?.user_id
+  }
+
+  if (parentUserId && parentUserId !== user.id) {
+    targetUserId = parentUserId
     notificationType = 'reply'
   }
 }
