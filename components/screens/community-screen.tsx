@@ -1231,11 +1231,9 @@ if (targetPost) {
   setSelectedPost({
   ...targetPost,
   likes_count: targetPost.likes_count || 0,
-  reactions: postReactions.filter(
-  (r) => String(r.post_id) === String(targetPost.id)
-),
   fromNotification: true
 })
+await fetchPostReactions
 
   setShowNotifications(false)
 
