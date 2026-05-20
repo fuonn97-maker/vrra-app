@@ -1253,6 +1253,7 @@ if (targetPost) {
   setSelectedPost({
   ...targetPost,
   likes_count: targetPost.likes_count || 0,
+  highlightCommentId: notification.comment_id || null,
   fromNotification: true
 })
 await fetchPostReactions
@@ -1616,7 +1617,13 @@ if (notification.type === 'friend_accept') {
       key={comment.id}
       className="block space-y-2"
     >
-<div className="flex items-start gap-3">
+<div
+  className={`flex items-start gap-3 rounded-2xl p-2 ${
+    String(comment.id) === String(selectedPost.highlightCommentId)
+      ? 'bg-lime-400/20 border border-lime-400/40'
+      : ''
+  }`}
+>
   <img
     src={comment.profile?.avatar_url || '/placeholder.svg'}
     alt=""
