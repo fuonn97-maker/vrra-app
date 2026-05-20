@@ -1223,6 +1223,9 @@ const targetPost = posts.find(
   (post) => String(post.id) === String(notification.post_id)
 )
 
+console.log('TARGET POST:', targetPost)
+console.log('NOTIFICATION POST ID:', notification.post_id)
+
 if (targetPost) {
   setSelectedPost({
     ...targetPost,
