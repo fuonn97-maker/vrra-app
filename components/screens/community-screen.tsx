@@ -21,6 +21,7 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [friends, setFriends] = useState<any[]>([])
   const [feedSort, setFeedSort] = useState<'latest' | 'trending'>('latest')
   const [selectedPost, setSelectedPost] = useState<any>(null)
+  const highlightedCommentRef = useRef<HTMLDivElement | null>(null)
   const [selectedProfile, setSelectedProfile] = useState<any>(null)
   const [notifications, setNotifications] = useState<any[]>([])
   const [showNotifications, setShowNotifications] = useState(false)
@@ -140,6 +141,17 @@ if (post && post.user_id !== user.id) {
   fetchFriends()
   fetchNotifications()
 }, [])
+
+useEffect(() => {
+  if (!selectedPost?.highlightCommentId) return
+
+  setTimeout(() => {
+    highlightedCommentRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    })
+  }, 300)
+}, [selectedPost?.highlightCommentId])
 
 useEffect(() => {
   const observer = new IntersectionObserver(
@@ -1618,6 +1630,11 @@ if (notification.type === 'friend_accept') {
       className="block space-y-2"
     >
 <div
+  ref={
+    String(comment.id) === String(selectedPost?.highlightCommentId)
+      ? highlightedCommentRef
+      : null
+  }
   className={
     "flex items-start gap-3 " +
     (
