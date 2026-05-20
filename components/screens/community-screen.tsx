@@ -102,6 +102,28 @@ const togglePostReaction = async (postId: string, emoji: string) => {
         user_id: user.id,
         emoji,
       })
+
+const post = posts.find((p) => String(p.id) === String(postId))
+
+if (post && post.user_id !== user.id) {
+  const { error: reactionNotificationError } = await supabase
+    .from('notifications')
+    .insert({
+      user_id: post.user_id,
+      actor_id: user.id,
+      post_id: postId,
+      type: 'reaction',
+      message: 'Someone reacted to your post',
+      is_read: false,
+    })
+
+  if (reactionNotificationError) {
+    console.log('REACTION NOTIFICATION ERROR:', reactionNotificationError)
+  } else {
+    console.log('REACTION NOTIFICATION SUCCESS')
+  }
+}
+
   }
 
   fetchPostReactions()
