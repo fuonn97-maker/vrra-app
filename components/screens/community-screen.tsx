@@ -590,8 +590,8 @@ if (targetUserId) {
     reply_id: newComment?.id || null,
     message:
       notificationType === 'reply'
-        ? 'Someone replied to your comment'
-        : 'Someone commented on your post',
+        ? `@${user.username || 'Someone'} replied to your comment`
+        : `@${user.username || 'Someone'} commented on your post`,
     is_read: false,
   })
 if (notificationError) {
