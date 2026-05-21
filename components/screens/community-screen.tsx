@@ -514,14 +514,16 @@ if (insertError) {
 
   setCommentingPostId(postId)
 
-  const { error } = await supabase
-    .from('post_comments')
-    .insert({
-  post_id: postId,
-  user_id: user.id,
-  comment: commentTexts[postId].trim(),
-  parent_id: parentId,
-})
+  const { data: newComment, error } = await supabase
+  .from('post_comments')
+  .insert({
+    post_id: postId,
+    user_id: user.id,
+    comment: commentTexts[postId].trim(),
+    parent_id: parentId,
+  })
+  .select()
+  .single()
 
   if (!error) {
     setCommentTexts({
@@ -584,7 +586,7 @@ if (targetUserId) {
     post_id: postId,
     type: notificationType,
     comment_id: parentId || null,
-    reply_id: null,
+    reply_id: newComment?.id || null,
     message:
       notificationType === 'reply'
         ? 'Someone replied to your comment'
