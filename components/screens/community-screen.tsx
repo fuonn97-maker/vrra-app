@@ -31,6 +31,7 @@ export default function CommunityScreen({ user }: { user: any }) {
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({})
   const [commentReactions, setCommentReactions] = useState<any[]>([])
   const [postReactions, setPostReactions] = useState<any[]>([])
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({})
 
   const fetchPostReactions = async () => {
   const { data, error } = await supabase
@@ -1655,6 +1656,7 @@ if (notification.type === 'friend_accept') {
 <div className="space-y-2 mt-3">
   {comments
   .filter((comment: any) => comment.post_id === post.id && !comment.parent_id)
+  .slice(0, expandedComments[post.id] ? 999 : 2)
   .map((comment: any) => (
     <div
       key={comment.id}
@@ -1785,6 +1787,25 @@ if (notification.type === 'friend_accept') {
       </div>
     ))}
 </div>
+
+{comments.filter(
+  (comment: any) =>
+    comment.post_id === post.id && !comment.parent_id
+).length > 2 && (
+  <button
+    onClick={() =>
+      setExpandedComments((prev) => ({
+        ...prev,
+        [post.id]: !prev[post.id],
+      }))
+    }
+    className="text-xs text-white/60 mt-2"
+  >
+    {expandedComments[post.id]
+      ? 'Hide comments'
+      : 'View more comments'}
+  </button>
+)}
 
 {comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length > 3 && (
   <button
