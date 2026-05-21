@@ -1806,6 +1806,25 @@ if (notification.type === 'friend_accept') {
   </button>
 )}
 
+{comments.filter(
+  (comment: any) =>
+    comment.post_id === post.id && !comment.parent_id
+).length > 3 && (
+  <button
+    onClick={() =>
+      setExpandedComments((prev) => ({
+        ...prev,
+        [post.id]: !prev[post.id],
+      }))
+    }
+    className="text-xs text-white/60 mt-2"
+  >
+    {expandedComments[post.id]
+      ? 'Hide comments'
+      : 'View more comments'}
+  </button>
+)}
+
       <div className="flex items-center gap-3">
   <button
     onClick={() => {
