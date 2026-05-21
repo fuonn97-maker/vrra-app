@@ -1330,7 +1330,11 @@ if (notification.type === 'friend_accept') {
 
 
   }}
-  className="bg-white/5 rounded-xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98]"
+  className={`rounded-xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition ${
+  notification.is_read
+    ? 'bg-white/5'
+    : 'bg-primary/20 border border-primary/30'
+}`}
 >
     <img
       src={notification.actor?.avatar_url || '/default-avatar.png'}
