@@ -594,7 +594,8 @@ if (targetUserId) {
     is_read: false,
   })
 if (notificationError) {
-  console.log('NOTIFICATION INSERT ERROR:', notificationError)
+  console.log('NOTIFICATION INSERT ERROR FULL:', JSON.stringify(notificationError))
+  console.log('NEW COMMENT:', newComment)
 } else {
   console.log('NOTIFICATION INSERT SUCCESS')
   fetchNotifications()
