@@ -1788,6 +1788,24 @@ if (notification.type === 'friend_accept') {
     ))}
 </div>
 
+{comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length > 3 && (
+  <button
+    onClick={() =>
+      setExpandedReplies({
+        ...expandedReplies,
+        [comment.id]: !expandedReplies[comment.id],
+      })
+    }
+    className="ml-11 mt-1 text-xs text-white/50"
+  >
+    {expandedReplies[comment.id]
+      ? 'Hide replies'
+      : `View ${
+          comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length - 3
+        } more replies`}
+  </button>
+)}
+
 {comments.filter(
   (comment: any) =>
     comment.post_id === post.id && !comment.parent_id
@@ -1804,24 +1822,6 @@ if (notification.type === 'friend_accept') {
     {expandedComments[post.id]
       ? 'Hide comments'
       : 'View more comments'}
-  </button>
-)}
-
-{comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length > 3 && (
-  <button
-    onClick={() =>
-      setExpandedReplies({
-        ...expandedReplies,
-        [comment.id]: !expandedReplies[comment.id],
-      })
-    }
-    className="ml-11 mt-1 text-xs text-white/50"
-  >
-    {expandedReplies[comment.id]
-      ? 'Hide replies'
-      : `View ${
-          comments.filter((reply: any) => String(reply.parent_id) === String(comment.id)).length - 3
-        } more replies`}
   </button>
 )}
 
