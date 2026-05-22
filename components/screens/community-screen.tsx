@@ -1689,12 +1689,15 @@ if (notification.type === 'friend_accept') {
 
 {post.video_url ? (
   <video
-    src={post.video_url}
-    controls
-    playsInline
-    onDoubleClick={() => doubleTapLike(post)}
-    className="w-full h-[280px] object-cover rounded-2xl"
-  />
+  src={post.video_url}
+  controls
+  muted
+  autoPlay
+  loop
+  playsInline
+  onDoubleClick={() => doubleTapLike(post)}
+  className="w-full h-[280px] object-cover rounded-2xl"
+/>
 ) : (
   <img
     src={post.image_url}
