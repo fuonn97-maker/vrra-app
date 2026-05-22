@@ -1689,6 +1689,9 @@ if (notification.type === 'friend_accept') {
 
 {post.video_url ? (
   <video
+  ref={(el) => {
+  if (el) videoRefs.current[post.id] = el
+  }}
   src={post.video_url}
   controls
   muted
