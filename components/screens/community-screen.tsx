@@ -6,6 +6,7 @@ import { Share } from '@capacitor/share'
 
 export default function CommunityScreen({ user }: { user: any }) {
   const [posts, setPosts] = useState<any[]>([])
+  const [isCommunityLoading, setIsCommunityLoading] = useState(true)
   const [caption, setCaption] = useState('')
   const [uploading, setUploading] = useState(false)
   const [searchUsername, setSearchUsername] = useState('')
@@ -447,6 +448,7 @@ const removeFriend = async (friendId: string) => {
 }
 
   const fetchPosts = async () => {
+    try {
   const { data: friendships } = await supabase
     .from('friendships')
     .select('friend_id')
@@ -492,6 +494,12 @@ const removeFriend = async (friendId: string) => {
 })
 
   setPosts(postsWithProfiles)
+
+} catch (error) {
+  console.log('FETCH POSTS ERROR:', error)
+} finally {
+  setIsCommunityLoading(false)
+}
 }
 
   const handleUpload = async (
@@ -862,6 +870,35 @@ const isPending = (profileId: string) => {
       request.receiver_id === profileId &&
       request.sender_id === user.id &&
       request.status === 'pending'
+  )
+}
+
+if (isCommunityLoading) {
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      {[1, 2, 3].map((item) => (
+        <div
+          key={item}
+          className="bg-white/5 rounded-2xl p-4 animate-pulse"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-white/10" />
+            <div className="flex-1">
+              <div className="h-3 w-24 bg-white/10 rounded mb-2" />
+              <div className="h-2 w-16 bg-white/10 rounded" />
+            </div>
+          </div>
+
+          <div className="h-64 bg-white/10 rounded-xl mb-4" />
+
+          <div className="flex gap-4">
+            <div className="h-3 w-12 bg-white/10 rounded" />
+            <div className="h-3 w-12 bg-white/10 rounded" />
+            <div className="h-3 w-12 bg-white/10 rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 
