@@ -144,6 +144,30 @@ if (post && post.user_id !== user.id) {
 }, [])
 
 useEffect(() => {
+  if (!user?.id) return
+
+  const channel = supabase
+    .channel(`notifications-${user.id}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'notifications',
+        filter: `user_id=eq.${user.id}`,
+      },
+      () => {
+        fetchNotifications()
+      }
+    )
+    .subscribe()
+
+  return () => {
+    supabase.removeChannel(channel)
+  }
+}, [user?.id])
+
+useEffect(() => {
   if (
     !selectedPost?.highlightCommentId &&
     !selectedPost?.highlightReplyId
@@ -1217,7 +1241,7 @@ const isPending = (profileId: string) => {
     🔔
 
     {notifications.filter((n) => !n.is_read).length > 0 && (
-      <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center">
+      <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center animate-pulse">
         {notifications.filter((n) => !n.is_read).length}
       </span>
     )}
