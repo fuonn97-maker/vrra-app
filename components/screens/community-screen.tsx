@@ -144,15 +144,44 @@ if (post && post.user_id !== user.id) {
 }, [])
 
 useEffect(() => {
-  if (!selectedPost?.highlightCommentId) return
+  if (
+    !selectedPost?.highlightCommentId &&
+    !selectedPost?.highlightReplyId
+  ) return
+
+  // auto expand replies
+  if (selectedPost?.highlightCommentId) {
+    setExpandedReplies((prev) => ({
+      ...prev,
+      [selectedPost.highlightCommentId]: true,
+    }))
+  }
 
   setTimeout(() => {
+    // scroll to reply first
+    if (selectedPost?.highlightReplyId) {
+      const replyElement = document.getElementById(
+        `reply-${selectedPost.highlightReplyId}`
+      )
+
+      replyElement?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+
+      return
+    }
+
+    // fallback to comment
     highlightedCommentRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'center',
     })
   }, 300)
-}, [selectedPost?.highlightCommentId])
+}, [
+  selectedPost?.highlightCommentId,
+  selectedPost?.highlightReplyId,
+])
 
 useEffect(() => {
   const observer = new IntersectionObserver(
