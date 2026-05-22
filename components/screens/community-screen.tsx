@@ -7,6 +7,7 @@ import { Share } from '@capacitor/share'
 export default function CommunityScreen({ user }: { user: any }) {
   const [posts, setPosts] = useState<any[]>([])
   const [isCommunityLoading, setIsCommunityLoading] = useState(true)
+  const [isVideoMuted, setIsVideoMuted] = useState(true)
   const [caption, setCaption] = useState('')
   const [uploading, setUploading] = useState(false)
   const [searchUsername, setSearchUsername] = useState('')
@@ -220,7 +221,7 @@ useEffect(() => {
   }
 })
 
-        video.muted = true
+        video.muted = isVideoMuted
 
         if (entry.isIntersecting) {
           video.play().catch(() => {})
@@ -237,7 +238,7 @@ useEffect(() => {
   const timer = setTimeout(() => {
     Object.values(videoRefs.current).forEach((video) => {
       if (video) {
-        video.muted = true
+        video.muted = isVideoMuted
         observer.observe(video)
       }
     })
@@ -247,7 +248,7 @@ useEffect(() => {
     clearTimeout(timer)
     observer.disconnect()
   }
-}, [posts])
+}, [posts, isVideoMuted])
 
   const fetchNotifications = async () => {
   if (!user?.id) return
@@ -1688,19 +1689,31 @@ if (notification.type === 'friend_accept') {
 )}
 
 {post.video_url ? (
-  <video
-  ref={(el) => {
-  if (el) videoRefs.current[post.id] = el
-  }}
-  src={post.video_url}
-  controls
-  muted
-  autoPlay
-  loop
-  playsInline
-  onDoubleClick={() => doubleTapLike(post)}
-  className="w-full h-[280px] object-cover rounded-2xl"
-/>
+  <div className="relative">
+
+    <video
+      ref={(el) => {
+        if (el) videoRefs.current[post.id] = el
+      }}
+      src={post.video_url}
+      controls
+      muted={isVideoMuted}
+      autoPlay
+      loop
+      playsInline
+      onDoubleClick={() => doubleTapLike(post)}
+      className="w-full h-[280px] object-cover rounded-2xl"
+    />
+
+<button
+  type="button"
+  onClick={() => setIsVideoMuted((prev) => !prev)}
+  className="absolute bottom-3 right-3 bg-black/60 text-white rounded-full px-3 py-2 text-xs"
+>
+  {isVideoMuted ? 'Muted' : 'Sound On'}
+</button>
+
+  </div>
 ) : (
   <img
     src={post.image_url}
