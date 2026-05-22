@@ -22,6 +22,7 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [commentTexts, setCommentTexts] = useState<{ [key: string]: string }>({})
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState('')
+  const [selectedVideo, setSelectedVideo] = useState('')
   const [friends, setFriends] = useState<any[]>([])
   const [feedSort, setFeedSort] = useState<'latest' | 'trending'>('latest')
   const [selectedPost, setSelectedPost] = useState<any>(null)
@@ -1058,6 +1059,25 @@ if (isCommunityLoading) {
   </div>
 )}
 
+{selectedVideo && (
+  <div className="fixed inset-0 bg-black z-[100] flex items-center justify-center">
+    <button
+      onClick={() => setSelectedVideo('')}
+      className="absolute top-5 right-5 text-white text-3xl z-10"
+    >
+      ×
+    </button>
+
+    <video
+      src={selectedVideo}
+      controls
+      autoPlay
+      playsInline
+      className="w-full h-full object-contain"
+    />
+  </div>
+)}
+
 {selectedPost && (
   <div className="fixed inset-0 bg-black z-50 overflow-y-auto pb-24">
     <div className="p-4">
@@ -1704,6 +1724,7 @@ if (notification.type === 'friend_accept') {
       loop
       playsInline
       onDoubleClick={() => doubleTapLike(post)}
+      onClick={() => setSelectedVideo(post.video_url)}
       onLoadStart={() =>
        setVideoLoading((prev) => ({ ...prev, [post.id]: true }))
        }
