@@ -214,6 +214,12 @@ useEffect(() => {
       entries.forEach((entry) => {
         const video = entry.target as HTMLVideoElement
 
+        Object.values(videoRefs.current).forEach((v) => {
+  if (v && v !== video) {
+    v.pause()
+  }
+})
+
         video.muted = true
 
         if (entry.isIntersecting) {
@@ -235,12 +241,6 @@ useEffect(() => {
         observer.observe(video)
       }
     })
-
-    const firstVideo = Object.values(videoRefs.current)[0]
-    if (firstVideo) {
-      firstVideo.muted = true
-      firstVideo.play().catch(() => {})
-    }
   }, 500)
 
   return () => {
