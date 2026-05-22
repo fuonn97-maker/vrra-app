@@ -1732,7 +1732,7 @@ if (notification.type === 'friend_accept') {
 <button
   type="button"
   onClick={() => setIsVideoMuted((prev) => !prev)}
-  className="absolute bottom-3 right-3 bg-black/60 text-white rounded-full px-3 py-2 text-xs"
+  className="absolute top-3 right-3 z-20 bg-black/70 text-white rounded-full px-3 py-2 text-xs"
 >
 </button>
 
