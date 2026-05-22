@@ -1298,7 +1298,8 @@ if (targetPost) {
   ...targetPost,
   likes_count: targetPost.likes_count || 0,
   highlightCommentId: notification.comment_id || null,
-  fromNotification: true
+  fromNotification: true,
+  highlightReplyId: notification.reply_id || null,
 })
 await fetchPostReactions
 
@@ -1667,6 +1668,7 @@ if (notification.type === 'friend_accept') {
       className="block space-y-2"
     >
 <div
+id={`comment-${comment.id}`}
   ref={
     String(comment.id) === String(selectedPost?.highlightCommentId)
       ? highlightedCommentRef
@@ -1727,6 +1729,7 @@ if (notification.type === 'friend_accept') {
     .slice(0, expandedReplies[comment.id] ? 999 : 3)
     .map((reply: any) => (
         <div
+  id={`reply-${reply.id}`}
   key={reply.id}
   className="flex items-start gap-2"
 >
