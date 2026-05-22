@@ -8,6 +8,8 @@ export default function CommunityScreen({ user }: { user: any }) {
   const [posts, setPosts] = useState<any[]>([])
   const [isCommunityLoading, setIsCommunityLoading] = useState(true)
   const [isVideoMuted, setIsVideoMuted] = useState(true)
+  const [videoLoading, setVideoLoading] = useState<Record<string, boolean>>({})
+  const [videoBuffering, setVideoBuffering] = useState<Record<string, boolean>>({})
   const [caption, setCaption] = useState('')
   const [uploading, setUploading] = useState(false)
   const [searchUsername, setSearchUsername] = useState('')
@@ -1702,15 +1704,36 @@ if (notification.type === 'friend_accept') {
       loop
       playsInline
       onDoubleClick={() => doubleTapLike(post)}
+      onLoadStart={() =>
+       setVideoLoading((prev) => ({ ...prev, [post.id]: true }))
+       }
+      onCanPlay={() =>
+       setVideoLoading((prev) => ({ ...prev, [post.id]: false }))
+       }
+      onWaiting={() =>
+       setVideoBuffering((prev) => ({ ...prev, [post.id]: true }))
+       }
+      onPlaying={() =>
+       setVideoBuffering((prev) => ({ ...prev, [post.id]: false }))
+       }
       className="w-full h-[280px] object-cover rounded-2xl"
     />
+       {isVideoMuted ? 'Muted' : 'Sound On'}
+       {videoLoading[post.id] && (
+        <div className="absolute inset-0 animate-pulse bg-white/10 rounded-2xl" />
+        )}
+
+       {videoBuffering[post.id] && (
+        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+        </div>
+        )}
 
 <button
   type="button"
   onClick={() => setIsVideoMuted((prev) => !prev)}
   className="absolute bottom-3 right-3 bg-black/60 text-white rounded-full px-3 py-2 text-xs"
 >
-  {isVideoMuted ? 'Muted' : 'Sound On'}
 </button>
 
   </div>
